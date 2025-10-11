@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Exponemos el puerto de desarrollo de Vite
-EXPOSE 4000
+EXPOSE 3000
 
 # Comando para levantar la app en modo desarrollo
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start", "dev"]

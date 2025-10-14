@@ -5,6 +5,12 @@ import e from "express";
 
 export class SequelizeImplementRepository implements IImplementRepository {
 
+
+  async findAll(): Promise<ImplementEntity[]> {
+    const implementList = await ImplementModel.findAll();
+    return implementList.map(imp => ImplementEntity.fromPersistence(imp.toJSON()));
+  }
+
   async findById(id: number): Promise<ImplementEntity | null> {
     const implement = await ImplementModel.findByPk(id);
     if (!implement) {

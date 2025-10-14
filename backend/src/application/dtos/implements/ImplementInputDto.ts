@@ -1,7 +1,7 @@
 import { ImplementCondition } from "../../../domain/enums/ImplementCondition";
 import { ImplementStatus } from "../../../domain/enums/ImplementStatus";
 
-export interface CreateImplementInputDto {
+export interface ImplementInputDto {
 
   prefix: string;
   status: ImplementStatus;

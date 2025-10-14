@@ -11,6 +11,7 @@ import { CreateImplement } from '../application/use-cases/implements/CreateImple
 
 // Importaciones de INFRAESTRUCTURA (Implementaciones concretas)
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
+import { GetImplements } from '../application/use-cases/implements/GetImplements';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
 
 // Se crea un Symbol para la inyección
@@ -34,4 +35,12 @@ export function resolveCreateImplementUseCase(): CreateImplement {
         implementRepository,
         implementCounterPort
     );
+}
+
+export function resolveGetImplementsUseCase(): GetImplements {
+    // Obtenemos la implementación usando el mismo token string
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetImplements(implementRepository);
 }

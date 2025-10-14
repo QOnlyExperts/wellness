@@ -16,6 +16,8 @@ router.post('/implements', [
   validator.validateSchema(CreateImplementInputDtoSchema)
 ], implementController.create.bind(implementController));
 
+router.get('/implements', implementController.getAll.bind(implementController));
+
 // Notas sobre .bind(implementController):
 // Esto asegura que, cuando Express llame a implementController.create, 
 // 'this' dentro de la función 'create' siga refiriéndose a la instancia del controlador.

@@ -1,11 +1,13 @@
-import { IImplementRepository } from '../../../domain/interfaces/IImplementRepository';
-import { IImplementCounterPort } from '../../ports/IImplementCounterPort';
+import { IImplementRepository } from "../../../domain/interfaces/IImplementRepository";
+import { IImplementCounterPort } from "../../ports/IImplementCounterPort";
 
-import { ImplementEntity } from '../../../domain/entities/ImplementEntity'; 
-import { ImplementStatus } from '../../../domain/enums/ImplementStatus';
-import { ImplementCondition } from '../../../domain/enums/ImplementCondition';
+import { ImplementEntity } from "../../../domain/entities/ImplementEntity";
+import { ImplementStatus } from "../../../domain/enums/ImplementStatus";
+import { ImplementCondition } from "../../../domain/enums/ImplementCondition";
 
-import { CreateImplementInputDto } from '../../dtos/implements/CreateImplement.input';
+import { ImplementInputDto } from "../../dtos/implements/ImplementInputDto";
+import { ImplementOutputDto } from "../../dtos/implements/ImplementOutputDto";
+import { ImplementMapper } from "../../mappers/ImplementMapper";
 
 export class CreateImplement {
   constructor(
@@ -15,16 +17,18 @@ export class CreateImplement {
 
   // Función auxiliar para formatear el número
   private formatCode(prefix: string, number: number): string {
-      // Ejemplo: PadStart para rellenar con ceros (ej. 1 -> 001)
-      const paddedNumber = String(number).padStart(3, '0'); 
-      return `${prefix}${paddedNumber}`;
+    // Ejemplo: PadStart para rellenar con ceros (ej. 1 -> 001)
+    const paddedNumber = String(number).padStart(3, "0");
+    return `${prefix}${paddedNumber}`;
   }
 
-  public async execute(input: CreateImplementInputDto): Promise<ImplementEntity> {
+  public async execute(
+    input: ImplementInputDto
+  ): Promise<ImplementOutputDto> {
     // Obtener el siguiente numero consecutivo
     const nextNumber = await this.counterPort.getNextNumber(input.prefix);
     if (nextNumber == null || isNaN(nextNumber)) {
-      throw new Error('Invalid counter value');
+      throw new Error("Invalid counter value");
     }
     // Generamos el código final prefix + numero
     const finalCod = this.formatCode(input.prefix, nextNumber);
@@ -40,9 +44,10 @@ export class CreateImplement {
       input.categories_id
     );
 
-    // Usar el Contrato (IImplementRepository)
-    // Guardamos
-    return await this.implementRepository.save(newImplement);
+    // Guardamos la entidad en base de datos
+    const createdImplement = await this.implementRepository.save(newImplement);
 
+    // Mapeamos el modelo guardado a un DTO de salida
+    return ImplementMapper.toOutputDto(createdImplement);
   }
 }

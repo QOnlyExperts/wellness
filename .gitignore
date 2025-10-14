@@ -3,7 +3,6 @@ backend/node_modules
 backend/public/config
 backend/public/scripts
 backend/public/uploads
-backend/package-lock.json
 # Frontend
 frontend/node_modules
 

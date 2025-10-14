@@ -8,7 +8,6 @@ frontend/node_modules
 
 # Entorno
 .env
-.pagckage-lock.json
 
 # Documentos
 doc

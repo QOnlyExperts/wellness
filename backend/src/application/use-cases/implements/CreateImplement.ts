@@ -23,7 +23,9 @@ export class CreateImplement {
   public async execute(input: CreateImplementInputDto): Promise<ImplementEntity> {
     // Obtener el siguiente numero consecutivo
     const nextNumber = await this.counterPort.getNextNumber(input.prefix);
-    
+    if (nextNumber == null || isNaN(nextNumber)) {
+      throw new Error('Invalid counter value');
+    }
     // Generamos el código final prefix + numero
     const finalCod = this.formatCode(input.prefix, nextNumber);
 

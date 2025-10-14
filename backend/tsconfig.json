@@ -3,13 +3,13 @@
     "target": "ES2020",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "types": ["node", "express"],
+    "types": ["node", "express", "jest"],
     "skipLibCheck": true,     // 👈 Evita fallos con librerías sin tipos
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

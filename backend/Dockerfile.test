@@ -1,0 +1,14 @@
+FROM node:20
+WORKDIR /app
+# Copiar dependencias
+COPY package*.json ./
+RUN npm ci
+
+# Copiar el resto del código
+COPY . .
+
+# Variable de entorno para Jest
+ENV NODE_ENV=test
+
+# Comando por defecto: ejecutar los tests
+CMD ["npm", "test"]

@@ -1,2 +1,6 @@
-#Ejecuta el DockerFile indicado
+# Ejecuta el DockerFile indicado
 docker compose build --no-cache backend
+
+# Ejecutar tests directamente desde Docker Compose
+docker compose run --rm backend-test
+

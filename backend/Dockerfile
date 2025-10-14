@@ -1,7 +1,8 @@
 FROM node:20
 WORKDIR /app
+# Copiar dependencias
 COPY package*.json ./
-# RUN npm install
+
 RUN npm install
 COPY . .
 # Compilar TypeScript

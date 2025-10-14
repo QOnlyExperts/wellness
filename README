@@ -1,0 +1,2 @@
+#Ejecuta el DockerFile indicado
+docker compose build --no-cache backend

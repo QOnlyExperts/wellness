@@ -2,13 +2,14 @@ import { IImplementRepository } from "../../domain/interfaces/IImplementReposito
 import { ImplementEntity } from "../../domain/entities/ImplementEntity";
 import { ImplementModel } from "../models/ImplementModel";
 import e from "express";
+import { ImplementMapper } from "../../application/mappers/ImplementMapper";
 
 export class SequelizeImplementRepository implements IImplementRepository {
 
 
   async findAll(): Promise<ImplementEntity[]> {
     const implementList = await ImplementModel.findAll();
-    return implementList.map(imp => ImplementEntity.fromPersistence(imp.toJSON()));
+    return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));
   }
 
   async findById(id: number): Promise<ImplementEntity | null> {
@@ -16,14 +17,13 @@ export class SequelizeImplementRepository implements IImplementRepository {
     if (!implement) {
       return null;
     }
-
     // Mapeo: Transforma el modelo de Sequelize a la Entidad pura
-    return ImplementEntity.fromPersistence(implement.toJSON());
+    return ImplementMapper.toDomain(implement.toJSON());
   }
 
   async save(implement: ImplementEntity): Promise<ImplementEntity> {
     // Convertir la Entidad de Dominio a un objeto plano para Sequelize
-    const persistenceData = implement.toPersistence();
+    const persistenceData = ImplementMapper.toPersistence(implement);
     let saveModel: ImplementModel;
     
     if(implement.id) {
@@ -41,6 +41,6 @@ export class SequelizeImplementRepository implements IImplementRepository {
     }
     
     // Mapear el Modelo de Sequelize guardado (que tiene el ID) de vuelta a la Entidad de Dominio.
-    return ImplementEntity.fromPersistence(saveModel.toJSON());
+    return ImplementMapper.toDomain(saveModel.toJSON());
   }
 }

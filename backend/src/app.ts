@@ -7,6 +7,7 @@ import { configSocket } from './application/services/socketService';
 import config from './config';
 
 // Routers
+import { groupImplementRouter } from './presentation/routers/GroupImplementRoutes';
 import { implementRouter } from './presentation/routers/implementRoutes';
 
 // Crear la aplicación Express
@@ -23,6 +24,7 @@ app.use(cors(config.application.cors));
 // Rutas
 
 // Si luego habilitas tus rutas:
+app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);
 
 app.use('/', (req: Request, res: Response) => {

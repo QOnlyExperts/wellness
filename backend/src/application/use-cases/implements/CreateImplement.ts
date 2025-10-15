@@ -34,15 +34,15 @@ export class CreateImplement {
     const finalCod = this.formatCode(input.prefix, nextNumber);
 
     // Crear Entidad Pura sin ID
-    const newImplement = new ImplementEntity(
-      null, // ID es null porque aún no existe en BD
-      finalCod,
+    const newImplement = ImplementEntity.create({
+      id: null, // ID es null porque aún no existe en BD
+      cod: finalCod,
       // Valores por defecto
-      input.status || ImplementStatus.AVAILABLE,
-      input.condition || ImplementCondition.NEW,
-      input.group_implement_id,
-      input.categories_id
-    );
+      status: input.status || ImplementStatus.AVAILABLE,
+      condition: input.condition || ImplementCondition.NEW,
+      group_implement_id: input.group_implement_id,
+      categories_id: input.categories_id
+    });
 
     // Guardamos la entidad en base de datos
     const createdImplement = await this.implementRepository.save(newImplement);

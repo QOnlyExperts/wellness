@@ -3,39 +3,48 @@ import { ImplementStatus } from "../enums/ImplementStatus";
 import { ImplementCondition } from "../enums/ImplementCondition";
 
 export class ImplementEntity {
-  constructor(
-    public readonly id: number | null, // Usamos null para diferenciar si ya existe en BD
-    public cod: string,
-    public status: ImplementStatus,
-    public condition: ImplementCondition,
-    public group_implement_id: number,
-    public categories_id: number
-  ) {}
+  public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
+  public cod: string;
+  public status: ImplementStatus;
+  public condition: ImplementCondition;
+  public group_implement_id: number;
+  public categories_id: number;
 
-  // Constructor estático para crear la entidad (Ejemplo)
-  // Mapeo de Entrada: Crea la entidad desde cualquier objeto plano (usado por el Repositorio)
-  public static fromPersistence(data: any): ImplementEntity {
-    // Aquí podrías agregar lógica adicional para crear una entidad
-    return new ImplementEntity(
-      data.id,
-      data.cod,
-      data.status as ImplementStatus || ImplementStatus.AVAILABLE, // Casteo a Enum
-      data.condition as ImplementCondition || ImplementCondition.NEW,
-      data.group_implement_id,
-      data.categories_id
-    );
+  constructor(props: {
+    id: number | null; // Usamos null para diferenciar si ya existe en BD
+    cod: string,
+    status: ImplementStatus,
+    condition: ImplementCondition,
+    group_implement_id: number,
+    categories_id: number
+  }) {
+    this.id = props.id;
+    this.cod = props.cod;
+    this.status = props.status;
+    this.condition = props.condition;
+    this.group_implement_id = props.group_implement_id;
+    this.categories_id = props.categories_id;
   }
 
-  // Mapeo de Salida: Devuelve un objeto plano para guardar en BD
-  public toPersistence(): any {
-    return {
-      id: this.id,
-      cod: this.cod,
-      status: this.status,
-      condition: this.condition,
-      group_implement_id: this.group_implement_id,
-      categories_id: this.categories_id
-    };
+  static create(props: {
+    id: number | null; // Usamos null para diferenciar si ya existe en BD
+    cod: string,
+    status: ImplementStatus,
+    condition: ImplementCondition,
+    group_implement_id: number,
+    categories_id: number
+
+  }): ImplementEntity {
+    // Por aquí debo crear el código automáticamente
+    // Aquí podrías agregar validaciones o lógica adicional antes de crear la entidad
+    return new ImplementEntity({
+      id: props.id,
+      cod: props.cod,
+      status: props.status,
+      condition: props.condition,
+      group_implement_id: props.group_implement_id,
+      categories_id: props.categories_id
+    });
   }
 
   // Lógica de Dominio: (Métodos que aplican reglas)

@@ -12,6 +12,7 @@ import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/Seq
 
 import { SequelizeGroupImplementRepository } from '../infrastructure/repositories/SequelizeGroupImplementRepository';
 import { CreateGroupImplement } from '../application/use-cases/group-implements/CreateGroupImplement';
+import { GetGroupImplements } from '../application/use-cases/group-implements/GetGroupImplements';
 // Importaciones de INFRAESTRUCTURA (Implementaciones concretas)
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
@@ -59,4 +60,12 @@ export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
     return new CreateGroupImplement(
         groupImplementRepository
     );
+}
+
+
+export function resolveGetGroupImplementsUseCase(): GetGroupImplements {
+    // Obtenemos la implementación usando el mismo token string
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetGroupImplements(groupImplementRepository);
 }

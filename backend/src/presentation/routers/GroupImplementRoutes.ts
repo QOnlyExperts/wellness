@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { GroupImplementController } from '../controllers/GroupImplementController';
-import { CreateImplementInputDtoSchema } from '../../application/schemas/ImplementSchema';
+import { CreateGroupImplementInputDtoSchema } from '../../application/schemas/GroupImplementSchema';
 import { Validator } from '../middleware/ValidatorMiddle';
 
 // 1. Instanciamos el controlador
@@ -10,12 +10,17 @@ const validator = Validator;
 
 const router = Router();
 
-// 2. Definición de la ruta para crear un Implement
+// 2. Definición de la ruta para crear un GroupImplement
 // Usamos el método HTTP POST y una URL descriptiva
-router.post('/gimplements', [
-  // validator.validateSchema(CreateImplementInputDtoSchema)
-], groupImplementController.create.bind(groupImplementController));
+router.post('/group-implements', [
+    validator.validateSchema(CreateGroupImplementInputDtoSchema)
+  ], groupImplementController.create.bind(groupImplementController)
+);
 
+router.get('/group-implements', [
+
+  ], groupImplementController.getAll.bind(groupImplementController)
+);
 
 // Notas sobre .bind(groupImplementController):
 // Esto asegura que, cuando Express llame a groupImplementController.create, 

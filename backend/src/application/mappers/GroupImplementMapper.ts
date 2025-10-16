@@ -18,6 +18,7 @@ export class GroupImplementMapper {
   public static toDomain(data: any): GroupImplementEntity {
     return GroupImplementEntity.create({
       id: data.id,
+      prefix: data.prefix,
       name: data.name,
       max_hours: data.max_hours,
       time_limit: data.time_limit

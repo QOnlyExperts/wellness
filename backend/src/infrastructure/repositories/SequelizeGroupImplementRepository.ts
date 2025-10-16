@@ -16,6 +16,12 @@ export class SequelizeGroupImplementRepository implements IGroupImplementReposit
     return GroupImplementMapper.toDomain(record.toJSON());
   }
 
+  async findByName(name: string): Promise<GroupImplementEntity | null> {
+    const record = await GroupImplementModel.findOne({ where: { name } });
+    return record ? GroupImplementMapper.toDomain(record.toJSON()) : null;
+  }
+
+
   async save(entity: GroupImplementEntity): Promise<GroupImplementEntity> {
     const persistenceData = GroupImplementMapper.toPersistence(entity);
     let record: GroupImplementModel;

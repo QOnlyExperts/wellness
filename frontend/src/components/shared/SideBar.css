@@ -18,10 +18,10 @@ a{
   width: 5rem;
   top: 0;
   left: 0px;
-  font-size: 13px;
+  font-size: .9rem;
   /* height: 90vh; */
   height: calc(100vh - 0.75rem);
-  background-color: #ffffff;
+  background-color: #eceaea;
   /* padding: 1rem 0.75rem; */
   /* border-radius: 0.75rem; */
   padding: 5px;
@@ -101,6 +101,7 @@ body.active .user-profile{
 
 body.active .hidden{
   display: inline;
+  font-size: 0.9rem;
 }
 
 .link:hover,
@@ -113,8 +114,8 @@ body.active .hidden{
 }
 
 .link > img{
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
 }
 
 

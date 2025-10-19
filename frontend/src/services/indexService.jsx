@@ -11,11 +11,11 @@ const service = async (url, options = {}) => {
   options.headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "Authorization":`Bearer ${localStorage.getItem('token')}`
+    // "Authorization":`Bearer ${localStorage.getItem('token')}`
   };
 
   try {
-    const response = await fetch(`http://localhost:4000/api/v1/${url}`, options);
+    const response = await fetch(`http://localhost:4000/api/v1${url}`, options);
     const res = await response.json();
 
     // if (!res.ok && (res.status === 401 || res?.error?.name === 'TokenExpiredError')) {

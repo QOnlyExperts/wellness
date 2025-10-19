@@ -66,17 +66,32 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
- 
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f5f5;
+  color: #333333;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-style: normal;
+  /* font-weight: normal; */
+}
+
 .btn-primary {
   display: inline-block;
-  padding: 8px 24px;
-  background: #3498db;
+  width: fit-content;
+  padding: 10px 24px;
+  background: #389FFF;
   color: #fff;
   font-size: .8rem;
   font-weight: 500;
   border-radius: 5px;
   cursor: pointer;
   border: none;
+  text-align: center;
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -87,7 +102,7 @@ button:focus-visible {
 
 .btn-secondary {
   display: inline-block;
-  padding: 8px 24px;
+  padding: 10px 24px;
   background: #e74c3c;
   color: #fff;
   font-size: 0.8rem;
@@ -95,6 +110,7 @@ button:focus-visible {
   border-radius: 5px;
   cursor: pointer;
   border: none;
+  text-align: center;
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -143,7 +159,7 @@ button:focus-visible {
   /* arriba | derecha | abajo | izquierda */
   padding: 10px;
   gap: 10px;
-  background-color: #eceaea;
+  background-color: #ffffff;
 }
 
 

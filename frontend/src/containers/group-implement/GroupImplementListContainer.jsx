@@ -4,9 +4,8 @@ import React, { useEffect, useState} from "react";
 import ReusableTable from "../../components/shared/ReusableTable";
 import GroupImplementService from "../../services/GroupImplementService";
 
-const GroupImplementListContainer = () => {
+const GroupImplementListContainer = ({ refresh, onEdit }) => {
   const [groupImplements, setGroupImplements] = useState([]);
-
 
     useEffect(() => {
     // Lógica para obtener datos de productos
@@ -18,7 +17,11 @@ const GroupImplementListContainer = () => {
     };
 
     fetch();
-  }, []);
+  }, [refresh]);
+  
+  const handleEditClick = (id) => {
+    onEdit(id); // envía el id al padre
+  };
 
 
   const columnsHead = [
@@ -59,7 +62,7 @@ const GroupImplementListContainer = () => {
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', gap: '10px', width: '100%', textAlign: 'center', overflow: 'hidden' }}>
           <button className="btn-primary">Agregar</button>
           <button className="btn-primary">Listar</button>
-          <button className="btn-primary">Editar</button>
+          <button className="btn-primary" onClick={() => handleEditClick(groupImplement.id)}>Editar</button>
         </div>
       );
     }

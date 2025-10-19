@@ -1,0 +1,20 @@
+.head-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 1rem;
+}
+
+.head-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}

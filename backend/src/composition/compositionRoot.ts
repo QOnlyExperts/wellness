@@ -2,10 +2,11 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IGroupImplementRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
+import { ICategoryRepository } from '../domain/interfaces/ICategoryRepository';
 import { IImplementCounterPort } from '../application/ports/IImplementCounterPort';
 import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/SequelizeImplementCounterAdapter';
 
@@ -22,6 +23,11 @@ import { CreateImplement } from '../application/use-cases/implements/CreateImple
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
 
+import { SequelizeCategoryRepository } from '../infrastructure/repositories/SequelizeCategoryRepository';
+import { CreateCategory } from '../application/use-cases/category/CreateCategory';
+import { GetCategory } from '../application/use-cases/category/GetCategory';
+import { UpdateCategory } from '../application/use-cases/category/UpdateCategory';
+
 // Se crea un Symbol para la inyección
 export const IImplementRepositorySymbol = Symbol.for('IImplementRepository');
 
@@ -31,6 +37,7 @@ export const Dependencies = {
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
     [IGroupImplementRepositoryToken]: new SequelizeGroupImplementRepository(),
+    [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
 };
 
 // 2. FUNCIÓN DE RESOLUCIÓN
@@ -91,4 +98,32 @@ export function resolveGetGroupImplementBySearchUseCase(): GetGroupImplementBySe
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new GetGroupImplementBySearch(groupImplementRepository);
+}
+
+export function resolveCreateCategoryUseCase(): CreateCategory {
+    // Obtenemos la implementación usando el mismo token string
+    const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new CreateCategory(categoryRepository);
+}
+
+export function resolveGetCategoryUseCase(): GetCategory {
+    // Obtenemos la implementación usando el mismo token string
+    const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetCategory(categoryRepository);
+}
+
+export function resolveUpdateCategoryUseCase(): UpdateCategory {
+    // Obtenemos la implementación usando el mismo token string
+    const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new UpdateCategory(categoryRepository);
+}
+
+export function resolveGetCategoryByIdUseCase(): GetCategory {
+    // Obtenemos la implementación usando el mismo token string
+    const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetCategory(categoryRepository);
 }

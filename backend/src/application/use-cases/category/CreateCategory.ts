@@ -16,7 +16,7 @@ export class CreateCategory {
     // 1. Verificar si ya existe una categoría con ese nombre
     const existingCategory = await this.categoryRepository.findByName(input.name);
     if (existingCategory) {
-      throw new DuplicateNameError(`A category with the name "${input.name}" already exists.`);
+      throw new DuplicateNameError(`una categoria con este nombre "${input.name}" ya existe.`);
     }
 
     // 2. Si no existe, crear la entidad

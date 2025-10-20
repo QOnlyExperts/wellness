@@ -25,7 +25,7 @@ export class GroupImplementEntity {
   // Constructor estático para crear la entidad (Ejemplo)
   // Mapeo de Entrada: Crea la entidad desde cualquier objeto plano (usado por el Repositorio)
   static create(props: {
-    id: null; // Usamos null para diferenciar si ya existe en BD,
+    id: number | null; // Usamos null para diferenciar si ya existe en BD,
     prefix: string,
     name: string,
     max_hours: number,

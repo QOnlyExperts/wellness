@@ -13,6 +13,9 @@ import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/Seq
 import { SequelizeGroupImplementRepository } from '../infrastructure/repositories/SequelizeGroupImplementRepository';
 import { CreateGroupImplement } from '../application/use-cases/group-implements/CreateGroupImplement';
 import { GetGroupImplements } from '../application/use-cases/group-implements/GetGroupImplements';
+import { GetGroupImplementById } from '../application/use-cases/group-implements/GetGroupImplementById';
+import { UpdateGroupImplement } from '../application/use-cases/group-implements/UpdateGroupImplement';
+import { GetGroupImplementBySearch } from '../application/use-cases/group-implements/GetGroupImplementBySearch';
 // Importaciones de INFRAESTRUCTURA (Implementaciones concretas)
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
@@ -35,7 +38,6 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     // Obtenemos la implementación usando el mismo token string
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
-    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
 
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new CreateImplement(
@@ -68,4 +70,25 @@ export function resolveGetGroupImplementsUseCase(): GetGroupImplements {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new GetGroupImplements(groupImplementRepository);
+}
+
+export function resolveGetGroupImplementByIdUseCase(): GetGroupImplementById {
+    // Obtenemos la implementación usando el mismo token string
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetGroupImplementById(groupImplementRepository);
+}
+
+export function resolveUpdateGroupImplementUseCase(): UpdateGroupImplement {
+    // Obtenemos la implementación usando el mismo token string
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new UpdateGroupImplement(groupImplementRepository);
+}
+
+export function resolveGetGroupImplementBySearchUseCase(): GetGroupImplementBySearch {
+    // Obtenemos la implementación usando el mismo token string
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetGroupImplementBySearch(groupImplementRepository);
 }

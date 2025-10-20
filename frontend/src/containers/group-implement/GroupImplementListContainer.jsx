@@ -4,16 +4,31 @@ import React, { useEffect, useState} from "react";
 import ReusableTable from "../../components/shared/ReusableTable";
 import GroupImplementService from "../../services/GroupImplementService";
 
-const GroupImplementListContainer = ({ refresh, onEdit }) => {
+const GroupImplementListContainer = ({ refresh, onEdit, onSearch }) => {
   const [groupImplements, setGroupImplements] = useState([]);
 
     useEffect(() => {
     // Lógica para obtener datos de productos
     const fetch = async () => {
       
-      const response = await GroupImplementService.getGroupImplements();
+      // obtener los datos de la API
+      let response;
+
+      if (onSearch.type === "name") {
+        response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value);
+      } else if (onSearch.type === "prefix") {
+        response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value.toLowerCase());
+      } else {
+        // No hay filtros -> traer todo
+        response = await GroupImplementService.getGroupImplements();
+      }
+
       // console.log(response)
-      setGroupImplements(response.data);
+      if (response.success) {
+        setGroupImplements(response.data);
+      } else {
+        setGroupImplements([]);
+      }
     };
 
     fetch();

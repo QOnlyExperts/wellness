@@ -1,6 +1,5 @@
 import service from './indexService.jsx';
 
-
 const GroupImplementService = {
   postGroupImplement: (data) => {
     return service('/group-implements', {
@@ -12,12 +11,15 @@ const GroupImplementService = {
     return service('/group-implements');
   },
   getGroupImplementById: (id) => {
-    return service(`/group-implement/${id}`);
+    return service(`/group-implements/${id}`);
+  },
+  getGroupImplementBySearch: (query, search) => {
+    return service(`/group-implements/search?${query}=${encodeURIComponent(search)}`);
   },
   updateGroupImplement: (id, data) => {
-    return service(`/group-implement/${id}`,{
+    return service(`/group-implements/${id}`,{
       method: 'PUT',
-      body: data
+      body: JSON.stringify(data)
     });
   }
 }

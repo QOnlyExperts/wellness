@@ -2,6 +2,7 @@ import { ICategoryRepository } from "../../../domain/interfaces/ICategoryReposit
 import { CategoryOutputDto } from "../../dtos/category/CategoryOutputDto";
 import { CategoryMapper } from "../../mappers/CategoryMapper";
 
+
 export class GetCategory {
   constructor(private readonly categoryRepository: ICategoryRepository) {}
 

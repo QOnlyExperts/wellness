@@ -22,6 +22,8 @@ export interface ICategoryRepository {
    */
   findById(id: number): Promise<CategoryEntity | null>;
 
+  findByName(name: string): Promise<CategoryEntity | null>;
+
   /**
    * Guarda (crea o actualiza) una entidad de categoría.
    * @param category La entidad de categoría a guardar.

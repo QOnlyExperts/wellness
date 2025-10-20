@@ -16,7 +16,7 @@ const GroupImplementPage = () => {
   });
 
   const handleOpenModal = (id = null) => {
-    if (id) setSelectedId(id); // guarda el id si se pasa
+    if (!isNaN(id)) setSelectedId(id); // guarda el id si se pasa
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
@@ -38,8 +38,7 @@ const GroupImplementPage = () => {
       setSelectedSearch({ type: "prefix", value: search });
     }
 
-    // Al buscar, asegurarse de refrescar la lista
-    setRefreshFlag((prev) => !prev);
+    setRefreshFlag((prev) => !prev); // Refresca la lista con los nuevos filtros
   }
 
   return(

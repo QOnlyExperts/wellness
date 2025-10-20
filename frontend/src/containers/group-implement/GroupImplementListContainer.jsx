@@ -17,7 +17,7 @@ const GroupImplementListContainer = ({ refresh, onEdit, onSearch }) => {
       if (onSearch.type === "name") {
         response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value);
       } else if (onSearch.type === "prefix") {
-        response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value.toLowerCase());
+        response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value.toUpperCase());
       } else {
         // No hay filtros -> traer todo
         response = await GroupImplementService.getGroupImplements();

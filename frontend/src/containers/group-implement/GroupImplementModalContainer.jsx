@@ -20,7 +20,7 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
 
   useEffect(() => {
     const fetchGroupImplement = async () => {
-      if (id) {
+      if (id && !isNaN(Number(id))) {
         const response = await GroupImplementService.getGroupImplementById(id);
         setForm({
           name: String(response.data.name),

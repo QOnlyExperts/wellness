@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { GroupImplementController } from '../controllers/GroupImplementController';
 import { CreateGroupImplementInputDtoSchema } from '../../application/schemas/GroupImplementSchema';
 import { Validator } from '../middleware/ValidatorMiddle';
+import { idSchema } from '../../application/schemas/IdSchema';
 
 // 1. Instanciamos el controlador
 // Aquí se inicia la inyección de dependencias (se llama a resolveCreateImplementUseCase)
@@ -18,9 +19,22 @@ router.post('/group-implements', [
 );
 
 router.get('/group-implements', [
-
   ], groupImplementController.getAll.bind(groupImplementController)
 );
+
+router.get('/group-implements/search', [
+  ], groupImplementController.getBySearch.bind(groupImplementController)
+);
+
+router.get('/group-implements/:id', [
+  ], groupImplementController.getById.bind(groupImplementController)
+);
+
+router.put('/group-implements/:id', [
+  validator.validateSchema(CreateGroupImplementInputDtoSchema)
+], groupImplementController.update.bind(groupImplementController));
+
+
 
 // Notas sobre .bind(groupImplementController):
 // Esto asegura que, cuando Express llame a groupImplementController.create, 

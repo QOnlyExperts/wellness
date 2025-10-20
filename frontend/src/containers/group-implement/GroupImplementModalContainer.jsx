@@ -9,7 +9,7 @@ import {hasNoXSSAndInjectionSql, isValidEmail, isValidPhone, onlyLettersRegex} f
 
 
 
-const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
+const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [form, setForm] = useState({
@@ -20,8 +20,8 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
 
   useEffect(() => {
     const fetchGroupImplement = async () => {
-      if (id && !isNaN(Number(id))) {
-        const response = await GroupImplementService.getGroupImplementById(id);
+      if (groupImplementId && !isNaN(Number(groupImplementId))) {
+        const response = await GroupImplementService.getGroupImplementById(groupImplementId);
         setForm({
           name: String(response.data.name),
           max_hours: String(response.data.max_hours),
@@ -31,7 +31,7 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
     };
 
     fetchGroupImplement();
-  }, [id]);
+  }, [groupImplementId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -69,9 +69,9 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
 
     // Validaciones de respuesta del servidor
     let response;
-    if (id) {
+    if (groupImplementId && !isNaN(groupImplementId)) {
       // Lógica para actualizar un grupo de implementos existente
-      response = await GroupImplementService.updateGroupImplement(id, form);
+      response = await GroupImplementService.updateGroupImplement(groupImplementId, form);
     }else{
       response = await GroupImplementService.postGroupImplement(form);
     }

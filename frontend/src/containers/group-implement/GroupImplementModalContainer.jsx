@@ -23,10 +23,9 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
       if (id) {
         const response = await GroupImplementService.getGroupImplementById(id);
         setForm({
-          prefix: response.data.prefix,
-          name: response.data.name,
-          max_hours: response.data.max_hours,
-          time_limit: response.data.time_limit,
+          name: String(response.data.name),
+          max_hours: String(response.data.max_hours),
+          time_limit: String(response.data.time_limit),
         });
       }
     };
@@ -68,18 +67,13 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
       return;
     }
 
-    const formValid = {
-      name: form.name.trim(),
-      max_hours: parseInt(form.max_hours, 10),
-      time_limit: parseInt(form.time_limit, 10),
-    }
     // Validaciones de respuesta del servidor
     let response;
     if (id) {
       // Lógica para actualizar un grupo de implementos existente
-      response = await GroupImplementService.updateGroupImplement(id, formValid);
+      response = await GroupImplementService.updateGroupImplement(id, form);
     }else{
-      response = await GroupImplementService.postGroupImplement(formValid);
+      response = await GroupImplementService.postGroupImplement(form);
     }
 
     if(!response.success){
@@ -88,7 +82,8 @@ const GroupImplementModalContainer = ({ id, onClose, onSaved }) => {
       return;
     }
 
-    clearInputs();
+    if(!id) clearInputs();
+    
     window.showAlert(response.message || "Grupo de implementos creado exitosamente", "success");
     if(onSaved) onSaved(); // notifica al padre que se guardó
     // onClose(); // cerrar modal después de crear

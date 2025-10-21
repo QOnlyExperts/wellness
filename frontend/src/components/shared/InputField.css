@@ -20,18 +20,17 @@ input[type="number"] {
 }
 
 
-input[type="search"]{
+/* input[type="search"]{
   width: 100%;
   border: none;
-  background-color: #f5f5f5; /* más suave que #D9D9D9 */
   border-radius: 5px;
   font-size: 0.9rem;
-  font-weight: 500; /* texto como "Guitarra" más marcado */
-  padding: 10px 6px 10px; /* deja espacio arriba para el label */
+  font-weight: 500; 
+  padding: 10px 6px 10px; 
   outline: none;
   color: #000;
   transition: all 0.3s ease;
-}
+} */
 
 input:focus {
   /* background-color: #fff; */

@@ -15,13 +15,13 @@ a{
 
 .side{
   position: fixed;
-  width: 5rem;
+  width: 4rem;
   top: 0;
   left: 0px;
   font-size: .9rem;
   /* height: 90vh; */
   height: calc(100vh - 0.75rem);
-  background-color: #eceaea;
+  background-color: #f8f8f8;
   /* padding: 1rem 0.75rem; */
   /* border-radius: 0.75rem; */
   padding: 5px;
@@ -34,7 +34,8 @@ a{
 }
 
 body.active nav{
-  width: 18rem;
+  width: 15rem;
+  
 }
 
 .sidebar-header{
@@ -142,7 +143,7 @@ body.active .hidden{
   top: 0px;
   right: -10px;
   padding: 0.2rem;
-  background-color: #fff;
+  background-color: #dddddd;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -163,8 +164,8 @@ body.active .toggle-btn{
 
 body.active .div-principal{
   /* transform: rotate(180deg); */
-  padding-left: 15rem;
-  transition: padding-left 500ms ease;
+  margin-left: 15rem;
+  transition: margin-left 500ms ease;
 }
 
 .user-profile{

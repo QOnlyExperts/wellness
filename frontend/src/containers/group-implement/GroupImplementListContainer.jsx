@@ -1,5 +1,8 @@
 import React, { useEffect, useState} from "react";
 
+import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
+import MenuListIcon from "../../components/icons/MenuListIcon";
+import EditSquareIcon from "../../components/icons/EditSquareIcon";
 
 import ReusableTable from "../../components/shared/ReusableTable";
 import GroupImplementService from "../../services/GroupImplementService";
@@ -78,10 +81,16 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
 
     if (column.accessor === 'actions') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', gap: '10px', width: '100%', textAlign: 'center', overflow: 'hidden' }}>
-          <button className="btn-primary" onClick={() => handleAddImplementClick(groupImplement.id)}>Agregar</button>
-          <button className="btn-primary">Listar</button>
-          <button className="btn-primary" onClick={() => handleEditClick(groupImplement.id)}>Editar</button>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', width: '100%', textAlign: 'center', overflow: 'hidden' }}>
+          <button className="btn-icon" onClick={() => handleAddImplementClick(groupImplement.id)}>
+            <PlusCircleIcon size={24} color="var(--color-tertiary)" className="hover:opacity-80" />
+          </button>
+          <button className="btn-icon">
+            <MenuListIcon size={24} color="#0000008f" className="hover:opacity-80" />
+          </button>
+          <button className="btn-icon" onClick={() => handleEditClick(groupImplement.id)}>
+            <EditSquareIcon size={24} color="var(--color-primary)" className="hover:opacity-80" />
+          </button>
         </div>
       );
     }

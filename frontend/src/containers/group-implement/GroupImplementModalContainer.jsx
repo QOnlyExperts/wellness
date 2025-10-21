@@ -77,12 +77,12 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
     }
 
     if(!response.success){
-      window.showAlert(response.message, "error")
+      window.showAlert(response.message ? response.message : response?.error.message, "error")
       setErrors(response.errors || []);
       return;
     }
 
-    if(!id) clearInputs();
+    if(!groupImplementId) clearInputs();
     
     window.showAlert(response.message || "Grupo de implementos creado exitosamente", "success");
     if(onSaved) onSaved(); // notifica al padre que se guardó

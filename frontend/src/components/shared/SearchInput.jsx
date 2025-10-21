@@ -6,7 +6,10 @@ const SearchInput = ({ value, onChange, onKeyDown }) => {
     <div className="search-input-container">
       <SearchIcon className="search-icon" />
 
+      <label className="label-search" htmlFor="search">Buscar por prefijo o nombre</label>
       <input
+        id="search"
+        name="search"
         type="search"
         placeholder="Buscar..."
         value={value}

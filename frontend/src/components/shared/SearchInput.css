@@ -1,6 +1,6 @@
 .search-input-container {
   position: relative;
-  width: 220px;
+  width: 250px;
 }
 
 .search-icon {
@@ -29,4 +29,16 @@
 .search-input:focus {
   border-color: #ccc;
   box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+
+.label-search {
+  position: absolute;
+  left: 35px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: .9rem;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
 }

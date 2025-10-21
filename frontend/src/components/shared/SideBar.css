@@ -21,7 +21,8 @@ a{
   font-size: .9rem;
   /* height: 90vh; */
   height: calc(100vh - 0.75rem);
-  background-color: #f8f8f8;
+  
+  background-color: #1e1e1e;
   /* padding: 1rem 0.75rem; */
   /* border-radius: 0.75rem; */
   padding: 5px;
@@ -30,11 +31,14 @@ a{
   z-index: 10;
 
   box-shadow: var(--box-shadow);
-  transition: width 500ms ease;
+  transition: width 500ms ease, background-color 500ms ease;
 }
 
 body.active nav{
   width: 15rem;
+  background-color: var(--color-primary);
+  color: white;
+  transition: width 500ms ease, background-color 500ms ease;
   
 }
 
@@ -101,7 +105,8 @@ body.active .user-profile{
 }
 
 body.active .hidden{
-  display: inline;
+  display: flex;
+  align-items: center;
   font-size: 0.9rem;
 }
 
@@ -112,6 +117,7 @@ body.active .hidden{
 
 .link.active{
   background-color: #f4f4f6;
+  color: #000000
 }
 
 .link > img{

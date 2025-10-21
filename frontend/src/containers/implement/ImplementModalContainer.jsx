@@ -9,7 +9,13 @@ import InputField from "../../components/shared/InputField";
 
 import {hasNoXSSAndInjectionSql, isValidEmail, isValidPhone, onlyLettersRegex} from '../../utils/validations';
 import ImplementSelectFieldContainer from "./ImplementSelecFieldContainer";
+import Card from "../../components/shared/Card";
 
+import NotFoundImage from "../../assets/img/NoImg.svg";
+import CloudUp from "../../components/icons/CloudUpIcon";
+import SaveIcon from "../../components/icons/SaveIcon";
+import Button from "../../components/shared/Button";
+import CancelIcon from "../../components/icons/CancelIcon";
 
 
 const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
@@ -137,58 +143,104 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
       <div
         style={{
           display: "flex",
+          flexDirection: "row",
+          gap: "10px",
         }}
       >
         {/* Hay que hacer un div para la imagen y otro para los inputs */}
-        <div></div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "center",
+            gap: "10px"
+          }}
+        >
+
+          <h4>Presentación</h4>
+          <Card 
+            image={NotFoundImage}
+            title={formGroupImplement.name}
+            description={formImplement.status}
+          >
+
+          </Card>
+
+          <button
+            style={{
+              position: "absolute",
+              bottom: "0",
+              marginBottom: "10px",
+            }}
+            className="btn-tertiary"
+          > 
+            <CloudUp 
+              color="#ffffff"
+            />
+            Cargar imagen
+          </button>
+        </div>
 
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
             gap: "10px",
           }}
-        >
-          <InputField
-            type="text"
-            label="Nombre"
-            name="name"
-            disabled={true}
-            value={formGroupImplement.name}
-            onChange={handleChange}
-            errors={errors}
-          />
+          >
+
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+            }}
+          >
+            <InputField
+              type="text"
+              label="Nombre"
+              name="name"
+              disabled={true}
+              value={formGroupImplement.name}
+              onChange={handleChange}
+              errors={errors}
+            />
+            <InputField
+              type="text"
+              label="Cantidad"
+              name="amount"
+              disabled={true}
+              value={formGroupImplement.prefix}
+              onChange={handleChange}
+              errors={errors}
+            />
+          </div>
+
+          
+          <h4>Información del instrumento</h4>
+          <ImplementSelectFieldContainer />
+
           <InputField
             type="text"
             label="Cantidad"
             name="amount"
-            disabled={true}
-            value={formGroupImplement.prefix}
+            value={formImplement.amount}
             onChange={handleChange}
             errors={errors}
           />
+
+          <div className="modal-actions">
+            <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
+              <SaveIcon />
+            </Button>
+            <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
+              <CancelIcon/>
+            </Button>
+          </div>
+
         </div>
+
       </div>
 
-      <h4>Información del instrumento</h4>
-      <ImplementSelectFieldContainer />
-
-      <InputField
-        type="text"
-        label="Cantidad"
-        name="amount"
-        value={formImplement.amount}
-        onChange={handleChange}
-        errors={errors}
-      />
-
-      <div className="modal-actions">
-        <button className="btn-primary" onClick={handleSubmit}>
-          Guardar
-        </button>
-        <button className="btn-secondary" onClick={onClose}>
-          Cancelar
-        </button>
-      </div>
     </Modal>
   );
 };

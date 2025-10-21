@@ -4,6 +4,7 @@ import CheckboxList from "../../components/shared/CheckboxList";
 import SearchInputContainer from "../shared/SearchInputContainer";
 
 import AddIcon from "../../components/icons/AddIcon";
+import Button from "../../components/shared/Button";
 
 const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
   const [selected, setSelected] = useState("");
@@ -36,9 +37,11 @@ const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
         />
       </div>
 
-      <button className="btn-primary" onClick={onAdd}>
-        + Añadir grupo
-      </button>
+      <Button text="Añadir grupo" className="btn-primary" onClick={onAdd}>
+        <AddIcon
+          color="#ffffff"
+        />
+      </Button>
     </Head>
   );
 };

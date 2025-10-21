@@ -7,9 +7,11 @@ import InputField from "../../components/shared/InputField";
 
 import {hasNoXSSAndInjectionSql, isValidEmail, isValidPhone, onlyLettersRegex} from '../../utils/validations';
 
-
+import { useLoader } from "../../context/LoaderContext";
 
 const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
+  
+  const { showLoader, hideLoader } = useLoader();
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [form, setForm] = useState({
@@ -21,12 +23,15 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
   useEffect(() => {
     const fetchGroupImplement = async () => {
       if (groupImplementId && !isNaN(Number(groupImplementId))) {
+        showLoader();
         const response = await GroupImplementService.getGroupImplementById(groupImplementId);
+        hideLoader();
         setForm({
           name: String(response.data.name),
           max_hours: String(response.data.max_hours),
           time_limit: String(response.data.time_limit),
         });
+
       }
     };
 

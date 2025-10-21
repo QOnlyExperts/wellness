@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useLoader } from "../../context/LoaderContext";
+
 import AlertContainer from "../shared/AlertContainer";
 import Modal from "../../components/shared/Modal";
 import GroupImplementService from "../../services/GroupImplementService";
@@ -11,6 +13,7 @@ import ImplementSelectFieldContainer from "./ImplementSelecFieldContainer";
 
 
 const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
+  const { showLoader, hideLoader } = useLoader();
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [formImplement, setFormImplement] = useState({
@@ -29,7 +32,9 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
 
   useEffect(() => {
 
+    // Para consultar el grupo de implementos
     const fetchGroupImplement = async () => {
+
       if (groupImplementId && !isNaN(Number(groupImplementId))) {
         const response = await GroupImplementService.getGroupImplementById(groupImplementId);
         setFormGroupImplement({
@@ -39,7 +44,7 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
       }
     };
 
-    // Para consultar los implementos
+    // Para consultar los implementos por id de grupo
     const fetchImplement = async () => {
       if (groupImplementId && !isNaN(Number(groupImplementId))) {
         const response = await GroupImplementService.getGroupImplementById(groupImplementId);
@@ -51,9 +56,11 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
       }
     };
 
+    showLoader();
     // Hacer con un promise.all si se quieren cargar ambos a la vez
-    fetchGroupImplement();
-    fetchImplement();
+    Promise.all([fetchGroupImplement(), fetchImplement()]).then(() => {
+      hideLoader();
+    });
 
   }, [groupImplementId]);
 

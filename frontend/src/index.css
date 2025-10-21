@@ -72,6 +72,8 @@ button:focus-visible {
   --color-primary: #00B5C8;
   --color-secondary: #FF6F61;
   --color-tertiary: #6DBE45;
+  --color-cuaternary: #E7C51D;
+  --color-quinary: #4A4A4A;
 
   --color-success-light: #d1fae5;
   --color-error-light: #fee2e2;

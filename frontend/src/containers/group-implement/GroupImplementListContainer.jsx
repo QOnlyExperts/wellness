@@ -1,5 +1,7 @@
 import React, { useEffect, useState} from "react";
 
+import { useLoader } from "../../context/LoaderContext";
+
 import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
 import MenuListIcon from "../../components/icons/MenuListIcon";
 import EditSquareIcon from "../../components/icons/EditSquareIcon";
@@ -8,6 +10,7 @@ import ReusableTable from "../../components/shared/ReusableTable";
 import GroupImplementService from "../../services/GroupImplementService";
 
 const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch }) => {
+  const { showLoader, hideLoader } = useLoader();
   const [groupImplements, setGroupImplements] = useState([]);
 
     useEffect(() => {
@@ -16,7 +19,7 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
       
       // obtener los datos de la API
       let response;
-
+      showLoader();
       if (onSearch.type === "name") {
         response = await GroupImplementService.getGroupImplementBySearch(onSearch.type, onSearch.value);
       } else if (onSearch.type === "prefix") {
@@ -26,6 +29,7 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
         response = await GroupImplementService.getGroupImplements();
       }
 
+      hideLoader();
       // console.log(response)
       if (response.success) {
         setGroupImplements(response.data);

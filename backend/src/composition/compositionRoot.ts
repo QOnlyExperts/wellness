@@ -20,6 +20,7 @@ import { GetGroupImplementBySearch } from '../application/use-cases/group-implem
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
+import { GetImplementByIdGroup } from '../application/use-cases/implements/GetImplementByIdGroup';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
 
 // Se crea un Symbol para la inyección
@@ -54,6 +55,16 @@ export function resolveGetImplementsUseCase(): GetImplements {
     return new GetImplements(implementRepository);
 }
 
+
+export function resolveGetImplementByIdGroup(): GetImplementByIdGroup {
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+
+    return new GetImplementByIdGroup(
+        groupImplementRepository,
+        implementRepository
+    );
+}
 
 export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
     // Obtenemos la implementación usando el mismo token string

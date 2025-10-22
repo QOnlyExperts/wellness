@@ -1,6 +1,7 @@
 import { ImplementEntity } from "../../../domain/entities/ImplementEntity";
 import { IImplementRepository } from "../../../domain/interfaces/IImplementRepository";
-import { NotFoundError } from "../../../shared/errors/DomainErrors";
+import { IGroupImplementRepository} from "../../../domain/interfaces/IGroupImplementRepository";
+import { NotFoundError, ValidationError } from "../../../shared/errors/DomainErrors";
 import { ImplementOutputDto } from "../../dtos/implements/ImplementOutputDto";
 import { ImplementMapper } from "../../mappers/ImplementMapper";
 
@@ -12,12 +13,16 @@ import { ImplementMapper } from "../../mappers/ImplementMapper";
 export class GetImplementByIdGroup {
 
   constructor(
-    private groupImplementRepository: IImplementRepository,
+    private groupImplementRepository: IGroupImplementRepository,
     private implementRepository: IImplementRepository
   ) {}
 
   // El DTO de salida es un array de ImplementOutputDto
   public async execute(idGroup: number): Promise<ImplementOutputDto[]> {
+    // Validación minima para verificar que el ID es un numero positivo
+    if (isNaN(idGroup) || idGroup <= 0) {
+      throw new ValidationError("ID inválido.");
+    }
 
     // Verificar que el grupo de implementos existe
     const groupId = await this.groupImplementRepository.findById(idGroup);
@@ -28,7 +33,7 @@ export class GetImplementByIdGroup {
     // Obtener los implementos asociados al grupo
     const implementsList: ImplementEntity[] =
       await this.implementRepository.findByIdGroup(idGroup);
-      
+
     // Mapear cada entidad a su DTO correspondiente
     return implementsList.map((entity) => ImplementMapper.toOutputDto(entity));
   }

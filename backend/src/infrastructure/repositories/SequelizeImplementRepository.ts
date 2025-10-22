@@ -24,7 +24,7 @@ export class SequelizeImplementRepository implements IImplementRepository {
   async findByIdGroup(idGroup: number): Promise<ImplementEntity[]> {
     const implementList = await ImplementModel.findAll({
       where: { 
-        id: idGroup 
+        group_implement_id: idGroup 
       }
     });
     return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));

@@ -21,6 +21,7 @@ const ReusableTable = ({ columns, columnsHead, data, columnStyles }) => {
 
   return (
     // <div style={{display: 'flex', flexDirection: 'column', boxShadow: 'var(--box-shadow)'}}>  
+    <>
       <div className='table-wrapper'>
 
         <table>
@@ -49,6 +50,8 @@ const ReusableTable = ({ columns, columnsHead, data, columnStyles }) => {
           </tbody>
         </table>
       </div>
+      <h4>2 - 2</h4>
+    </>
   );
 };
 

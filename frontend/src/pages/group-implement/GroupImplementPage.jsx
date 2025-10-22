@@ -4,10 +4,14 @@ import GroupImplementHeadContainer from "../../containers/group-implement/GroupI
 import GroupImplementListContainer from "../../containers/group-implement/GroupImplementListContainer";
 import GroupImplementModalContainer from "../../containers/group-implement/GroupImplementModalContainer";
 
+import ImplementModalContainer from "../../containers/implement/ImplementModalContainer";
+
+
 const GroupImplementPage = () => {
   
+  const [modalType, setModalType] = useState(null); // "group" | "implement" | null
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null); // 👈 nuevo estado
+  const [selectedGroupImplementId, setSelectedGroupImplementId] = useState(null); // nuevo estado
   const [refreshFlag, setRefreshFlag] = useState(false); // Refresca la lista si el modal guarda cambios
 
   const [selectedSearch, setSelectedSearch] = useState({
@@ -15,14 +19,18 @@ const GroupImplementPage = () => {
     value: null
   });
 
-  const handleOpenModal = (id = null) => {
-    if (!isNaN(id)) setSelectedId(id); // guarda el id si se pasa
-    setIsModalOpen(true);
+  const handleOpenModal = (type, id = null) => {
+
+    setModalType(type);
+    setSelectedGroupImplementId(id ?? null);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false)
-    setSelectedId(null); // limpia al cerrar
+    setModalType(null);
+    setSelectedGroupImplementId(null);
   };
+
 
   const handleRefresh = () => {
     setRefreshFlag((prev) => !prev);
@@ -46,18 +54,31 @@ const GroupImplementPage = () => {
       <GroupImplementHeadContainer
         onSearch={handlerSearch}
         onRefresh={handleRefresh}
-        onAdd={handleOpenModal} 
+        onAdd={(id) => handleOpenModal("group")} 
       />
+
+      {/* Maneja la lógica solo de grupos de implementos */}
       <GroupImplementListContainer 
         refresh={refreshFlag}
-        onEdit={handleOpenModal}
+        onAddImplement={(id) => handleOpenModal("implement", id)}
+        onEdit={(id) => handleOpenModal("group", id)}
         onSearch={selectedSearch}
       />
       
-      {isModalOpen && (
+      {/* Modal de Grupo */}
+      {modalType === "group" && (
         <GroupImplementModalContainer
-          id={selectedId}
-          onClose={handleCloseModal} 
+          groupImplementId={selectedGroupImplementId}
+          onClose={handleCloseModal}
+          onSaved={handleRefresh}
+        />
+      )}
+
+      {/* Modal de Implemento */}
+      {modalType === "implement" && (
+        <ImplementModalContainer
+          groupImplementId={selectedGroupImplementId}
+          onClose={handleCloseModal}
           onSaved={handleRefresh}
         />
       )}

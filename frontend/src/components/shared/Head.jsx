@@ -5,12 +5,12 @@ const Head = ({ title, className = "", children }) => {
   return (
     <header className={`head-container ${className}`}>
 
+      <h2 className="head-title">{title}</h2>
+
       <div className="head-actions">
         {/* Aquí puedes pasar cualquier otro componente */}
         {children}
       </div>
-
-      <h2 className="head-title">{title}</h2>
     </header>
   );
 };

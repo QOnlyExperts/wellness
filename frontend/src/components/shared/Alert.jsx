@@ -21,23 +21,24 @@ export default function Alert({ message, type = "success", duration = 4000, onCl
         opacity: 1,
         marginBottom: "0.5rem",
         padding: "0.75rem 1rem",
+        fontSize: ".8rem",
         borderRadius: "8px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor:
           type === "success"
-            ? "#d1fae5"
+            ? "var(--color-success-light)"
             : type === "error"
-            ? "#fee2e2"
+            ? "var(--color-error-light)"
             : type === "warning"
             ? "#fef9c3"
             : "#e0f2fe",
         color:
           type === "success"
-            ? "#065f46"
+            ? "var(--color-primary)"
             : type === "error"
-            ? "#991b1b"
+            ? "var(--color-secondary)"
             : type === "warning"
             ? "#92400e"
             : "#1e3a8a",

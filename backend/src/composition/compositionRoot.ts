@@ -25,8 +25,9 @@ import { GetImplements } from '../application/use-cases/implements/GetImplements
 
 import { SequelizeCategoryRepository } from '../infrastructure/repositories/SequelizeCategoryRepository';
 import { CreateCategory } from '../application/use-cases/category/CreateCategory';
-import { GetCategory } from '../application/use-cases/category/GetCategory';
+import { GetCategories } from '../application/use-cases/category/GetCategories';
 import { UpdateCategory } from '../application/use-cases/category/UpdateCategory';
+import { GetCategoryById } from '../application/use-cases/category/GetCategoryById';
 
 // Se crea un Symbol para la inyección
 export const IImplementRepositorySymbol = Symbol.for('IImplementRepository');
@@ -107,11 +108,11 @@ export function resolveCreateCategoryUseCase(): CreateCategory {
     return new CreateCategory(categoryRepository);
 }
 
-export function resolveGetCategoryUseCase(): GetCategory {
+export function resolveGetCategoriesUseCase(): GetCategories {
     // Obtenemos la implementación usando el mismo token string
     const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
-    return new GetCategory(categoryRepository);
+    return new GetCategories(categoryRepository);
 }
 
 export function resolveUpdateCategoryUseCase(): UpdateCategory {
@@ -121,9 +122,9 @@ export function resolveUpdateCategoryUseCase(): UpdateCategory {
     return new UpdateCategory(categoryRepository);
 }
 
-export function resolveGetCategoryByIdUseCase(): GetCategory {
+export function resolveGetCategoryByIdUseCase(): GetCategoryById {
     // Obtenemos la implementación usando el mismo token string
     const categoryRepository = Dependencies[ICategoryRepositoryToken] as ICategoryRepository;
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
-    return new GetCategory(categoryRepository);
+    return new GetCategoryById(categoryRepository);
 }

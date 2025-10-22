@@ -1,26 +1,15 @@
 import { z } from 'zod';
 
-// Schema para la creación de una categoría
+// Valida el cuerpo (body) para crear una categoría. NO LLEVA ID.
 export const CreateCategorySchema = z.object({
-  name: z.string()
-    .trim()
-    .min(1, "El nombre de la categoría no puede estar vacío."),
-  
-  description: z.string()
-    .trim()
-    .optional(), // La descripción es opcional
+  name: z.string().trim().min(1, "El nombre de la categoría no puede estar vacío."),
+  description: z.string().trim().optional(), 
 });
 
-// Schema para la actualización de una categoría
+// Valida el cuerpo (body) para actualizar.
 export const UpdateCategorySchema = z.object({
-  name: z.string()
-    .trim()
-    .min(1, "El nombre de la categoría no puede estar vacío.")
-    .optional(),
-
-  description: z.string()
-    .trim()
-    .optional(),
+  name: z.string().trim().min(1, "El nombre de la categoría no puede estar vacío.").optional(),
+  description: z.string().trim().optional(),
 }).refine(data => Object.keys(data).length > 0, {
   message: "Debe proporcionar al menos un campo para actualizar.",
 });

@@ -30,7 +30,9 @@ const Card = React.memo(({
       {footer && <div className="footer">{footer}</div>}
 
       {/* O puedes renderizar children directamente si prefieres */}
-      {children}
+      <div className="children">
+        {children}
+      </div>
     </div>
   );
 });

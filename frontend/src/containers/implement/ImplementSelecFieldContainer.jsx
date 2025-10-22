@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SelectField from "../../components/shared/SelectField";
 
-const ImplementSelectFieldContainer = () => {
+const ImplementSelectFieldContainer = ({onStatus, onCondition, errors}) => {
   const [status, setStatus] = useState("available");
   const [condition, setCondition] = useState("new");
 
@@ -16,6 +16,18 @@ const ImplementSelectFieldContainer = () => {
     { value: "new", label: "Nuevo" },
   ];
 
+  const handleStatus = (e) => {
+    const select = e.target
+    setStatus(select.value);
+    onStatus(e);
+  }
+
+  const handleCondition = (e) => {
+    setCondition(e.target.value);
+    onCondition(e);
+  }
+
+
   return (
     <div style={{ 
         padding: "",
@@ -25,18 +37,20 @@ const ImplementSelectFieldContainer = () => {
       }}>
       <SelectField
         label="Estado"
-        name="estado"
-        value={status}
+        name="status"
+        value={status || "available"}
         options={optionsStatus}
-        onChange={setStatus}
+        onChange={(e) => handleStatus(e)}
+        errors={errors}
       />
 
       <SelectField
-        label="Estado"
-        name="estado"
-        value={status}
+        label="Condición"
+        name="condition"
+        value={condition || "new"}
         options={optionsCondition}
-        onChange={setStatus}
+        onChange={(e) => handleCondition(e)}
+        errors={errors}
       />
     </div>
   );

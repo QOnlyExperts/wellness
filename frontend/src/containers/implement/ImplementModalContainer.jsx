@@ -16,6 +16,7 @@ import CloudUp from "../../components/icons/CloudUpIcon";
 import SaveIcon from "../../components/icons/SaveIcon";
 import Button from "../../components/shared/Button";
 import CancelIcon from "../../components/icons/CancelIcon";
+import Badge from "../../components/shared/Badge";
 
 
 const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
@@ -23,9 +24,9 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [formImplement, setFormImplement] = useState({
-    cod: "",
-    status: "",
-    condition: "",
+    prefix: "",
+    status: "available",
+    condition: "new",
     group_implement_id: "",
     categories_id: "",
     amount: "",
@@ -37,48 +38,52 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
   });
 
   useEffect(() => {
+    if (!groupImplementId || isNaN(Number(groupImplementId))) return;
 
-    // Para consultar el grupo de implementos
-    const fetchGroupImplement = async () => {
+    const fetchData = async () => {
+      try {
+        showLoader();
 
-      if (groupImplementId && !isNaN(Number(groupImplementId))) {
-        const response = await GroupImplementService.getGroupImplementById(groupImplementId);
-        setFormGroupImplement({
-          name: String(response.data.name),
-          prefix: String(response.data.prefix),
-        });
+        const [groupResponse, implementResponse] = await Promise.all([
+          GroupImplementService.getGroupImplementById(groupImplementId),
+          GroupImplementService.getGroupImplementById(groupImplementId),
+        ]);
+
+        if(groupImplementId && !isNaN(Number(groupImplementId))){
+
+          setFormGroupImplement({
+            name: String(groupResponse.data.name),
+            prefix: String(groupResponse.data.prefix),
+          });
+  
+          setFormImplement(prev => ({
+            ...prev,
+            prefix: String(groupResponse.data.prefix),
+            group_implement_id: groupImplementId,
+            categories_id: 1
+          }));
+        }
+
+      } catch (error) {
+        console.error("Error cargando datos del grupo o implemento:", error);
+      } finally {
+        hideLoader();
       }
     };
 
-    // Para consultar los implementos por id de grupo
-    const fetchImplement = async () => {
-      if (groupImplementId && !isNaN(Number(groupImplementId))) {
-        const response = await GroupImplementService.getGroupImplementById(groupImplementId);
-        setFormImplement({
-          name: String(response.data.name),
-          max_hours: String(response.data.max_hours),
-          time_limit: String(response.data.time_limit),
-        });
-      }
-    };
-
-    showLoader();
-    // Hacer con un promise.all si se quieren cargar ambos a la vez
-    Promise.all([fetchGroupImplement(), fetchImplement()]).then(() => {
-      hideLoader();
-    });
-
+    fetchData();
   }, [groupImplementId]);
 
+
   const handleChange = (e) => {
-    setFormImplement({ ...form, [e.target.name]: e.target.value });
+    setFormImplement({ ...formImplement, [e.target.name]: e.target.value });
   };
 
   const clearInputs = () => {
     setFormImplement({
-      cod: "",
-      status: "",
-      condition: "",
+      prefix: "",
+      status: "available",
+      condition: "new",
       group_implement_id: "",
       categories_id: "",
       amount: "",
@@ -100,13 +105,17 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
       otherErrors.push({ path: 'condition', message: 'La condición no debe estar vacía' });
     }
 
-    if (!formImplement.group_implement_id || formImplement.group_implement_id.trim() === '' || isNaN(Number(formImplement.group_implement_id))) {
-      otherErrors.push({ path: 'group_implement_id', message: 'El ID del grupo de implementos debe ser un número válido' });
+    if (!formImplement.amount || formImplement.amount.trim() === '' || isNaN(Number(formImplement.amount))) {
+      otherErrors.push({ path: 'amount', message: 'La cantidad debe ser un numero valido' });
     }
+    // if (!formImplement.group_implement_id || formImplement.group_implement_id.trim() === '' || isNaN(Number(formImplement.group_implement_id))) {
+    //   otherErrors.push({ path: 'group_implement_id', message: 'El ID del grupo de implementos debe ser un número válido' });
+    // }
 
-    if (!formImplement.categories_id || formImplement.categories_id.trim() === '' || isNaN(Number(formImplement.categories_id))) {
-      otherErrors.push({ path: 'categories_id', message: 'El ID de la categoría debe ser un número válido' });
-    }
+    // if (!formImplement.categories_id || formImplement.categories_id.trim() === '' || isNaN(Number(formImplement.categories_id))) {
+    //   otherErrors.push({ path: 'categories_id', message: 'El ID de la categoría debe ser un número válido' });
+    // }
+    const { id, extraData, ...cleanForm } = formImplement;
 
     // Validaciones adicionales según sea necesario
     if (otherErrors.length > 0) {
@@ -115,6 +124,7 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
       return;
     }
 
+    console.log(formImplement);
     // Validaciones de respuesta del servidor
     let response;
     // if (id) {
@@ -124,15 +134,15 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
     //   response = await GroupImplementService.postGroupImplement(form);
     // }
 
-    if(!response.success){
-      window.showAlert(response.message, "error")
-      setErrors(response.errors || []);
-      return;
-    }
+    // if(!response.success){
+    //   window.showAlert(response.message, "error")
+    //   setErrors(response.errors || []);
+    //   return;
+    // }
 
-    if(!id) clearInputs();
+    // if(!id) clearInputs();
     
-    window.showAlert(response.message || "Grupo de implementos creado exitosamente", "success");
+    window.showAlert(response?.message || "Grupo de implementos creado exitosamente", "success");
     if(onSaved) onSaved(); // notifica al padre que se guardó
     // onClose(); // cerrar modal después de crear
   };
@@ -152,33 +162,50 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
           style={{
             display: "flex",
             flexDirection: "column",
-            textAlign: "center",
             gap: "10px"
           }}
         >
 
-          <h4>Presentación</h4>
+          {/* <h4>Presentación</h4> */}
           <Card 
             image={NotFoundImage}
             title={formGroupImplement.name}
-            description={formImplement.status}
+            // description={formImplement.status}
           >
+            <Badge
+              value={formImplement.status || "available"}
+              label={formImplement.status || "available"}
+            />
 
+            <div
+              style={{
+                position: "absolute",
+                top: "0",
+                right: "0",
+                marginTop: "-230px",
+                marginRight: "10px"
+              }}
+            >
+              <Badge
+                value={formImplement.condition || "new"}
+                label={formImplement.condition || "new"}
+              />
+
+            </div>
+            <button
+              style={{
+                position: "absolute",
+                marginTop: "-280px",
+                // marginTop: "10px",
+              }}
+              className="btn-tertiary"
+            > 
+              <CloudUp 
+                color="#ffffff"
+              />
+            </button>
           </Card>
 
-          <button
-            style={{
-              position: "absolute",
-              bottom: "0",
-              marginBottom: "10px",
-            }}
-            className="btn-tertiary"
-          > 
-            <CloudUp 
-              color="#ffffff"
-            />
-            Cargar imagen
-          </button>
         </div>
 
         <div
@@ -206,8 +233,8 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
             />
             <InputField
               type="text"
-              label="Cantidad"
-              name="amount"
+              label="Prefijo"
+              name="prefix"
               disabled={true}
               value={formGroupImplement.prefix}
               onChange={handleChange}
@@ -217,7 +244,10 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
 
           
           <h4>Información del instrumento</h4>
-          <ImplementSelectFieldContainer />
+          <ImplementSelectFieldContainer 
+            onStatus={handleChange}
+            errors={errors}
+          />
 
           <InputField
             type="text"

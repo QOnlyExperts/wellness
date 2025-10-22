@@ -1,15 +1,15 @@
 import React from "react";
 import "./SelectField.css";
 
-const SelectField = ({ label, value, options, onChange, name }) => {
+const SelectField = ({ label, value, options, onChange, name, errors }) => {
   return (
     <div className="select-field">
-      {label && <label className="select-label">{label}</label>}
       <div className="select-wrapper">
+        {label && <label className="select-label">{label}</label>}
         <select
           name={name}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={onChange}
           className="select-input"
         >
           {options.map((option) => (
@@ -19,6 +19,12 @@ const SelectField = ({ label, value, options, onChange, name }) => {
           ))}
         </select>
       </div>
+      
+      {Array.isArray(errors) && errors.map((err, i) => (
+        err.path === name ? 
+          <span key={i} style={{ color: 'red', fontSize: '.7rem' }}>{err.message}</span> 
+        : null
+      ))}
     </div>
   );
 };

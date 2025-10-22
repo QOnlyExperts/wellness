@@ -162,12 +162,11 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "10px"
+            gap: "10px",
           }}
         >
-
           {/* <h4>Presentación</h4> */}
-          <Card 
+          <Card
             image={NotFoundImage}
             title={formGroupImplement.name}
             // description={formImplement.status}
@@ -183,14 +182,13 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
                 top: "0",
                 right: "0",
                 marginTop: "-230px",
-                marginRight: "10px"
+                marginRight: "10px",
               }}
             >
               <Badge
                 value={formImplement.condition || "new"}
                 label={formImplement.condition || "new"}
               />
-
             </div>
             <button
               style={{
@@ -199,13 +197,10 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
                 // marginTop: "10px",
               }}
               className="btn-tertiary"
-            > 
-              <CloudUp 
-                color="#ffffff"
-              />
+            >
+              <CloudUp color="#ffffff" />
             </button>
           </Card>
-
         </div>
 
         <div
@@ -214,8 +209,7 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
             flexDirection: "column",
             gap: "10px",
           }}
-          >
-
+        >
           <div
             style={{
               display: "flex",
@@ -242,9 +236,8 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
             />
           </div>
 
-          
           <h4>Información del instrumento</h4>
-          <ImplementSelectFieldContainer 
+          <ImplementSelectFieldContainer
             onStatus={handleChange}
             errors={errors}
           />
@@ -257,20 +250,16 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
             onChange={handleChange}
             errors={errors}
           />
-
-          <div className="modal-actions">
-            <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
-              <SaveIcon />
-            </Button>
-            <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
-              <CancelIcon/>
-            </Button>
-          </div>
-
         </div>
-
       </div>
-
+      <div className="modal-actions">
+        <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
+          <SaveIcon />
+        </Button>
+        <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
+          <CancelIcon />
+        </Button>
+      </div>
     </Modal>
   );
 };

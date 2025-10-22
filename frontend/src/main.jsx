@@ -9,6 +9,8 @@ import { ErrorProvider, useError } from './context/ErrorContext';
 import { setGlobalErrorHandler } from './services/indexService';
 import { BrowserRouter } from 'react-router-dom';
 
+import { LoaderProvider  } from './context/LoaderContext';
+
 const ErrorHandlerConnector = () => {
   const { showError } = useError();
 
@@ -23,14 +25,12 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-      {/* <Provider>
-        <PersistGate loading={null} persistor={persistor}> */}
     <BrowserRouter>
-          <ErrorProvider>
-            <ErrorHandlerConnector />
-          </ErrorProvider>
+      <LoaderProvider>
+        <ErrorProvider>
+          <ErrorHandlerConnector />
+        </ErrorProvider>
+      </LoaderProvider>
     </BrowserRouter>
-        {/* </PersistGate>
-      </Provider> */}
   </React.StrictMode>
 );

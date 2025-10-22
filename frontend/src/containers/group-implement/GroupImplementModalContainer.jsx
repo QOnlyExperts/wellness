@@ -7,9 +7,16 @@ import InputField from "../../components/shared/InputField";
 
 import {hasNoXSSAndInjectionSql, isValidEmail, isValidPhone, onlyLettersRegex} from '../../utils/validations';
 
-
+import { useLoader } from "../../context/LoaderContext";
+import Button from "../../components/shared/Button";
+import SaveIcon from "../../components/icons/SaveIcon";
+import CancelIcon from "../../components/icons/CancelIcon";
+import LoaderIcon from "../../components/icons/LoaderIcon";
 
 const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const { showLoader, hideLoader } = useLoader();
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [form, setForm] = useState({
@@ -21,12 +28,15 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
   useEffect(() => {
     const fetchGroupImplement = async () => {
       if (groupImplementId && !isNaN(Number(groupImplementId))) {
+        showLoader();
         const response = await GroupImplementService.getGroupImplementById(groupImplementId);
+        hideLoader();
         setForm({
           name: String(response.data.name),
           max_hours: String(response.data.max_hours),
           time_limit: String(response.data.time_limit),
         });
+
       }
     };
 
@@ -67,6 +77,7 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
       return;
     }
 
+    setIsLoading(true);
     // Validaciones de respuesta del servidor
     let response;
     if (groupImplementId && !isNaN(groupImplementId)) {
@@ -77,15 +88,17 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
     }
 
     if(!response.success){
-      window.showAlert(response.message, "error")
+      window.showAlert(response.message ? response.message : response?.error.message, "error")
       setErrors(response.errors || []);
       return;
     }
 
-    if(!id) clearInputs();
+    if(!groupImplementId) clearInputs();
     
     window.showAlert(response.message || "Grupo de implementos creado exitosamente", "success");
     if(onSaved) onSaved(); // notifica al padre que se guardó
+
+    setIsLoading(false);
     // onClose(); // cerrar modal después de crear
   };
 
@@ -117,8 +130,12 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
         errors={errors}
       />
       <div className="modal-actions">
-        <button className="btn-primary" onClick={handleSubmit}>Guardar</button>
-        <button className="btn-secondary" onClick={onClose}>Cancelar</button>
+        <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
+          {isLoading ? <LoaderIcon /> : <SaveIcon />}
+        </Button>
+        <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
+          <CancelIcon/>
+        </Button>
       </div>
     </Modal>
   );

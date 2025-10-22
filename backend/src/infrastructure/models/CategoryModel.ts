@@ -41,5 +41,6 @@ CategoryModel.init(
     modelName: "Category",
     tableName: "categories",
     timestamps: false, // Asumiendo que no hay createdAt/updatedAt en tu tabla
+    schema: "mydb",
   }
 );

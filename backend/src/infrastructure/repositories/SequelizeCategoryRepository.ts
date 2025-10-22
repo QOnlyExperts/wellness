@@ -46,18 +46,16 @@ export class SequelizeCategoryRepository implements ICategoryRepository {
     const persistenceData = CategoryMapper.toPersistence(category);
     let savedModel: CategoryModel;
 
-    // Si la entidad ya tiene un ID válido, es una actualización.
     if (category.id && category.id !== 0) {
+     
       await CategoryModel.update(persistenceData, { where: { id: category.id } });
-      // Re-buscamos el modelo para devolver la instancia actualizada.
       savedModel = (await CategoryModel.findByPk(category.id))!;
     } else {
-      // Si no tiene ID, es una creación.
-      // El método `create` de Sequelize devuelve el objeto creado, incluyendo el nuevo ID.
-      savedModel = await CategoryModel.create(persistenceData);
+     
+      const { id, ...dataToCreate } = persistenceData;
+      savedModel = await CategoryModel.create(dataToCreate);
     }
 
-    // Mapeamos el modelo guardado de vuelta a una entidad de dominio para devolverlo.
     return CategoryMapper.toDomain(savedModel.toJSON());
   }
 }

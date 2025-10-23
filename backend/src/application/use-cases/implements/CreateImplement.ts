@@ -9,10 +9,15 @@ import { ImplementInputDto } from "../../dtos/implements/ImplementInputDto";
 import { ImplementOutputDto } from "../../dtos/implements/ImplementOutputDto";
 import { ImplementMapper } from "../../mappers/ImplementMapper";
 
+
+import { IImgRepository } from "../../../domain/interfaces/IImgRepository";
+import { ImgModel } from "../../../infrastructure/models/ImgModel";
+
 export class CreateImplement {
   constructor(
     private implementRepository: IImplementRepository,
-    private counterPort: IImplementCounterPort
+    private counterPort: IImplementCounterPort,
+    private imgRepository: IImgRepository
   ) {}
 
   // Función auxiliar para formatear el número

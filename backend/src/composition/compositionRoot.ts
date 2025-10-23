@@ -56,7 +56,8 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new CreateImplement(
         implementRepository,
-        implementCounterPort
+        implementCounterPort,
+        imgRepository
     );
 }
 

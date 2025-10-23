@@ -9,13 +9,13 @@ export class GetCategoryById {
   public async execute(id: number): Promise<CategoryOutputDto> {
     // 1. Validar la entrada
     if (!id || id <= 0) {
-      throw new ValidationError("Invalid category ID.");
+      throw new ValidationError("El ID de la categoría no es válido.");
     }
 
     // 2. Buscar la entidad
     const categoryEntity = await this.categoryRepository.findById(id);
     if (!categoryEntity) {
-      throw new NotFoundError(`Category with id ${id} not found.`);
+      throw new NotFoundError(`La categoria con el id ${id} no fue encontrada.`);
     }
 
     // 3. Mapear y devolver el DTO

@@ -1,10 +1,10 @@
 export class CategoryEntity {
-  public readonly id: number;
+  public readonly id: number | null; 
   public name: string;
   public description: string | null;
 
   private constructor(props: {
-    id: number;
+    id: number | null;
     name: string;
     description?: string | null;
   }) {
@@ -14,7 +14,7 @@ export class CategoryEntity {
   }
 
   public static create(props: {
-    id: number;
+    id: number | null; 
     name: string;
     description?: string | null;
   }): CategoryEntity {

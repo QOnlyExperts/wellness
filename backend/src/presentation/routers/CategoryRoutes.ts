@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/CategoryController';
 import { Validator } from '../middleware/ValidatorMiddle'; // Importamos el validador
-import { CreateCategorySchema, UpdateCategorySchema } from '../../application/schemas/CategorySchema';
+import { CategorySchema } from '../../application/schemas/CategorySchema';
 
 // Instanciamos el controlador y el validador
 const categoryController = new CategoryController();
@@ -12,7 +12,7 @@ const router = Router();
 // Definimos las rutas para el recurso "categories"
 router.post('/categories', 
   [ // <-- Usamos la sintaxis de arreglo para el middleware
-    validator.validateSchema(CreateCategorySchema) // <-- Usamos el método .validateSchema
+    validator.validateSchema(CategorySchema)
   ], 
   categoryController.create.bind(categoryController)
 );
@@ -29,7 +29,7 @@ router.get('/categories/:id',
 
 router.put('/categories/:id', 
   [
-    validator.validateSchema(UpdateCategorySchema)
+    validator.validateSchema(CategorySchema.partial())
   ], 
   categoryController.update.bind(categoryController)
 );

@@ -3,11 +3,7 @@ import { ICategoryRepository } from "../../../domain/interfaces/ICategoryReposit
 import { CategoryOutputDto } from "../../dtos/category/CategoryOutputDto";
 import { CategoryMapper } from "../../mappers/CategoryMapper";
 import { DuplicateNameError } from "../../../shared/errors/DomainErrors";
-
-export interface CreateCategoryInputDto {
-  name: string;
-  description?: string;
-}
+import { CreateCategoryInputDto } from "../../dtos/category/CategoryInputDto";
 
 export class CreateCategory {
   constructor(private readonly categoryRepository: ICategoryRepository) {}
@@ -21,7 +17,7 @@ export class CreateCategory {
 
     // 2. Si no existe, crear la entidad
     const categoryEntity = CategoryEntity.create({
-      id: 0, // ID temporal
+      id: null,
       name: input.name,
       description: input.description,
     });

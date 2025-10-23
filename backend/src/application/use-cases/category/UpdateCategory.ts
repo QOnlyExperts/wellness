@@ -2,11 +2,7 @@ import { ICategoryRepository } from "../../../domain/interfaces/ICategoryReposit
 import { CategoryOutputDto } from "../../dtos/category/CategoryOutputDto";
 import { CategoryMapper } from "../../mappers/CategoryMapper";
 import { NotFoundError, DuplicateNameError } from "../../../shared/errors/DomainErrors";
-
-export interface UpdateCategoryInputDto {
-  name?: string;
-  description?: string;
-}
+import { UpdateCategoryInputDto } from "../../dtos/category/CategoryInputDto";
 
 export class UpdateCategory {
   constructor(private readonly categoryRepository: ICategoryRepository) {}

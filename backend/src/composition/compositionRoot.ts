@@ -2,12 +2,13 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
 import { ICategoryRepository } from '../domain/interfaces/ICategoryRepository';
 import { IImplementCounterPort } from '../application/ports/IImplementCounterPort';
+import { IImgRepository } from '../domain/interfaces/IImgRepository';
 import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/SequelizeImplementCounterAdapter';
 
 
@@ -21,6 +22,9 @@ import { GetGroupImplementBySearch } from '../application/use-cases/group-implem
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
+import { GetImplementByIdGroup } from '../application/use-cases/implements/GetImplementByIdGroup';
+
+import { SequelizeImgRepository } from '../infrastructure/repositories/SequelizeImgRepository';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
 
 import { SequelizeCategoryRepository } from '../infrastructure/repositories/SequelizeCategoryRepository';
@@ -36,6 +40,7 @@ export const IImplementRepositorySymbol = Symbol.for('IImplementRepository');
 export const Dependencies = {
     // Usamos el string 'IImplementRepository' como la clave
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
+    [IImgRepositoryToken]: new SequelizeImgRepository(),
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
     [IGroupImplementRepositoryToken]: new SequelizeGroupImplementRepository(),
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
@@ -46,6 +51,7 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     // Obtenemos la implementación usando el mismo token string
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
+    const imgRepository = Dependencies[IImgRepositoryToken] as IImgRepository;
 
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new CreateImplement(
@@ -62,6 +68,16 @@ export function resolveGetImplementsUseCase(): GetImplements {
     return new GetImplements(implementRepository);
 }
 
+
+export function resolveGetImplementByIdGroup(): GetImplementByIdGroup {
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+
+    return new GetImplementByIdGroup(
+        groupImplementRepository,
+        implementRepository
+    );
+}
 
 export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
     // Obtenemos la implementación usando el mismo token string

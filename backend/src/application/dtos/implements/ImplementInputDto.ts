@@ -1,5 +1,6 @@
 import { ImplementCondition } from "../../../domain/enums/ImplementCondition";
 import { ImplementStatus } from "../../../domain/enums/ImplementStatus";
+import { ImgEntity } from "../../../domain/entities/ImgEntity";
 
 export interface ImplementInputDto {
 
@@ -8,4 +9,5 @@ export interface ImplementInputDto {
   condition: ImplementCondition;
   group_implement_id: number;
   categories_id: number;
+  img: ImgEntity
 }

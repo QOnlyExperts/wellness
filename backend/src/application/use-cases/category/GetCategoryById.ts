@@ -15,7 +15,7 @@ export class GetCategoryById {
     // 2. Buscar la entidad
     const categoryEntity = await this.categoryRepository.findById(id);
     if (!categoryEntity) {
-      throw new NotFoundError(`La categoria con el id ${id} no fue encontrada.`);
+      throw new NotFoundError(`La categoria no fue encontrada.`);
     }
 
     // 3. Mapear y devolver el DTO

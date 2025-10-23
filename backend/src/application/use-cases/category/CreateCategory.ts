@@ -3,7 +3,7 @@ import { ICategoryRepository } from "../../../domain/interfaces/ICategoryReposit
 import { CategoryOutputDto } from "../../dtos/category/CategoryOutputDto";
 import { CategoryMapper } from "../../mappers/CategoryMapper";
 import { DuplicateNameError } from "../../../shared/errors/DomainErrors";
-import { CreateCategoryInputDto } from "../../dtos/category/CategoryInputDto";
+import { CreateCategoryInputDto } from "../../dtos/category/CreateCategoryInputDto";
 
 export class CreateCategory {
   constructor(private readonly categoryRepository: ICategoryRepository) {}

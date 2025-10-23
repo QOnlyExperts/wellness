@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { UploadedFile } from "express-fileupload";
 
-export class ImageService {
+export class ImgService {
   /**
    * Guarda una o varias imágenes en el servidor usando UUIDs generados por la BD.
    * @param files Archivo o lista de archivos recibidos desde la petición.

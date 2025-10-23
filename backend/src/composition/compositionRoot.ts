@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -32,6 +32,7 @@ import { CreateCategory } from '../application/use-cases/category/CreateCategory
 import { GetCategories } from '../application/use-cases/category/GetCategories';
 import { UpdateCategory } from '../application/use-cases/category/UpdateCategory';
 import { GetCategoryById } from '../application/use-cases/category/GetCategoryById';
+import { ImgService } from '../application/services/ImgService';
 
 // Se crea un Symbol para la inyección
 export const IImplementRepositorySymbol = Symbol.for('IImplementRepository');
@@ -44,6 +45,7 @@ export const Dependencies = {
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
     [IGroupImplementRepositoryToken]: new SequelizeGroupImplementRepository(),
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
+    [ImgServiceToken]: new ImgService()
 };
 
 // 2. FUNCIÓN DE RESOLUCIÓN
@@ -52,12 +54,14 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
     const imgRepository = Dependencies[IImgRepositoryToken] as IImgRepository;
+    const imgService = Dependencies[ImgServiceToken] as ImgService;
 
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new CreateImplement(
         implementRepository,
         implementCounterPort,
-        imgRepository
+        imgRepository,
+        imgService
     );
 }
 

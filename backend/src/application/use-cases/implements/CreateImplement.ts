@@ -12,12 +12,14 @@ import { ImplementMapper } from "../../mappers/ImplementMapper";
 
 import { IImgRepository } from "../../../domain/interfaces/IImgRepository";
 import { ImgModel } from "../../../infrastructure/models/ImgModel";
+import { ImgService } from "../../services/ImgService";
 
 export class CreateImplement {
   constructor(
     private implementRepository: IImplementRepository,
     private counterPort: IImplementCounterPort,
-    private imgRepository: IImgRepository
+    private imgRepository: IImgRepository,
+    private imgService: ImgService
   ) {}
 
   // Función auxiliar para formatear el número

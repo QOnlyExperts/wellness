@@ -96,6 +96,8 @@ CREATE TABLE categories (
   description TEXT
 );
 
+
+
 CREATE TABLE implements (
   id SERIAL PRIMARY KEY,
   cod VARCHAR(45) NOT NULL,
@@ -103,6 +105,21 @@ CREATE TABLE implements (
   condition condition_enum NOT NULL,
   group_implement_id INT NOT NULL REFERENCES group_implements(id),
   categories_id INT NOT NULL REFERENCES categories(id)
+);
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto"; -- para usar gen_random_uuid()
+
+CREATE TABLE imgs (
+  id SERIAL PRIMARY KEY,                      -- identificador interno
+  file_name UUID NOT NULL DEFAULT gen_random_uuid(), -- nombre único automático
+  file_path TEXT NOT NULL,                    -- ruta donde se guarda el archivo
+  mime_type VARCHAR(50) NOT NULL,
+  size_bytes BIGINT,
+  description TEXT,
+  implement_id INT REFERENCES implements(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  uploaded_by INT REFERENCES logins(id)
 );
 
 CREATE TABLE requests (

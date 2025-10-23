@@ -2,11 +2,12 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IGroupImplementRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IGroupImplementRepositoryToken, IImgRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
 import { IImplementCounterPort } from '../application/ports/IImplementCounterPort';
+import { IImgRepository } from '../domain/interfaces/IImgRepository';
 import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/SequelizeImplementCounterAdapter';
 
 
@@ -21,6 +22,8 @@ import { SequelizeImplementRepository } from '../infrastructure/repositories/Seq
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
 import { GetImplementByIdGroup } from '../application/use-cases/implements/GetImplementByIdGroup';
+
+import { SequelizeImgRepository } from '../infrastructure/repositories/SequelizeImgRepository';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
 
 // Se crea un Symbol para la inyección
@@ -32,6 +35,7 @@ export const Dependencies = {
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
     [IGroupImplementRepositoryToken]: new SequelizeGroupImplementRepository(),
+    [IImgRepositoryToken]: new SequelizeImgRepository()
 };
 
 // 2. FUNCIÓN DE RESOLUCIÓN
@@ -39,6 +43,7 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     // Obtenemos la implementación usando el mismo token string
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
+    const imgRepository = Dependencies[IImgRepositoryToken] as IImgRepository;
 
     // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
     return new CreateImplement(

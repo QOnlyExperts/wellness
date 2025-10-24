@@ -16,7 +16,8 @@ export class ImgService {
     uuids: string[] | string,
     folder = "uploads"
   ): Promise<string[]> {
-    const baseDir = path.join(__dirname, "..", "public", folder);
+    const baseDir = path.join(process.cwd(), "public", folder);
+
     const imagePaths: string[] = [];
 
     if (!fs.existsSync(baseDir)) {

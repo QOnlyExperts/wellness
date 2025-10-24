@@ -9,7 +9,7 @@ export interface ImgAttributes {
   mime_type: string;
   size_bytes?: number;
   description?: string;
-  instrument_id?: number;
+  implement_id?: number;
   uploaded_by?: number;
   created_at?: Date;
   updated_at?: Date;
@@ -25,7 +25,7 @@ export class ImgModel extends Model<ImgAttributes, ImgCreationAttributes> implem
   public mime_type!: string;
   public size_bytes?: number;
   public description?: string;
-  public instrument_id?: number;
+  public implement_id?: number;
   public uploaded_by?: number;
   public created_at?: Date;
   public updated_at?: Date;
@@ -43,7 +43,7 @@ ImgModel.init(
     mime_type: { type: DataTypes.STRING(50), allowNull: false },
     size_bytes: { type: DataTypes.BIGINT, allowNull: true },
     description: { type: DataTypes.TEXT, allowNull: true },
-    instrument_id: { type: DataTypes.INTEGER, allowNull: true },
+    implement_id: { type: DataTypes.INTEGER, allowNull: true },
     uploaded_by: { type: DataTypes.INTEGER, allowNull: true },
     created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },

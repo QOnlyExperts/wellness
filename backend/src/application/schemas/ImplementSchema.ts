@@ -31,9 +31,9 @@ export const CreateImplementInputDtoSchema = z.object({
     .positive("El categories_id debe ser un número positivo mayor que 0"),
 
   user_id: z.coerce
-    .number("El categories_id debe ser un número")
-    .int("El categories_id debe ser un número entero")
-    .positive("El categories_id debe ser un número positivo mayor que 0"),
+    .number("El user_id debe ser un número")
+    .int("El user_id debe ser un número entero")
+    .positive("El user_id debe ser un número positivo mayor que 0"),
 });
 
 // 3. (Opcional pero recomendado) Infiere el tipo de TypeScript a partir del Schema.

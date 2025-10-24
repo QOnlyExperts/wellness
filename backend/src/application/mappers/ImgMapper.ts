@@ -11,7 +11,7 @@ export class ImgMapper {
       mime_type: entity.mime_type ?? "",
       size_bytes: entity.size_bytes,
       description: entity.description,
-      instrument_id: entity.instrument_id ?? null,
+      implement_id: entity.implement_id ?? null,
       uploaded_by: entity.uploaded_by ?? null,
       created_at: entity.created_at,
       updated_at: entity.updated_at
@@ -26,7 +26,7 @@ export class ImgMapper {
       mime_type: data.mime_type,
       size_bytes: data.size_bytes,
       description: data.description,
-      instrument_id: data.instrument_id,
+      implement_id: data.implement_id,
       uploaded_by: data.uploaded_by,
       created_at: data.created_at,
       updated_at: data.updated_at
@@ -41,7 +41,7 @@ export class ImgMapper {
       mime_type: entity.mime_type ?? "",
       size_bytes: entity.size_bytes,
       description: entity.description,
-      instrument_id: entity.instrument_id ?? null,
+      implement_id: entity.implement_id ?? null,
       uploaded_by: entity.uploaded_by ?? null,
       created_at: entity.created_at,
       updated_at: entity.updated_at

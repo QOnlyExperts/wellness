@@ -4,14 +4,14 @@ const ImplementService = {
   postImplement: (data) => {
     return service('/implement', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: data
     });
   },
   getImplements: () => {
     return service('/implements');
   },
   getImplementsByIdGroup: (id) => {
-    return service(`/implements/${id}`);
+    return service(`/implements/group-implement/${id}`);
   },
 }
 

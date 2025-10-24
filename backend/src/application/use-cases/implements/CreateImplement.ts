@@ -11,8 +11,9 @@ import { ImplementMapper } from "../../mappers/ImplementMapper";
 
 
 import { IImgRepository } from "../../../domain/interfaces/IImgRepository";
-import { ImgModel } from "../../../infrastructure/models/ImgModel";
 import { ImgService } from "../../services/ImgService";
+import { ImgEntity } from "../../../domain/entities/ImgEntity";
+import { UploadedFile } from "express-fileupload";
 
 export class CreateImplement {
   constructor(
@@ -30,12 +31,14 @@ export class CreateImplement {
   }
 
   public async execute(
-    input: ImplementInputDto
+    input: ImplementInputDto,
+    files: UploadedFile[],
+    folder: string
   ): Promise<ImplementOutputDto> {
     // Obtener el siguiente numero consecutivo
     const nextNumber = await this.counterPort.getNextNumber(input.prefix);
     if (nextNumber == null || isNaN(nextNumber)) {
-      throw new Error("Invalid counter value");
+      throw new Error("Valor del contador invalido");
     }
     // Generamos el código final prefix + numero
     const finalCod = this.formatCode(input.prefix, nextNumber);
@@ -53,6 +56,36 @@ export class CreateImplement {
 
     // Guardamos la entidad en base de datos
     const createdImplement = await this.implementRepository.save(newImplement);
+
+    // Tomamos los datos de array de img
+    const img = input.imgs?.[0];
+    
+    if (!img) {
+      throw new Error("No se proporcionó una imagen para el implemento");
+    }
+
+    // Creamos la entidad de la imagen
+    const newImg = ImgEntity.create({
+      id: null,
+      file_path: folder,
+      mime_type: img.mime_type,
+      size_bytes: img.size_bytes,
+      description: img.description,
+      implement_id: createdImplement.id, // Id del implemento
+      uploaded_by: input.user_id, // Id del usuario
+    });
+
+    // Guardamos la imagen en la base de datos
+    const createdImg = await this.imgRepository.save(newImg);
+    if(!createdImg){
+      throw new Error("No se pudo guardar la imagen");
+    }
+
+    // Guardamos en el servidor y pasamos el nombre de la imagen guardada para la relación
+    const imgUploaded = await this.imgService.saveImages(files, [String(createdImg.file_name)], folder);
+    if(!imgUploaded || imgUploaded.length === 0){
+      throw new Error("No se pudo almacenar la imagen");
+    }
 
     // Mapeamos el modelo guardado a un DTO de salida
     return ImplementMapper.toOutputDto(createdImplement);

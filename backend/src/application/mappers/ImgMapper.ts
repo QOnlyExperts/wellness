@@ -6,13 +6,13 @@ export class ImgMapper {
   public static toOutputDto(entity: ImgEntity): ImgOutputDto {
     return{
       id: entity.id,
-      file_name: entity.file_name,
-      file_path: entity.file_path,
-      mime_type: entity.mime_type,
+      file_name: entity.file_name ?? "",
+      file_path: entity.file_path ?? "",
+      mime_type: entity.mime_type ?? "",
       size_bytes: entity.size_bytes,
       description: entity.description,
-      instrument_id: entity.instrument_id,
-      uploaded_by: entity.uploaded_by,
+      instrument_id: entity.instrument_id ?? null,
+      uploaded_by: entity.uploaded_by ?? null,
       created_at: entity.created_at,
       updated_at: entity.updated_at
     }
@@ -36,13 +36,13 @@ export class ImgMapper {
   public static toPersistence(entity: ImgEntity): any {
     return{
       id: entity.id,
-      file_name: entity.file_name,
-      file_path: entity.file_path,
-      mime_type: entity.mime_type,
+      file_name: entity.file_name ?? "",
+      file_path: entity.file_path ?? "",
+      mime_type: entity.mime_type ?? "",
       size_bytes: entity.size_bytes,
       description: entity.description,
-      instrument_id: entity.instrument_id,
-      uploaded_by: entity.uploaded_by,
+      instrument_id: entity.instrument_id ?? null,
+      uploaded_by: entity.uploaded_by ?? null,
       created_at: entity.created_at,
       updated_at: entity.updated_at
     }

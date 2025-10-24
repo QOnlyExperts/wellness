@@ -6,8 +6,8 @@ export interface ImgOutputDto {
   mime_type: string;
   size_bytes?: number;
   description?: string;
-  instrument_id: number;
-  uploaded_by: number;
+  instrument_id: number | null;
+  uploaded_by: number | null;
   created_at?: Date;
   updated_at?: Date;
 }

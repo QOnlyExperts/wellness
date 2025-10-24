@@ -36,7 +36,6 @@ export class ImgMapper {
   public static toPersistence(entity: ImgEntity): any {
     return{
       id: entity.id,
-      file_name: entity.file_name ?? "",
       file_path: entity.file_path ?? "",
       mime_type: entity.mime_type ?? "",
       size_bytes: entity.size_bytes,

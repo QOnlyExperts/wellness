@@ -7,8 +7,10 @@ import { resolveCreateImplementUseCase, resolveGetImplementsUseCase, resolveGetI
 import { ImplementInputDto } from "../../application/dtos/implements/ImplementInputDto";
 import { GetImplements } from "../../application/use-cases/implements/GetImplements";
 import { idSchema } from "../../application/schemas/IdSchema";
-import z from "zod";
+import z, { success } from "zod";
 import { GetImplementByIdGroup } from "../../application/use-cases/implements/GetImplementByIdGroup";
+import { UploadedFile } from "express-fileupload";
+import { ImgInputDto } from "../../application/dtos/img-file/ImgInputDto";
 
 export class ImplementController {
   // Declara una propiedad para el caso de uso
@@ -27,22 +29,40 @@ export class ImplementController {
   public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Extraemos los datos del cuerpo de la solicitud
-      const { prefix, status, condition, group_implement_id, categories_id } = req.body;
+      const { prefix, status, condition, group_implement_id, categories_id, user_id } = req.body;
+      const folder = "uploads/implement";
+      const files = req.files?.imgs as UploadedFile | UploadedFile[];
+
+      // Convertir a array siempre
+      const filesArray = Array.isArray(files) ? files:[files];
       
-      console.log("Received prefix:", prefix );
+      // Pasamos los datos del array al dto respectivo
+      const inputImg: ImgInputDto[] = [{
+        file_path: `${folder}`,
+        mime_type: filesArray[0].mimetype,
+        size_bytes: filesArray[0].size,
+        uploaded_by: user_id,
+        description: filesArray[0].name,
+      }]
       // Validar y traducir el cuerpo de la petición a un DTO de entrada
       const inputDto: ImplementInputDto = {
         prefix: prefix,
         status: status,
         condition: condition,
         group_implement_id: group_implement_id,
-        categories_id: categories_id
+        categories_id: categories_id,
+        user_id: user_id,
+        imgs: inputImg
       };
       // Ejecutar el caso de uso con el DTO actualizado
-      const newImplement = await this.createImplementUseCase.execute(inputDto);
+      const newImplement = await this.createImplementUseCase.execute(inputDto, filesArray, folder);
 
       // Devuelve la respuesta al cliente
-      return res.status(201).json(newImplement);
+      return res.status(201).json({
+        success: true,
+        message: "Implemento creado correctamente",
+        data: newImplement
+      });
     } catch (error) {
       next(error);
     }
@@ -82,7 +102,7 @@ export class ImplementController {
       
       return res.status(200).json({
         success: true,
-        message: "Implementos obtenido exitosamente.",
+        message: "Implementos obtenido exitosamente",
         data: implement
       });
 

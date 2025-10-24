@@ -1,6 +1,7 @@
 // domain/entities/ImplementEntity.ts
 import { ImplementStatus } from "../enums/ImplementStatus";
 import { ImplementCondition } from "../enums/ImplementCondition";
+import { ImgEntity } from "./ImgEntity";
 
 export class ImplementEntity {
   public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
@@ -9,14 +10,16 @@ export class ImplementEntity {
   public condition: ImplementCondition;
   public group_implement_id: number;
   public categories_id: number;
+  public imgs?: ImgEntity[]; // 👈 Relación con imágenes
 
   constructor(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
-    cod: string,
-    status: ImplementStatus,
-    condition: ImplementCondition,
-    group_implement_id: number,
-    categories_id: number
+    cod: string;
+    status: ImplementStatus;
+    condition: ImplementCondition;
+    group_implement_id: number;
+    categories_id: number;
+    imgs?: ImgEntity[] // 👈 opcional
   }) {
     this.id = props.id;
     this.cod = props.cod;
@@ -24,6 +27,7 @@ export class ImplementEntity {
     this.condition = props.condition;
     this.group_implement_id = props.group_implement_id;
     this.categories_id = props.categories_id;
+    this.imgs = props.imgs;
   }
 
   static create(props: {
@@ -33,6 +37,7 @@ export class ImplementEntity {
     condition: ImplementCondition,
     group_implement_id: number,
     categories_id: number
+    imgs?: ImgEntity[];
 
   }): ImplementEntity {
     // Por aquí debo crear el código automáticamente
@@ -43,7 +48,8 @@ export class ImplementEntity {
       status: props.status,
       condition: props.condition,
       group_implement_id: props.group_implement_id,
-      categories_id: props.categories_id
+      categories_id: props.categories_id,
+      imgs: props.imgs
     });
   }
 

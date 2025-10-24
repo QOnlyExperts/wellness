@@ -1,6 +1,6 @@
 import { IImplementRepository } from "../../domain/interfaces/IImplementRepository";
 import { ImplementEntity } from "../../domain/entities/ImplementEntity";
-import { ImplementModel } from "../models/ImplementModel";
+import { ImplementModel } from "../models/indexModel";
 import e from "express";
 import { ImplementMapper } from "../../application/mappers/ImplementMapper";
 

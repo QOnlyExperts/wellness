@@ -51,7 +51,7 @@ ImgModel.init(
   {
     sequelize,
     modelName: "Img",
-    tableName: "img",
+    tableName: "imgs",
     schema: "mydb",
     timestamps: true, // para manejar created_at y updated_at
     createdAt: "created_at",

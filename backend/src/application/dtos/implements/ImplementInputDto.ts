@@ -9,5 +9,6 @@ export interface ImplementInputDto {
   condition: ImplementCondition;
   group_implement_id: number;
   categories_id: number;
+  user_id: number;
   imgs?: ImgInputDto[]; // o img si solo es una
 }

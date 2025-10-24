@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useLoader } from "../../context/LoaderContext";
 
 import AlertContainer from "../shared/AlertContainer";
 import Modal from "../../components/shared/Modal";
 import GroupImplementService from "../../services/GroupImplementService";
+import ImplementService from "../../services/ImplementService";
 import InputField from "../../components/shared/InputField";
 
 import {hasNoXSSAndInjectionSql, isValidEmail, isValidPhone, onlyLettersRegex} from '../../utils/validations';
@@ -19,7 +20,7 @@ import CancelIcon from "../../components/icons/CancelIcon";
 import Badge from "../../components/shared/Badge";
 
 
-const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
+const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSaved }) => {
   const { showLoader, hideLoader } = useLoader();
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
@@ -30,7 +31,11 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
     group_implement_id: "",
     categories_id: "",
     amount: "",
+    imgs: []
   });
+  
+  const [images, setImages] = useState([]);
+  const fileInputRef = useRef(null);
 
   const [formGroupImplement, setFormGroupImplement] = useState({
     name: "",
@@ -75,8 +80,40 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
   }, [groupImplementId]);
 
 
+  const handleClickFile = () => {
+    fileInputRef.current.click(); // Abre el diálogo manualmente
+  };
+
   const handleChange = (e) => {
     setFormImplement({ ...formImplement, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+
+    if (!files || files.length === 0) return;
+
+    // Guardar los archivos reales en el form (por si luego los envías a la API)
+    setFormImplement((prev) => ({
+      ...prev,
+      imgs: [...files],
+    }));
+
+    const newImages = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const src = e.target.result;
+        newImages.push({ src });
+        // Actualiza las previews sin perder las anteriores
+        setImages((prev) => [...prev, ...newImages]);
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const clearInputs = () => {
@@ -87,7 +124,11 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
       group_implement_id: "",
       categories_id: "",
       amount: "",
+      imgs: []
     });
+    
+    setImages([]);
+    setErrors([]);
   };
 
   const handleSubmit = async () => {
@@ -115,7 +156,7 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
     // if (!formImplement.categories_id || formImplement.categories_id.trim() === '' || isNaN(Number(formImplement.categories_id))) {
     //   otherErrors.push({ path: 'categories_id', message: 'El ID de la categoría debe ser un número válido' });
     // }
-    const { id, extraData, ...cleanForm } = formImplement;
+    // const { id, extraData, ...cleanForm } = formImplement;
 
     // Validaciones adicionales según sea necesario
     if (otherErrors.length > 0) {
@@ -123,27 +164,44 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
       setErrors(otherErrors);
       return;
     }
+    
+    const formData = new FormData();
 
-    console.log(formImplement);
+    formData.append('prefix', formImplement.prefix);
+    formData.append('status', formImplement.status);
+    formData.append('condition', formImplement.condition);
+    formData.append('group_implement_id', formImplement.group_implement_id);
+    formData.append('categories_id', formImplement.categories_id);
+    formData.append('user_id', 1);
+    formData.append('amount', formImplement.amount);
+
+    const file =formImplement.imgs
+    if(file.length > 0){
+      for (let i = 0; i < file.length; i++) {
+        formData.append('imgs', file[i]);
+      }
+    }
+
     // Validaciones de respuesta del servidor
     let response;
-    // if (id) {
-    //   // Lógica para actualizar un grupo de implementos existente
-    //   response = await GroupImplementService.updateGroupImplement(id, form);
-    // }else{
-    //   response = await GroupImplementService.postGroupImplement(form);
-    // }
+    if (implementId) {
+      // Lógica para actualizar un grupo de implementos existente
+      response = await ImplementService.updateGroupImplement(implementId, formImplement);
+    }else{
+      response = await ImplementService.postImplement(formData);
+    }
 
-    // if(!response.success){
-    //   window.showAlert(response.message, "error")
-    //   setErrors(response.errors || []);
-    //   return;
-    // }
+    if(!response.success){
+      window.showAlert(response.message, "error")
+      setErrors(response.errors || []);
+      return;
+    }
 
     // if(!id) clearInputs();
+    clearInputs()
     
-    window.showAlert(response?.message || "Grupo de implementos creado exitosamente", "success");
-    if(onSaved) onSaved(); // notifica al padre que se guardó
+    window.showAlert(response?.message || "Implemento creado exitosamente", "success");
+    // if(onSaved) onSaved(); // notifica al padre que se guardó
     // onClose(); // cerrar modal después de crear
   };
 
@@ -167,7 +225,7 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
         >
           {/* <h4>Presentación</h4> */}
           <Card
-            image={NotFoundImage}
+            image={images && images.length > 0 ? images[0].src : NotFoundImage}
             title={formGroupImplement.name}
             // description={formImplement.status}
           >
@@ -190,6 +248,15 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
                 label={formImplement.condition || "new"}
               />
             </div>
+            <InputField
+              style={{ display: "none" }}
+              ref={fileInputRef}
+              id="imgs"
+              type="file"
+              Label="Foto"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
             <button
               style={{
                 position: "absolute",
@@ -197,8 +264,12 @@ const ImplementCreateContainer = ({ groupImplementId, onClose, onSaved }) => {
                 // marginTop: "10px",
               }}
               className="btn-tertiary"
+              onClick={handleClickFile}
             >
-              <CloudUp color="#ffffff" />
+
+              <CloudUp 
+                color="#ffffff" 
+              />
             </button>
           </Card>
         </div>

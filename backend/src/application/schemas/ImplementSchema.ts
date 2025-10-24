@@ -19,16 +19,21 @@ export const CreateImplementInputDtoSchema = z.object({
   // 'condition' usa el enum de Zod
   condition: ImplementConditionSchema,
   // 'group_implement_id' es un número entero positivo
-  group_implement_id: z.number()
-  // .min(1, "El ID de grupo debe ser un número entero positivo")
-  .int("Debe ser un número entero")
-  .positive("Debe ser un número positivo"),
+  group_implement_id: z.coerce
+    .number("El group_implement_id debe ser un número")
+    .int("El group_implement_id debe ser un número entero")
+    .positive("El group_implement_id debe ser un número positivo mayor que 0"),
 
   // 'categories_id' es un número entero positivo
-  categories_id: z.number()
-  // .min(1, "El ID de categoría debe ser un número entero positivo")
-  .int("Debe ser un número entero")
-  .positive("Debe ser un número positivo"),
+  categories_id: z.coerce
+    .number("El categories_id debe ser un número")
+    .int("El categories_id debe ser un número entero")
+    .positive("El categories_id debe ser un número positivo mayor que 0"),
+
+  user_id: z.coerce
+    .number("El categories_id debe ser un número")
+    .int("El categories_id debe ser un número entero")
+    .positive("El categories_id debe ser un número positivo mayor que 0"),
 });
 
 // 3. (Opcional pero recomendado) Infiere el tipo de TypeScript a partir del Schema.

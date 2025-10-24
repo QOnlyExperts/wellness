@@ -1,26 +1,26 @@
 
 export class ImgEntity {
   public readonly id: number | null;
-  public file_name: string;
+  public file_name?: string;
   public file_path: string;
   public mime_type: string;
   public size_bytes?: number;
   public description?: string;
-  public instrument_id: number;
-  public uploaded_by: number;
+  public instrument_id: number | null;
+  public uploaded_by: number | null;
   public created_at?: Date;
   public updated_at?: Date;
 
 
   constructor(props: {
     id: number | null,
-    file_name: string,
+    file_name?: string,
     file_path: string,
     mime_type: string,
     size_bytes?: number,
     description?: string,
-    instrument_id: number,
-    uploaded_by: number,
+    instrument_id: number | null,
+    uploaded_by: number | null,
     created_at?: Date,
     updated_at?: Date
   }) {
@@ -38,13 +38,13 @@ export class ImgEntity {
 
   static create(props: {
     id: number | null,
-    file_name: string,
+    file_name?: string,
     file_path: string,
     mime_type: string,
     size_bytes?: number,
     description?: string,
-    instrument_id: number,
-    uploaded_by: number,
+    instrument_id: number | null,
+    uploaded_by: number | null,
     created_at?: Date,
     updated_at?: Date
 

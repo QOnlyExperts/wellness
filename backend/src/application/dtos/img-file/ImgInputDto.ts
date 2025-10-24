@@ -1,5 +1,5 @@
 export interface ImgInputDto {
-  file_name: string;
+  file_name?: string;
   file_path: string;
   mime_type: string;
   size_bytes?: number;

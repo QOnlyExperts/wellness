@@ -54,7 +54,7 @@ export function resolveCreateImplementUseCase(): CreateImplement {
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
     return new CreateImplement(implementRepository, implementCounterPort);
-}
+    }
 export function resolveGetImplementsUseCase(): GetImplements {
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     return new GetImplements(implementRepository);

@@ -3,7 +3,7 @@ import "./LoaderIcon.css"
 const LoaderIcon = () => {
 
   return(
-    <span class="loader"></span>
+    <span className="loader-icon"></span>
   )
 }
 

@@ -25,12 +25,12 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [formImplement, setFormImplement] = useState({
-    prefix: "",
+    prefix: null,
     status: "available",
     condition: "new",
-    group_implement_id: "",
-    categories_id: "",
-    amount: "",
+    group_implement_id: null,
+    categories_id: null,
+    amount: 0,
     imgs: []
   });
   
@@ -118,12 +118,12 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
 
   const clearInputs = () => {
     setFormImplement({
-      prefix: "",
+      prefix: null,
       status: "available",
       condition: "new",
-      group_implement_id: "",
-      categories_id: "",
-      amount: "",
+      group_implement_id: null,
+      categories_id: null,
+      amount: 0,
       imgs: []
     });
     

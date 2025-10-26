@@ -1,20 +1,18 @@
-import {
-  IImplementRepositoryToken,
-  IImplementCounterPortToken,
-  IGroupImplementRepositoryToken,
-  ICategoryRepositoryToken,
-  IRoleRepositoryToken 
-} from './injectionTokens';
+// -- src/composition/compositionRoot.ts --
+
+// Importaciones del NÚCLEO (Interfaces, Casos de Uso)
+// Symbols para inyección
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
 import { ICategoryRepository } from '../domain/interfaces/ICategoryRepository';
 import { IRoleRepository } from '../domain/interfaces/IRoleRepository';
 import { IImplementCounterPort } from '../application/ports/IImplementCounterPort';
+import { IImgRepository } from '../domain/interfaces/IImgRepository';
 import { SequelizeImplementCounterAdapter } from '../infrastructure/adapters/SequelizeImplementCounterAdapter';
 import { SequelizeGroupImplementRepository } from '../infrastructure/repositories/SequelizeGroupImplementRepository';
 import { SequelizeImplementRepository } from '../infrastructure/repositories/SequelizeImplementRepository';
-import { SequelizeCategoryRepository } from '../infrastructure/repositories/SequelizeCategoryRepository';
 import { SequelizeRoleRepository } from '../infrastructure/repositories/SequelizeRoleRepository'; // <-- Importa el repo
 
 // Importaciones de Casos de Uso (GroupImplement)
@@ -26,25 +24,33 @@ import { GetGroupImplementBySearch } from '../application/use-cases/group-implem
 // Importaciones de Casos de Uso (Implement)
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
-// Importaciones de Casos de Uso (Category)
+import { GetImplementByIdGroup } from '../application/use-cases/implements/GetImplementByIdGroup';
+
+import { SequelizeImgRepository } from '../infrastructure/repositories/SequelizeImgRepository';
+// import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
+
+import { SequelizeCategoryRepository } from '../infrastructure/repositories/SequelizeCategoryRepository';
 import { CreateCategory } from '../application/use-cases/category/CreateCategory';
 import { GetCategories } from '../application/use-cases/category/GetCategories';
 import { UpdateCategory } from '../application/use-cases/category/UpdateCategory';
 import { GetCategoryById } from '../application/use-cases/category/GetCategoryById';
+import { ImgService } from '../application/services/ImgService';
+
 // Importaciones de Casos de Uso (Role)
 import { CreateRole } from "../application/use-cases/roles/CreateRole";
 import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
 
-
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies = {
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
+    [IImgRepositoryToken]: new SequelizeImgRepository(),
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
     [IGroupImplementRepositoryToken]: new SequelizeGroupImplementRepository(),
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
-    [IRoleRepositoryToken]: new SequelizeRoleRepository(), // <-- Usa el Symbol como clave
+    [ImgServiceToken]: new ImgService(),
+    [IRoleRepositoryToken]: new SequelizeRoleRepository(),
 };
 
 // --- RESOLVERS ---
@@ -53,14 +59,34 @@ export const Dependencies = {
 export function resolveCreateImplementUseCase(): CreateImplement {
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     const implementCounterPort = Dependencies[IImplementCounterPortToken] as IImplementCounterPort;
-    return new CreateImplement(implementRepository, implementCounterPort);
-    }
+    const imgRepository = Dependencies[IImgRepositoryToken] as IImgRepository;
+    const imgService = Dependencies[ImgServiceToken] as ImgService;
+
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new CreateImplement(
+        implementRepository,
+        implementCounterPort,
+        imgRepository,
+        imgService
+    );
+}
+
 export function resolveGetImplementsUseCase(): GetImplements {
     const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
     return new GetImplements(implementRepository);
 }
 
-// GroupImplement Resolvers
+
+export function resolveGetImplementByIdGroup(): GetImplementByIdGroup {
+    const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+
+    return new GetImplementByIdGroup(
+        groupImplementRepository,
+        implementRepository
+    );
+}
+
 export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
     return new CreateGroupImplement(groupImplementRepository);

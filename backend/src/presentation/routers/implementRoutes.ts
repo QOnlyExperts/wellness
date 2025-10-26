@@ -18,6 +18,8 @@ router.post('/implements', [
 
 router.get('/implements', implementController.getAll.bind(implementController));
 
+router.get('/implements/group-implement/:id', implementController.getImplementsByIdGroup.bind(implementController));
+
 // Notas sobre .bind(implementController):
 // Esto asegura que, cuando Express llame a implementController.create, 
 // 'this' dentro de la función 'create' siga refiriéndose a la instancia del controlador.

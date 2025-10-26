@@ -2,7 +2,7 @@
 backend/node_modules
 backend/public/config
 backend/public/scripts
-backend/public/uploads
+backend/public/uploads/implement/
 # Frontend
 frontend/node_modules
 

@@ -10,6 +10,11 @@ import ReusableTable from "../../components/shared/ReusableTable";
 import ImplementService from "../../services/ImplementService";
 import AlertContainer from "../shared/AlertContainer";
 import Badge from "../../components/shared/Badge";
+import SelectField from "../../components/shared/SelectField";
+import CheckboxList from "../../components/shared/CheckboxList";
+
+
+import NotFoundImage from "../../assets/img/NoImg.svg";
 
 const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
   const { showLoader, hideLoader } = useLoader();
@@ -58,6 +63,7 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
 
   const columnsHead = [
     {header: 'Selección', accessor: 'select'},
+    {header: 'Imagen', accessor: 'img'},
     {header: 'Código', accessor: 'cod'},
     {header: 'Estado', accessor: 'status'},
     {header: 'Condición', accessor: 'condition'},
@@ -66,6 +72,7 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
 
   const columns = [
     {accessor: 'select'},
+    {accessor: 'img'},
     {accessor: 'cod'},
     {accessor: 'status'},
     {accessor: 'condition'},
@@ -73,14 +80,56 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
   ]
   
   const columnStyles = [
+    { width: '15%', overflow: 'hidden' },
+    { width: '15%', overflow: 'hidden' },
     { width: '20%', overflow: 'hidden' },
     { width: '20%', overflow: 'hidden' },
-    { width: '20%', overflow: 'hidden' },
-    { width: '20%', overflow: 'hidden' },
-    { width: '20%', overflow: 'hidden' },
+    { width: '15%', overflow: 'hidden' },
+    { width: '15%', overflow: 'hidden' },
   ];
 
-    const renderCellContent = (column, implement) => {
+  const renderCellContent = (column, implement) => {
+
+    if(column.accessor === 'select'){
+      return(
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <CheckboxList
+            checked='false'
+          />
+        </div>
+      )
+    }
+
+    if(column.accessor === 'img'){
+      return (
+        <div
+          style={{
+            width: "40px",
+            height: "40px",
+          }}
+        >
+          <img
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: "50%",
+            }}
+            src={
+              implement.imgs.length > 0
+                ? `http://localhost:4000/${ implement.imgs[0].description}`
+                : NotFoundImage
+            }
+          />
+        </div>
+      );
+    }
 
     if(column.accessor === 'status'){
       return(
@@ -131,6 +180,8 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
   const dataWithActions = implementList.map(implement => ({
     ...implement,
     // isActive: renderCellContent({ accessor: 'isActive' }, implement), // Sobrescribe la propiedad isActive del implement de la lista
+    select: renderCellContent({ accessor: 'select' }, implement),
+    img: renderCellContent({ accessor:'img' }, implement),
     status: renderCellContent({ accessor: 'status' }, implement),
     condition: renderCellContent({ accessor: 'condition' }, implement),
     actions: renderCellContent({ accessor: 'actions' }, implement),

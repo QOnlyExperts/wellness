@@ -4,15 +4,17 @@ import "./Card.css";
 // React.memo() evita renders innecesarios:
 // Solo vuelve a renderizar el componente si sus props cambian.
 const Card = React.memo(({ 
+  type,
   image, 
   title, 
   description, 
   footer, 
   onClick, 
-  children 
+  children
 }) => {
   return (
-    <div className="card" onClick={onClick}>
+    <div
+      className={`card card-${type}`} onClick={onClick}>
       {/* Imagen */}
       {image && (
         <div className="div-img">

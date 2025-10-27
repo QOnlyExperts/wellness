@@ -11,8 +11,10 @@ import Button from "../components/shared/Button";
 import ProgressBar from "../components/shared/ProgressBar";
 
 import "./HomePage.css";
+import Modal from "../components/shared/Modal";
 
 const HomePage = () => {
+  const [isOpenModal, setIsModalOpen] = useState(false);
   const { showLoader, hideLoader } = useLoader();
   const [implementsList, setImplementList] = useState([]);
 
@@ -56,6 +58,8 @@ const HomePage = () => {
         {implementsList.length > 0 ? (
           implementsList.map((imp) => (
             <Card
+              onClick={() => setIsModalOpen(true)}
+              type={imp.status}
               image={
                 imp.imgs.length > 0
                   ? `http://localhost:4000/${imp.imgs[0].description}`
@@ -94,7 +98,7 @@ const HomePage = () => {
                 <span>{imp.cod}</span>
               </div>
 
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   width: "100%",
@@ -103,13 +107,17 @@ const HomePage = () => {
                 <Button
                   style={{
                     display: "flex",
+                    position: 'absolute',
+                    zIndex: '1',
                     width: "100%",
+                    marginTop: '200px',
+                    bottom: '0',
                     // textAlign: 'center'
                   }}
                   className="btn-primary"
                   text="Solicitar"
                 ></Button>
-              </div>
+              </div> */}
             </Card>
           ))
         ) : (
@@ -181,6 +189,33 @@ const HomePage = () => {
           <h3>No hay implementos en el inventario</h3>
         )}
       </HorizontalScroll>
+      {
+        isOpenModal && 
+          <Modal 
+            title="Solicitud"
+            onClose={() => setIsModalOpen(false)}>
+            <h2>¿Desea solicitar el implemento?</h2>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
+            >
+              <Button
+                className="btn-tertiary"
+              >
+                <span>Si</span>
+              </Button>
+              <Button
+                className="btn-secondary"
+              >
+                <span>No</span>
+              </Button>
+            </div>
+          </Modal>
+
+      }
     </div>
   );
 };

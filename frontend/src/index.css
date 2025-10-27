@@ -75,6 +75,9 @@ button:focus-visible {
   --color-cuaternary: #E7C51D;
   --color-quinary: #4A4A4A;
 
+  --color-primary-hover: #00CBE0;
+  --color-primary-active: #004B59;
+
   --color-success-light: #d1fae5;
   --color-error-light: #fee2e2;
   --box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;

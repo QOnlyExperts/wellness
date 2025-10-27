@@ -6,6 +6,8 @@ import Modal from "../../components/shared/Modal";
 import ImplementCreateContainer from "./ImplementCreateContainer";
 import ImplementListContainer from "./ImplementListContainer";
 import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
+import CheckboxList from "../../components/shared/CheckboxList";
+import SelectField from "../../components/shared/SelectField";
 
 
 const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
@@ -66,6 +68,7 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
                 style={{
                   display: "flex",
                   justifyContent: "start",
+                  flexDirection: 'column',
                   with: "100%"
                 }} 
               >
@@ -81,6 +84,16 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
                     color="var(--color-tertiary)"
                   />
                 </Button>
+                
+                <div
+                  style={{
+                    display: 'flex',
+                  }}
+                >
+                  <CheckboxList
+                    title="Seleccionar todo"
+                  />
+                </div>
               </div>
               
               <ImplementListContainer 

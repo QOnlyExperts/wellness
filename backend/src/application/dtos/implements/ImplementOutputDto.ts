@@ -14,4 +14,11 @@ export interface ImplementOutputDto {
     file_path: string;
     mime_type: string;
   }[];
+  groupImplement: {
+    id: number | null;
+    prefix: string;
+    name: string;
+    max_hours: number;
+    time_limit: number;
+  }
 }

@@ -1,3 +1,4 @@
+import { GroupImplementEntity } from '../../domain/entities/GroupImplementEntity';
 import { ImgEntity } from '../../domain/entities/ImgEntity';
 import { ImplementEntity } from '../../domain/entities/ImplementEntity';
 import { ImplementOutputDto } from '../dtos/implements/ImplementOutputDto';
@@ -14,8 +15,16 @@ export class ImplementMapper {
         id: img.id,
         file_name: img.file_name,
         file_path: img.file_path,
-        mime_type: img.mime_type
-      }))
+        mime_type: img.mime_type,
+        description: img.description
+      })),
+      groupImplement: {
+        id: implement.groupImplement?.id ?? null,
+        prefix: implement.groupImplement?.prefix ?? "",
+        name: implement.groupImplement?.name ?? "",
+        max_hours: implement.groupImplement?.max_hours ?? 0,
+        time_limit: implement.groupImplement?.time_limit ?? 0
+      }
     };
   }
 
@@ -27,12 +36,22 @@ export class ImplementMapper {
           file_name: img.file_name,
           file_path: img.file_path,
           mime_type: img.mime_type,
+          description: img.description,
           implement_id: img.implement_id ?? null,
           uploaded_by: img.uploaded_by ?? null,
           created_at: img.created_at,
           updated_at: img.updated_at
         }))
       : [];
+
+    const groupImplement = data.GroupImplement ? GroupImplementEntity.create({
+        id: data.GroupImplement.id ?? null,
+        prefix: data.GroupImplement.prefix ?? "",
+        name: data.GroupImplement.name ?? "",
+        max_hours: data.GroupImplement.max_hours ?? 0,
+        time_limit: data.GroupImplement.time_limit ?? 0
+      })
+      : undefined;
       
     return ImplementEntity.create({
       id: data.id,
@@ -41,7 +60,8 @@ export class ImplementMapper {
       condition: data.condition,
       group_implement_id: data.group_implement_id,
       categories_id: data.categories_id,
-      imgs
+      imgs,
+      groupImplement: groupImplement
     });
   }
 

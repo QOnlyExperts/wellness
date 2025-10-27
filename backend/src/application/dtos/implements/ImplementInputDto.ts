@@ -10,5 +10,6 @@ export interface ImplementInputDto {
   group_implement_id: number;
   categories_id: number;
   user_id: number;
+  amount: number;
   imgs?: ImgInputDto[]; // o img si solo es una
 }

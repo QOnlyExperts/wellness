@@ -13,6 +13,7 @@ import { errorHandler } from './presentation/middleware/errorHandler';
 import { groupImplementRouter } from './presentation/routers/GroupImplementRoutes';
 import { implementRouter } from './presentation/routers/implementRoutes';
 import { categoryRouter } from "./presentation/routers/CategoryRoutes";
+import path from 'path';
 // Crear la aplicación Express
 const app: Application = express();
 
@@ -23,6 +24,16 @@ app.use(fileUpload());
 
 // Configuración de CORS
 app.use(cors(config.application.cors));
+
+// Directorio public nombrado como resources
+
+// Servir archivos estáticos subidos
+app.use('/static', express.static(path.join(__dirname, '..', 'public', 'uploads','implement')));
+
+// Middleware para archivos no encontrados
+app.use('/static', (req, res) => {
+  res.status(404).json({ message: 'Imagen no encontrada o extensión incorrecta' });
+});
 
 // Rutas
 

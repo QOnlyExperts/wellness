@@ -29,7 +29,7 @@ export class ImplementController {
   public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Extraemos los datos del cuerpo de la solicitud
-      const { prefix, status, condition, group_implement_id, categories_id, user_id } = req.body;
+      const { prefix, status, condition, group_implement_id, categories_id, user_id, amount } = req.body;
       const folder = "uploads/implement";
       const files = req.files?.imgs as UploadedFile | UploadedFile[];
 
@@ -52,6 +52,7 @@ export class ImplementController {
         group_implement_id: group_implement_id,
         categories_id: categories_id,
         user_id: user_id,
+        amount: amount,
         imgs: inputImg
       };
       // Ejecutar el caso de uso con el DTO actualizado
@@ -73,7 +74,11 @@ export class ImplementController {
       // Ejecutar el caso de uso sin necesidad de DTO de entrada
       const implementsList = await this.getImplementsUseCase.execute();
       // Devuelve la respuesta al cliente
-      return res.status(200).json(implementsList);
+      return res.status(200).json({
+        success: true,
+        message: "Implementos obtenidos correctamente",
+        data: implementsList
+      });
     } catch (error) {
       next(error);
     }

@@ -35,11 +35,12 @@ input[type="checkbox"]:checked {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px;
 }
 
 .checkbox-text {
   font-size: .9rem;
-  font-weight: bold;
+  font-weight: bolder;
   color: #000;
 }
 

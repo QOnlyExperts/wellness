@@ -56,8 +56,11 @@
 }
 
 .btn-icon{
-  display: inline-block;
-  padding: 6px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 10px;
+  gap: 5px;
   /* background: #389FFF;
   color: #fff; */
   font-size: 0.8rem;
@@ -67,4 +70,8 @@
   border: none;
   text-align: center;
   transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover{
+  background: #e4e4e4;
 }

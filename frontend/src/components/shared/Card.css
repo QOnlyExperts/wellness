@@ -1,5 +1,16 @@
 .card {
-  width: 200px;
+  /* position: relative; */
+  /* flex-basis: calc(25% - 200px);
+  min-width: calc(25% - 200px); */
+  /* height: 450px;
+  min-height: 20%;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: 0.75rem; */
+
+
+  min-width: 180px;
+  height: fit-content;
   background: #fff;
   border-radius: 12px;
   /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
@@ -8,6 +19,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
+
 
 .card:hover {
   transform: translateY(-1px);
@@ -33,9 +45,12 @@
 
 .children{
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   box-sizing: border-box;
   /* arriba | derecha | abajo | izquierda */
-  padding: 0px 0px 5px 10px
+  padding: 0px 10px 10px 10px
 }
 
 .footer {

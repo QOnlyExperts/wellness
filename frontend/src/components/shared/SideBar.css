@@ -22,7 +22,7 @@ a{
   /* height: 90vh; */
   height: calc(100vh - 0.75rem);
   
-  background-color: #1e1e1e;
+  background-color: #00677F;
   /* padding: 1rem 0.75rem; */
   /* border-radius: 0.75rem; */
   padding: 5px;
@@ -36,7 +36,7 @@ a{
 
 body.active nav{
   width: 15rem;
-  background-color: var(--color-primary);
+  background-color: #00677F;
   color: white;
   transition: width 500ms ease, background-color 500ms ease;
   
@@ -112,12 +112,12 @@ body.active .hidden{
 
 .link:hover,
 .link.active:hover{
-  background-color: #e4e4e8;
+  background-color: var(--color-primary-hover);
 }
 
 .link.active{
-  background-color: #f4f4f6;
-  color: #000000
+  background-color: var(--color-primary-active);
+  color: #ffffff
 }
 
 .link > img{

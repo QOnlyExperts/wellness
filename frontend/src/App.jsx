@@ -2,8 +2,11 @@
 import {  Route, Routes } from 'react-router-dom';
 
 import SideBar from './components/shared/SideBar';
+import Nav from './components/shared/Nav';
 
 import GroupImplementPage from './pages/group-implement/GroupImplementPage';
+import HomePage from './pages/HomePage';
+
 
 function AdminRoutes() {
   return ( 
@@ -40,6 +43,22 @@ function UsersRoutes() {
   );
 }
 
+function HomeRoutes() {
+  return (
+    <>
+      {/* <ScrollToTop /> */}
+      <div className='principal'>
+        <Nav />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+
+          {/* Otras rutas del panel administrativo */}
+        </Routes>
+      </div>
+    </>
+  );
+}
+
 function App() {
   return (
     // <ErrorProvider>
@@ -49,8 +68,8 @@ function App() {
           <Route path="/admin/*" element={<AdminRoutes />} />
           {/* <Route  path='/profile/*' element={<UsersRoutes />}/> */}
 
-          {/* <Route path='/*' element={<HomeRoutes />} />
-          <Route path='/login' element={<Login />} />
+          <Route path='/*' element={<HomeRoutes />} />
+          {/* <Route path='/login' element={<Login />} />
           <Route path='/verify' element={<Verify />} /> */}
           
           {/* Otras rutas */}

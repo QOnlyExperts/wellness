@@ -1,4 +1,4 @@
-const AddIcon = ({ size = 20, color = "#000000" }) => (
+const AddIcon = ({ size = 24, color = "#000000" }) => (
   <svg
     width={`${size}px`}
     height={`${size}px`}

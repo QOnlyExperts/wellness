@@ -1,0 +1,32 @@
+.scroll{
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  /* height: auto; */
+  overflow-y: auto;
+  /* border-radius: 50% */
+  /* background: #fff; */
+  mask: linear-gradient(90deg, transparent, #fff 0%, #fff 100%, transparent);
+}
+
+.scroll .div-card-scroll{
+  display: flex;
+  /* width: 100%; */
+  gap: 10px;
+  /* margin-bottom: 100px; */
+  animation: animate var(--t) linear infinite;
+  animation-delay: calc(var(--t) * -1);
+}
+.scroll .div-card-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes animate{
+  0%{
+    transform: translateX(0%);
+  }
+  100%{
+    transform: translateX(-100%);
+  }
+}

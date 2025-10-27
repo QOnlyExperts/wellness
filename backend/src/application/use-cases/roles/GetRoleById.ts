@@ -15,7 +15,7 @@ export class GetRoleById {
     // 2. Buscar la entidad
     const roleEntity = await this.roleRepository.findById(id);
     if (!roleEntity) {
-      throw new NotFoundError(`El rol con el id ${id} no fue encontrado.`);
+      throw new NotFoundError(`El rol no fue encontrado.`);
     }
 
     // 3. Mapear y devolver el DTO

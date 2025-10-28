@@ -80,7 +80,8 @@ button:focus-visible {
 
   --color-success-light: #d1fae5;
   --color-error-light: #fee2e2;
-  --box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  /* --box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */
+  --box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2)
 
 }
 body {
@@ -103,22 +104,55 @@ body {
       transform: translateY(-2px);
     } */
 
+
+/* SVG de fondo (pattern) ocupa todo el contenedor */
+.pattern-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  transform: scale(var(--scale));
+  transform-origin: center;
+  pointer-events: none;
+  opacity: 1;
+}
+/* Capa semi translúcida encima del pattern (como WhatsApp) */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.02));
+}
+
 .principal{
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   height: 100vh;
-  background-color: #ffffff;
-  
-  /* box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */
-  /* overflow-y: hidden; */
-  /* arriba | derecha | abajo | izquierda */
-  /* margin: 30px 0px 100px 0rem; */
+  /* background-color: #f3f3f3; */
+  background: linear-gradient(180deg, #EAFBFB, #FFFFFF);
+  /* background: linear-gradient(180deg, #e1ffff, #FFFFFF); */
+
+  background-size: 200% 200%;
+  /* animation: gradientShift 6s ease-in-out infinite; */
 }
 
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
 
 .div-principal{
   display: flex;
@@ -141,10 +175,13 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: 100%;
+  width: 60%;
   height: 100%;
   overflow-y: hidden;
   padding: 10px;
+
+
+
   /* arriba | derecha | abajo | izquierda */
   padding: 10px;
   gap: 10px;

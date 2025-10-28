@@ -66,6 +66,7 @@ body.active nav{
   display: flex;
   justify-content: start;
   align-items: center;
+  width: 100px;
   gap: 1.25rem;
 }
 
@@ -89,7 +90,7 @@ nav > .sidebar-links{
 body.active .sidebar-links,
 body.active .sidebar-header,
 body.active .user-profile{
-  justify-content: start;
+  /* justify-content: start; */
   align-items: stretch;
 }
 

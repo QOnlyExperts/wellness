@@ -10,7 +10,8 @@ export class GroupImplementMapper {
       prefix: entity.prefix,
       name: entity.name,
       max_hours: entity.max_hours,
-      time_limit: entity.time_limit
+      time_limit: entity.time_limit,
+      images_preview: entity.images_preview ?? []
     };
   }
 

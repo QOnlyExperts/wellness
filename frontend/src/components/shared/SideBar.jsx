@@ -7,7 +7,7 @@ import Home from '../../assets/home.svg';
 import Dashboard from '../../assets/dashboard.svg';
 import Group from '../../assets/groupImplements.svg';
 
-
+import Logo from '../../assets/img/logo-sfn.png'
 import HomeIcon from '../icons/HomeIcon';
 import DashboardIcon from '../icons/DashboardIcon';
 import GamingIcon from '../icons/GAmingIcon';
@@ -109,8 +109,8 @@ const SideBar = () =>{
       <nav className='side'>
         <div className="sidebar-header">
           <Link className="logo-wrapper" to='/'>
-            {/* <img src={Logo} alt="Logo" /> */}
-            <span>Bienestar</span>
+            <img src={Logo} alt="Logo" />
+            {/* <span>Bienestar</span> */}
           </Link>
 
           <button className="toggle-btn" onClick={toggleActiveClass}>

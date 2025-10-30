@@ -6,3 +6,4 @@ export const IGroupImplementRepositoryToken = Symbol.for('IGroupImplementReposit
 export const ICategoryRepositoryToken = Symbol.for('ICategoryRepository');
 
 export const ImgServiceToken = Symbol.for('ImgService');
+export const IRoleRepositoryToken = Symbol.for('IRoleRepository');

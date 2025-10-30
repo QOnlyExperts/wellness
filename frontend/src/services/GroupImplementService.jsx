@@ -1,10 +1,18 @@
 import service from './indexService.jsx';
 
+const headers = {
+  "Content-Type": "application/json",
+  Accept: "application/json",
+  // "Authorization":`Bearer ${localStorage.getItem('token')}`
+};
+
+
 const GroupImplementService = {
   postGroupImplement: (data) => {
     return service('/group-implements', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      headers: headers
     });
   },
   getGroupImplements: () => {

@@ -1,4 +1,4 @@
-const AddIcon = ({ size = 24, color = "#000000" }) => (
+const DashboardIcon = ({ size = 24, color = "#000000" }) => (
   <svg
     width={`${size}px`}
     height={`${size}px`}
@@ -7,7 +7,7 @@ const AddIcon = ({ size = 24, color = "#000000" }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M6 12H18M12 6V18"
+      d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3M21 12C21 7.02944 16.9706 3 12 3M21 12H12M12 3V12M12 12L16.9948 19.4879"
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -16,4 +16,4 @@ const AddIcon = ({ size = 24, color = "#000000" }) => (
   </svg>
 );
 
-export default AddIcon;
+export default DashboardIcon;

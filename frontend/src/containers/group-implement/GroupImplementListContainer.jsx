@@ -90,10 +90,10 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
             <PlusCircleIcon size={24} color="var(--color-tertiary)" className="hover:opacity-80" />
           </button>
           <button className="btn-icon">
-            <MenuListIcon size={24} color="#0000008f" className="hover:opacity-80" />
+            <MenuListIcon size={24} color="var(--color-primary)" className="hover:opacity-80" />
           </button>
           <button className="btn-icon" onClick={() => handleEditClick(groupImplement.id)}>
-            <EditSquareIcon size={24} color="var(--color-primary)" className="hover:opacity-80" />
+            <EditSquareIcon size={24} color="var(--color-secondary)" className="hover:opacity-80" />
           </button>
         </div>
       );

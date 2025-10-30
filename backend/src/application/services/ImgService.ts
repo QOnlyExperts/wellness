@@ -25,10 +25,11 @@ export class ImgService {
     }
 
     const saveFile = async (file: UploadedFile, uuid: string) => {
-      const fileName = uuid + path.extname(file.name);
+      const ext = path.extname(file.name);
+      const fileName = uuid + ext;
       const savePath = path.join(baseDir, fileName);
       await file.mv(savePath);
-      imagePaths.push(`${folder}/${fileName}`);
+      imagePaths.push(`static/${fileName}.${ext}`);
     };
 
     if (Array.isArray(files) && Array.isArray(uuids)) {

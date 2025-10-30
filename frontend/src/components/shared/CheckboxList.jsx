@@ -1,19 +1,21 @@
 import React from "react";
 import "./CheckboxList.css";
+import CheckedIcon from "../icons/CheckedIcon";
+import UncheckedIcon from "../icons/UnCheckedIcon";
 
-const CheckboxList = (props) => {
+const CheckboxList = ({ title, checked, onChange }) => {
   return (
-    // <div className="checkbox-container">
-      <label className="checkbox-label">
-        <input type="checkbox" {...props} />
-        <span className="checkbox-text">{props.title}</span>
-      </label>
-
-      // <label className="checkbox-label">
-      //   <input type="checkbox" />
-      //   <span className="checkbox-text">Correo</span>
-      // </label>
-    // </div>
+    <label className="checkbox-label">
+      <input 
+        type="checkbox" 
+        checked={checked} 
+        onChange={onChange} 
+      />
+      <span className="custom-checkbox">
+        {checked ? <CheckedIcon/> : <UncheckedIcon />} {/* Aquí puedes poner tus íconos */}
+      </span>
+      <span className="checkbox-text">{title}</span>
+    </label>
   );
 };
 

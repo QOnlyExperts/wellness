@@ -8,6 +8,10 @@ import Dashboard from '../../assets/dashboard.svg';
 import Group from '../../assets/groupImplements.svg';
 
 
+import HomeIcon from '../icons/HomeIcon';
+import DashboardIcon from '../icons/DashboardIcon';
+import GamingIcon from '../icons/GAmingIcon';
+
 
 const SideBar = () =>{
 
@@ -104,9 +108,10 @@ const SideBar = () =>{
     <>
       <nav className='side'>
         <div className="sidebar-header">
-          {/* <Link className="logo-wrapper" to='/'>
-            <img src={Logo} alt="Logo" />
-          </Link> */}
+          <Link className="logo-wrapper" to='/'>
+            {/* <img src={Logo} alt="Logo" /> */}
+            <span>Bienestar</span>
+          </Link>
 
           <button className="toggle-btn" onClick={toggleActiveClass}>
             <img src={Arrow} alt="expand button"/>
@@ -115,17 +120,23 @@ const SideBar = () =>{
 
         <div className="sidebar-links">
           <Link className="link" to="/" title="Inicio">
-            <img src={Home} alt=""/>
+            <HomeIcon 
+              color='#ffffff'
+            />
             <span className="hidden">Inicio</span>
           </Link>
 
           <Link className="link" to="/admin/dashboard" title="Dashboard">
-            <img src={Dashboard} alt=""/>
+            <DashboardIcon
+              color='#ffffff'
+            />
             <span className="hidden">Dashboard</span>
           </Link>
 
-          <Link className="link" to="/admin/group-implement" title="Grupo de implementos">          
-            <img src={Group} alt=""/>
+          <Link className="link" to="/admin/group-implement" title="Grupo de implementos">
+            <GamingIcon
+              color='#ffffff'
+            />
             <span className="hidden">Grupo de implementos</span>
           </Link>
 

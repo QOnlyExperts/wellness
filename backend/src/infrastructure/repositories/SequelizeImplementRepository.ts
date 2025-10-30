@@ -1,6 +1,6 @@
 import { IImplementRepository } from "../../domain/interfaces/IImplementRepository";
 import { ImplementEntity } from "../../domain/entities/ImplementEntity";
-import { ImgModel, ImplementModel } from "../models/indexModel";
+import { GroupImplementModel, ImgModel, ImplementModel } from "../models/indexModel";
 import e from "express";
 import { ImplementMapper } from "../../application/mappers/ImplementMapper";
 
@@ -8,7 +8,26 @@ export class SequelizeImplementRepository implements IImplementRepository {
 
 
   async findAll(): Promise<ImplementEntity[]> {
-    const implementList = await ImplementModel.findAll();
+    const implementList = await ImplementModel.findAll({
+      include: [{
+          model: ImgModel,
+          attributes: [
+            'id',
+            'file_name',
+            'file_path',
+            'mime_type',
+            'description'
+          ]
+        },{
+          model: GroupImplementModel,
+          attributes: [
+            'id',
+            'name',
+            'max_hours',
+            'time_limit'
+          ]
+      }]
+    });
     return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));
   }
 
@@ -32,7 +51,8 @@ export class SequelizeImplementRepository implements IImplementRepository {
           'id',
           'file_name',
           'file_path',
-          'mime_type'
+          'mime_type',
+          'description'
         ]
       }]
     });

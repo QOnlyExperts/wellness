@@ -10,10 +10,11 @@ const ImplementConditionSchema = z.enum(['new']);
 export const CreateImplementInputDtoSchema = z.object({
   // 'cod' es una cadena (string)
   prefix: z.string()
-  .min(1, "El código no puede estar vacío")
+  .min(1, "El prefijo no puede estar vacío")
   .refine((val) => !hasNoXSSAndInjectionSql(val) && !/\d/.test(val), {
-    message: "Debe indicar un barrio válido",
+    message: "El prefijo no debe contener números ni caracteres especiales",
   }),
+
   // 'status' usa el enum de Zod
   status: ImplementStatusSchema,
   // 'condition' usa el enum de Zod
@@ -34,6 +35,22 @@ export const CreateImplementInputDtoSchema = z.object({
     .number("El user_id debe ser un número")
     .int("El user_id debe ser un número entero")
     .positive("El user_id debe ser un número positivo mayor que 0"),
+
+    
+  amount: z.coerce
+    .number("La cantidad debe ser un número")
+    .int("La cantidad debe ser un número entero")
+    .positive("La cantidad debe ser un número positivo mayor que 0")
+    .refine((val) => val <= 10, {
+      message: "La cantidad no puede ser mayor a 10"
+    }),
+
+  imgs: z
+    .array(z.any())
+    .optional()
+    .refine((files) => (files ? files.length <= 1 : true), {
+      message: "Solo puedes subir 1 imagen",
+    }),
 });
 
 // 3. (Opcional pero recomendado) Infiere el tipo de TypeScript a partir del Schema.

@@ -35,10 +35,25 @@ input[type="checkbox"]:checked {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px;
 }
 
 .checkbox-text {
   font-size: .9rem;
-  font-weight: bold;
+  font-weight: bolder;
   color: #000;
+}
+
+
+.checkbox-label input[type="checkbox"] {
+  display: none; /* ocultamos el checkbox real */
+}
+
+.custom-checkbox {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  /* margin-right: 8px; */
+  vertical-align: middle;
+  font-size: 18px; /* ajusta tamaño del icono */
 }

@@ -7,10 +7,13 @@ const Head = ({ title, className = "", children }) => {
 
       <h2 className="head-title">{title}</h2>
 
-      <div className="head-actions">
-        {/* Aquí puedes pasar cualquier otro componente */}
-        {children}
-      </div>
+      {
+        children && 
+          <div className="head-actions">
+            {/* Aquí puedes pasar cualquier otro componente */}
+            {children}
+          </div>
+      }
     </header>
   );
 };

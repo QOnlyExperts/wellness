@@ -2,6 +2,7 @@
 import { ImplementStatus } from "../enums/ImplementStatus";
 import { ImplementCondition } from "../enums/ImplementCondition";
 import { ImgEntity } from "./ImgEntity";
+import { GroupImplementEntity } from "./GroupImplementEntity";
 
 export class ImplementEntity {
   public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
@@ -11,6 +12,7 @@ export class ImplementEntity {
   public group_implement_id: number;
   public categories_id: number;
   public imgs?: ImgEntity[]; // 👈 Relación con imágenes
+  public groupImplement?: GroupImplementEntity;
 
   constructor(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
@@ -19,7 +21,8 @@ export class ImplementEntity {
     condition: ImplementCondition;
     group_implement_id: number;
     categories_id: number;
-    imgs?: ImgEntity[] // 👈 opcional
+    imgs?: ImgEntity[]; // 👈 opcional
+    groupImplement?: GroupImplementEntity;
   }) {
     this.id = props.id;
     this.cod = props.cod;
@@ -28,6 +31,7 @@ export class ImplementEntity {
     this.group_implement_id = props.group_implement_id;
     this.categories_id = props.categories_id;
     this.imgs = props.imgs;
+    this.groupImplement = props.groupImplement;
   }
 
   static create(props: {
@@ -38,6 +42,7 @@ export class ImplementEntity {
     group_implement_id: number,
     categories_id: number
     imgs?: ImgEntity[];
+    groupImplement?: GroupImplementEntity;
 
   }): ImplementEntity {
     // Por aquí debo crear el código automáticamente
@@ -49,7 +54,8 @@ export class ImplementEntity {
       condition: props.condition,
       group_implement_id: props.group_implement_id,
       categories_id: props.categories_id,
-      imgs: props.imgs
+      imgs: props.imgs,
+      groupImplement: props.groupImplement
     });
   }
 

@@ -5,7 +5,7 @@ export class ImgEntity {
   public file_path: string;
   public mime_type: string;
   public size_bytes?: number;
-  public description?: string;
+  public description: string;
   public implement_id: number | null;
   public uploaded_by: number | null;
   public created_at?: Date;
@@ -18,7 +18,7 @@ export class ImgEntity {
     file_path: string,
     mime_type: string,
     size_bytes?: number,
-    description?: string,
+    description: string,
     implement_id: number | null,
     uploaded_by: number | null,
     created_at?: Date,
@@ -42,7 +42,7 @@ export class ImgEntity {
     file_path: string,
     mime_type: string,
     size_bytes?: number,
-    description?: string,
+    description: string,
     implement_id: number | null,
     uploaded_by: number | null,
     created_at?: Date,

@@ -7,6 +7,9 @@ import './Nav.css';
 // import Panel from '../imgs/panel.svg';
 // import Logout from '../imgs/logout.svg';
 import { Link } from 'react-router-dom';
+
+import Logo from '../../assets/img/logo-sfn.png'
+import LogoUcc from '../../assets/img/ucc.png'
 import ConfigIcon from '../icons/Config';
 
 
@@ -24,11 +27,17 @@ const Nav = () => {
 
   return (
     <div className="nav">
-      <div className="menu">
+      <div className="menu2">
         <Link to="/" id="" className="navBar-logo">
-          {/* <img src={Logo} alt="Logo" /> */}
-          <span className="" id="">Bienestar</span>
+          <img src={LogoUcc} alt="Logo" />
+          {/* <span className="" id="">Bienestar</span> */}
         </Link>
+        <Link to="/" id="" className="navBar-logo-wellness">
+          <img src={Logo} alt="Logo" />
+        </Link>
+      </div>
+
+      <div className="menu">
 
         <ul>
           <li>

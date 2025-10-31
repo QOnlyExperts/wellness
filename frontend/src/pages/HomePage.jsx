@@ -11,17 +11,41 @@ import Button from "../components/shared/Button";
 import ProgressBar from "../components/shared/ProgressBar";
 
 import "./HomePage.css";
+import Modal from "../components/shared/Modal";
+import GroupImplementService from "../services/GroupImplementService";
+
+import NotFoundImage from "../assets/img/NoImg.svg";
+import Chart from "../components/shared/Chart";
+import ChartDoughnutContainer from "../containers/shared/ChartDoughnutContainer";
+import DashboardCard from "../components/shared/DashboardCardDoughnut";
+import ImplementListContainer from "../containers/implement/ImplementListContainer";
 
 const HomePage = () => {
+  const [isOpenModal, setIsModalOpen] = useState(false);
   const { showLoader, hideLoader } = useLoader();
-  const [implementsList, setImplementList] = useState([]);
+  const [groupImplementsList, setGroupImplementList] = useState([]);
+  const [groupImplementId, setGroupImplementId] = useState(null);
+  const [implementList, setImplementList] = useState([]);
+  const [implementListByIdGroup, setImplementListByIdGroup] = useState([]);
+
+  const horasPorMes = [
+  { mes: "Ene", horas: 10 },
+  { mes: "Feb", horas: 26 },
+  { mes: "Mar", horas: 30 },
+  { mes: "Abr", horas: 10 },
+];
 
   useEffect(() => {
+
     const fetch = async () => {
       showLoader();
-      const response = await ImplementService.getImplements();
+      // const response = await GroupImplementService.getGroupImplements();
+      const [groupResponse, implementResponse] = await Promise.all([
+          GroupImplementService.getGroupImplements(),
+          ImplementService.getImplements(),
+        ]);
 
-      if (!response.success) {
+      if (!groupResponse.success && !implementResponse.success) {
         window.showAlert(
           response?.message || "Error al obtener los implementos",
           "Error"
@@ -29,7 +53,11 @@ const HomePage = () => {
         return;
       }
 
-      setImplementList(response.data);
+      console.log(groupResponse.data);
+      console.log(implementResponse.data);
+
+      setGroupImplementList(groupResponse.data);
+      setImplementList(implementResponse.data);
       // window.showAlert(response?.message || "Implementos obtenidos exitosamente", "success");
       hideLoader();
     };
@@ -37,150 +65,220 @@ const HomePage = () => {
     fetch();
   }, []);
 
+  const handleImplement = async(groupId) => {
+
+    // if (!implementsByGroup[groupId]) significa:
+
+    //   “Si aún no hemos cargado los implementos de este grupo…”
+
+    // es decir, si en el objeto implementsByGroup no existe una entrada para ese groupId,
+    // entonces haz la petición al backend para traerlos.
+
+  // Si el grupo no tiene datos cargados aún, los obtenemos del backend
+  if (!implementListByIdGroup[groupId]) {
+    const response = await ImplementService.getImplementsByIdGroup(groupId);
+
+    if (!response.success) return;
+
+    // Hacemos una copia profunda de los datos
+    // Esto evita que las referencias se mezclen entre grupos
+    const cleanData = JSON.parse(JSON.stringify(response.data));
+
+    // Guardamos los implementos en el estado, sin mutar otros grupos
+    setImplementListByIdGroup((prev) => ({
+      ...prev,
+      [groupId]: cleanData,
+    }));
+  }
+
+  // Aseguramos que se muestre siempre el grupo correcto
+  setGroupImplementId(groupId);
+
+  // Abrimos el modal (fuera del if, por si ya estaba cacheado)
+  setIsModalOpen(true);
+};
+
+
   return (
     <div className="div-principal-home">
-      <AlertContainer />
-      <Head title="Implementos">
-        <div style={{ width: "300px" }}>
-          <ProgressBar
-            label="Horas de instrumentos acumuladas"
-            min={0}
-            value={70}
-            max={96}
-            color="#29b6f6"
-          />
-        </div>
-      </Head>
+      <div>
+        <AlertContainer />
+        <Head title="Grupos de Implementos"></Head>
 
-      <HorizontalScroll>
-        {implementsList.length > 0 ? (
-          implementsList.map((imp) => (
-            <Card
-              image={
-                imp.imgs.length > 0
-                  ? `http://localhost:4000/${imp.imgs[0].description}`
-                  : NotFoundImage
-              }
-              title={imp.groupImplement.name}
-              // description={formImplement.status}
+        <h5 className="sub-title">
+          Selecciona un grupo para ver sus implementos
+        </h5>
+        <HorizontalScroll>
+          {groupImplementsList.length > 0 ? (
+            groupImplementsList.map((imp, i) => (
+              <Card
+                key={i}
+                onClick={() => handleImplement(imp.id)}
+                type={imp.status}
+                images={
+                  imp.images_preview && imp.images_preview.length > 0
+                    ? imp.images_preview.map(
+                        (img) => `http://localhost:4000/${img}`
+                      )
+                    : [NotFoundImage]
+                }
+                title={imp.name}
+                // description={formImplement.status}
+              ></Card>
+            ))
+          ) : (
+            <h4>No hay implementos en el inventario</h4>
+          )}
+        </HorizontalScroll>
+        {/* </section> */}
+
+        <Head title="Implementos en uso" />
+
+        <h5 className="sub-title">Selecciona para devolver</h5>
+        <HorizontalScroll>
+          {implementList.length > 0 ? (
+            implementList.map(
+              (imp, i) =>
+                imp.status === "borrowed" && (
+                  <Card
+                    key={i}
+                    onClick={() => handleImplement(imp.id)}
+                    type={imp.status}
+                    images={
+                      imp.imgs && imp.imgs.length > 0
+                        ? imp.imgs.map(
+                            (img) => `http://localhost:4000/${img.description}`
+                          )
+                        : [NotFoundImage]
+                    }
+                    title={imp.groupImplement.name}
+                    // description={formImplement.status}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Badge
+                        value={imp.status || "available"}
+                        label={imp.status || "available"}
+                      />
+
+                      <span>{imp.cod}</span>
+                    </div>
+                  </Card>
+                )
+            )
+          ) : (
+            <h3>No hay implementos en uso</h3>
+          )}
+        </HorizontalScroll>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        }}
+      >
+        <ProgressBar
+          label="Horas acumuladas"
+          min={0}
+          value={96}
+          max={96}
+          color="#29b6f6"
+        />
+
+        <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
+
+        
+      </div>
+
+      {isOpenModal && (
+        <Modal title="Implementos" onClose={() => setIsModalOpen(false)}>
+          <HorizontalScroll>
+            {implementListByIdGroup[groupImplementId].length > 0 ? (
+              implementListByIdGroup[groupImplementId].map((imp, i) => (
+                <Card
+                  key={i}
+                  // onClick={() => handleImplement(imp.id)}
+                  type={imp.status}
+                  images={
+                    imp.imgs && imp.imgs.length > 0
+                      ? imp.imgs.map(
+                          (img) => `http://localhost:4000/${img.description}`
+                        )
+                      : [NotFoundImage]
+                  }
+                  // description={formImplement.status}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      right: "0",
+                      marginTop: "-230px",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <Badge
+                      value={imp.condition || "new"}
+                      label={imp.condition || "new"}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Badge
+                      value={imp.status || "available"}
+                      label={imp.status || "available"}
+                    />
+
+                    <span>{imp.cod}</span>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <h3>No hay implementos en el inventario</h3>
+            )}
+          </HorizontalScroll>
+        </Modal>
+      )}
+      {/* {
+        isOpenModal && 
+          <Modal 
+            title="Solicitud"
+            onClose={() => setIsModalOpen(false)}>
+            <h2>¿Desea solicitar el implemento?</h2>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "0",
-                  right: "0",
-                  marginTop: "-230px",
-                  marginRight: "10px",
-                }}
+              <Button
+                className="btn-tertiary"
               >
-                <Badge
-                  value={imp.condition || "new"}
-                  label={imp.condition || "new"}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
+                <span>Si</span>
+              </Button>
+              <Button
+                className="btn-secondary"
               >
-                <Badge
-                  value={imp.status || "available"}
-                  label={imp.status || "available"}
-                />
+                <span>No</span>
+              </Button>
+            </div>
+          </Modal>
 
-                <span>{imp.cod}</span>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                }}
-              >
-                <Button
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    // textAlign: 'center'
-                  }}
-                  className="btn-primary"
-                  text="Solicitar"
-                ></Button>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <h3>No hay implementos en el inventario</h3>
-        )}
-      </HorizontalScroll>
-      {/* </section> */}
-
-      <Head title="Implementos en uso" />
-      <HorizontalScroll>
-        {implementsList.length > 0 ? (
-            <Card
-              image={
-                implementsList[0].imgs.length > 0
-                  ? `http://localhost:4000/${implementsList[0].imgs[0].description}`
-                  : NotFoundImage
-              }
-              title={implementsList[0].groupImplement.name}
-              // description={formImplement.status}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "0",
-                  right: "0",
-                  marginTop: "-230px",
-                  marginRight: "10px",
-                }}
-              >
-                <Badge
-                  value={implementsList[0].condition || "new"}
-                  label={implementsList[0].condition || "new"}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Badge
-                  value={implementsList[0].status || "available"}
-                  label={implementsList[0].status || "available"}
-                />
-
-                <span>{implementsList[0].cod}</span>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                }}
-              >
-                <Button
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    // textAlign: 'center'
-                  }}
-                  className="btn-primary"
-                  text="Solicitar"
-                ></Button>
-              </div>
-            </Card>
-        ) : (
-          <h3>No hay implementos en el inventario</h3>
-        )}
-      </HorizontalScroll>
+      } */}
     </div>
   );
 };

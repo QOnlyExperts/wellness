@@ -93,7 +93,12 @@ export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
 }
 export function resolveGetGroupImplementsUseCase(): GetGroupImplements {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;
-    return new GetGroupImplements(groupImplementRepository);
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+    // Retornamos una nueva instancia del caso de uso con las dependencias inyectadas
+    return new GetGroupImplements(
+        groupImplementRepository,
+        implementRepository
+    );
 }
 export function resolveGetGroupImplementByIdUseCase(): GetGroupImplementById {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;

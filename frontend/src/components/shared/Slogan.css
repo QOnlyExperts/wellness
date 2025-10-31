@@ -1,0 +1,27 @@
+.slogan {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  padding: 0 40px;
+  color: #ffffff;
+}
+
+.fade {
+  opacity: 0;
+  animation: fadeInOut 5.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20%, 80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

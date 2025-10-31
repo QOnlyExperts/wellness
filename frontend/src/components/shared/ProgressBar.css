@@ -1,6 +1,10 @@
 .progress-container {
   width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #ffffff;
   font-family: Arial, sans-serif;
+  box-shadow: var(--box-shadow);
 }
 
 .progress-label {

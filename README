@@ -1,0 +1,8 @@
+# Ejecuta el DockerFile indicado
+docker compose build --no-cache backend
+
+# Ejecutar tests directamente desde Docker Compose
+docker compose run --rm backend-test
+
+# Instalar en la carpeta /backend
+npm install --save-dev @types/express @types/jest @types/body-parser @types/node

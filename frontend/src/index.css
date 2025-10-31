@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -64,5 +64,146 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+} */
+
+:root{
+
+  --color-primary: #00B5C8;
+  --color-secondary: #FF6F61;
+  --color-tertiary: #6DBE45;
+  --color-cuaternary: #E7C51D;
+  --color-quinary: #4A4A4A;
+
+  --color-primary-hover: #00CBE0;
+  --color-primary-active: #004B59;
+
+  --color-success-light: #d1fae5;
+  --color-error-light: #fee2e2;
+  /* --box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */
+  --box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2)
+
+}
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f5f5;
+  color: #333333;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-style: normal;
+  /* font-weight: normal; */
+}
+
+
+/* .btn-secondary:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+    } */
+
+
+/* SVG de fondo (pattern) ocupa todo el contenedor */
+.pattern-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  transform: scale(var(--scale));
+  transform-origin: center;
+  pointer-events: none;
+  opacity: 1;
+}
+/* Capa semi translúcida encima del pattern (como WhatsApp) */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.02));
+}
+
+.principal{
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  /* background-color: #f3f3f3; */
+  background: linear-gradient(180deg, #aefdfd 2%, #FFFFFF 100%);
+  /* background: linear-gradient(180deg, #e1ffff, #FFFFFF); */
+
+  background-size: 200% 200%;
+  /* animation: gradientShift 6s ease-in-out infinite; */
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.div-principal{
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  border-radius: 10px;
+  padding: 10px;
+  /* arriba | derecha | abajo | izquierda */
+  padding: 10px;
+  gap: 10px;
+  box-shadow: var(--box-shadow);
+
+  transition: padding 500ms ease;
+}
+
+.div-principal-home{
+  display: flex;
+  /* flex-direction: column; */
+  box-sizing: border-box;
+  width: 60%;
+  height: 100%;
+  overflow-y: hidden;
+  padding: 10px;
+
+  /* arriba | derecha | abajo | izquierda */
+  padding: 10px;
+  gap: 10px;
+
+  transition: padding 500ms ease;
+}
+
+.principal-admin{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* align-items: center; */
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  /* arriba | derecha | abajo | izquierda */
+  padding: 10px;
+  gap: 10px;
+  background-color: #ffffff;
+}
+
+
+@media only screen and (min-width: 1368px) {
+  .principal, .div-principal{
+    width: 100%;
   }
 }

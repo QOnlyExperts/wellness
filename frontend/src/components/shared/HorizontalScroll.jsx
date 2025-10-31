@@ -33,7 +33,7 @@ const HorizontalScroll = ({ children, scrollAmount = 300 }) => {
       el.removeEventListener("scroll", updateScrollButtons);
       window.removeEventListener("resize", updateScrollButtons);
     };
-  }, []);
+  }, [children]);
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });

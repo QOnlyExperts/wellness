@@ -225,7 +225,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
         >
           {/* <h4>Presentación</h4> */}
           <Card
-            image={images && images.length > 0 ? images[0].src : NotFoundImage}
+            images={images && images.length > 0 ? [images[0].src] : [NotFoundImage]}
             title={formGroupImplement.name}
             // description={formImplement.status}
           >

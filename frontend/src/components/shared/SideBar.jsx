@@ -11,6 +11,7 @@ import Logo from '../../assets/img/logo-sfn.png'
 import HomeIcon from '../icons/HomeIcon';
 import DashboardIcon from '../icons/DashboardIcon';
 import GamingIcon from '../icons/GAmingIcon';
+import Badge from './Badge';
 
 
 const SideBar = () =>{
@@ -26,6 +27,13 @@ const SideBar = () =>{
   //   return user
   // })
 
+  const statusImplement = [
+    {label: 'available', labelSpanish: 'Disponible', to: '/admin/implement/available'},
+    {label: 'borrowed', labelSpanish: 'Prestado', to: '/admin/implement/borrowed'},
+    {label: 'maintenance', labelSpanish: 'Mantenimiento', to: '/admin/implement/maintenance'},
+    {label: 'retired', labelSpanish: 'Retirado', to: '/admin/implement/retired'}
+  ]
+
   const navigate = useNavigate();
   const location = useLocation();  // Inicializar el estado con el valor almacenado en local storage, o false si no existe
   const [isActive, setIsActive] = useState(() => {
@@ -33,7 +41,7 @@ const SideBar = () =>{
     return savedState !== null ? JSON.parse(savedState) : false;
   });
 
-  const [openProductConfig, setOpenProductConfig] = useState(false);
+  const [openImplementStatusConfig, setOpenPImplementStatusConfig] = useState(false);
 
   const toggleActiveClass = () => {
     setIsActive(!isActive);
@@ -88,6 +96,14 @@ const SideBar = () =>{
     navigate('/')
   }
 
+  const viewImplementStatusConfig = () =>{
+    if(openImplementStatusConfig){
+      
+      setOpenPImplementStatusConfig(false)
+    }else{
+      setOpenPImplementStatusConfig(true)
+    }
+  }
 
   const viewProductConfig = () => {
     const subLink = document.querySelector("#openProductConfig");
@@ -133,35 +149,46 @@ const SideBar = () =>{
             <span className="hidden">Dashboard</span>
           </Link>
 
-          <Link className="link" to="/admin/group-implement" title="Grupo de implementos">
+          
+          <Link className="link" 
+            id='openImplementStatusConfig'
+            to="/admin/group-implement"
+            onClick={() => viewImplementStatusConfig()}
+          >
             <GamingIcon
               color='#ffffff'
             />
             <span className="hidden">Grupo de implementos</span>
           </Link>
-
-          {/* 
-          <button className="link" id='openProductConfig' onClick={() => viewProductConfig()}>
-            <img src={ProductoConfig} alt=""/>
-            <span className="hidden">Configuración Producto</span>
-          </button>
           {
-            // Si openProductConfig es true se muestra el sub-link
+            // Si openImplementStatusConfig es true se muestra el sub-link
             // De lo contrario no muestra nada.
-            openProductConfig &&
+            openImplementStatusConfig &&
             <div className='sub-link'>
-              <Link className='link' to={"/admin/product"} title=''>
-                <img src={Product} alt=""/>
-                <span className="hidden">Producto</span>
-              </Link>
-              <Link className="link" to="/admin/category" title="Categoría">
-                <img src={Category} alt=""/>
-                <span className="hidden">Categoría</span>
-              </Link>
+              <h5
+                style={{
+                  borderBottom: '1px solid #ffffffff',
+                  padding: '5px 10px'
+                }}
+              >Estados de implementos</h5>
+              {
+                statusImplement.map(status => (
+                  <Link className='link' to={status.to} title=''>
+                    {/* <span className="hidden">{status.labelSpanish}</span> */}
+                    <Badge
+                      style={{
+                        
+                      }}
+                      label={status.label}
+                      value={status.label}
+                    />
+                  </Link>
+                ))
+              }
             </div>
           }
-          
-          {/* <Link className="link" to="/admin/product" title="Producto">
+{/*           
+          <Link className="link" to="/admin/product" title="Producto">
             <img src={ProductoConfig} alt=""/>
             <span className="hidden">Producto</span>
           </Link>

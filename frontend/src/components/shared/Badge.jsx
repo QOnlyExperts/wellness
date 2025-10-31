@@ -2,7 +2,7 @@
 import React from "react";
 import "./Badge.css"; // Asegúrate de agregar este archivo CSS
 
-const Badge = ({ label, value}) => {
+const Badge = ({ style, label, value}) => {
   
   const getTypeFromValue = (value) => {
     switch (value) {
@@ -50,7 +50,9 @@ const Badge = ({ label, value}) => {
   const spanish = translateSpanish(value);
 
   return (
-    <span className={`badge badge-${type}`}>
+    <span 
+      style={style}
+      className={`badge badge-${type}`}>
       {spanish}
     </span>
   );

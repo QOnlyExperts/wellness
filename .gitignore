@@ -1,17 +1,6 @@
-# Backend
-backend/node_modules
-backend/public/config
-backend/public/scripts
-backend/public/uploads/implement/
-# Frontend
-frontend/node_modules
+# Node modules
+frontend/node_modules/
+backend/node_modules/
 
 # Entorno
 .env
-
-# Documentos
-doc
-
-# Base de datos persistente
-database/data/
-database/*.db

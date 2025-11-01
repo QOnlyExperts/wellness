@@ -18,6 +18,14 @@ router.post('/implements', [
 
 router.get('/implements', implementController.getAll.bind(implementController));
 
+router.patch("/implements/batch",[
+
+], implementController.updateMany.bind(implementController));
+
+router.patch('/implements/:id', [
+
+], implementController.updateOnly.bind(implementController));
+
 router.get('/implements/group-implement/:id', implementController.getImplementsByIdGroup.bind(implementController));
 
 // Notas sobre .bind(implementController):

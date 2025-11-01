@@ -25,6 +25,8 @@ import { GetGroupImplementBySearch } from '../application/use-cases/group-implem
 import { CreateImplement } from '../application/use-cases/implements/CreateImplement';
 import { GetImplements } from '../application/use-cases/implements/GetImplements';
 import { GetImplementByIdGroup } from '../application/use-cases/implements/GetImplementByIdGroup';
+import { UpdateMultipleImplements } from '../application/use-cases/implements/UpdateMultipleImplements';
+import { UpdateImplement } from '../application/use-cases/implements/UpdateImplement';
 
 import { SequelizeImgRepository } from '../infrastructure/repositories/SequelizeImgRepository';
 // import { ThirdPartyApiService } from '../infrastructure/services/ThirdPartyApiService';
@@ -86,6 +88,17 @@ export function resolveGetImplementByIdGroup(): GetImplementByIdGroup {
         implementRepository
     );
 }
+
+export function resolveUpdateImplement(): UpdateImplement {
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+    return new UpdateImplement(implementRepository);
+}
+
+export function resolveUpdateManyImplement(): UpdateMultipleImplements {
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+    return new UpdateMultipleImplements(implementRepository);
+}
+
 
 export function resolveCreateGroupImplementUseCase(): CreateGroupImplement {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;

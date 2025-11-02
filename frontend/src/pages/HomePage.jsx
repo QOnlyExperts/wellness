@@ -103,11 +103,13 @@ const HomePage = () => {
     <div className="div-principal-home">
       <div>
         <AlertContainer />
-        <Head title="Grupos de Implementos"></Head>
+        <Head title="Grupos de Implementos">
+          <h5 className="sub-title">
+            Selecciona un grupo para ver sus implementos
+          </h5>
 
-        <h5 className="sub-title">
-          Selecciona un grupo para ver sus implementos
-        </h5>
+        </Head>
+
         <HorizontalScroll>
           {groupImplementsList.length > 0 ? (
             groupImplementsList.map((imp, i) => (
@@ -132,9 +134,10 @@ const HomePage = () => {
         </HorizontalScroll>
         {/* </section> */}
 
-        <Head title="Implementos en uso" />
+        <Head title="Implementos en uso">
+          <h5 className="sub-title">Selecciona para devolver</h5>
+        </Head>
 
-        <h5 className="sub-title">Selecciona para devolver</h5>
         <HorizontalScroll>
           {implementList.length > 0 ? (
             implementList.map(

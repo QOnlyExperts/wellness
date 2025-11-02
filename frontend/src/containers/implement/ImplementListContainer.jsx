@@ -15,11 +15,17 @@ import CheckboxList from "../../components/shared/CheckboxList";
 
 
 import NotFoundImage from "../../assets/img/NoImg.svg";
+import ImplementSelectFieldContainer from "./ImplementSelecFieldContainer";
 
-const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
+const ImplementListContainer = ({ groupImplementId, onSelectedImplements, onEdit}) => {
   const { showLoader, hideLoader } = useLoader();
 
   const [implementList, setImplements] = useState([]);
+  const [selected, setSelected] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  const [refresh, setRefresh] = useState(false);
+
 
   useEffect(() => {
     let ignore = false
@@ -28,11 +34,13 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
       
       if (ignore) return;
 
-      let response;
-      // obtener los datos de la API
-      if(groupImplementId && !isNaN(Number(groupImplementId))){
-        response = await ImplementService.getImplementsByIdGroup(groupImplementId);
+      if(!groupImplementId || isNaN(Number(groupImplementId))){
+        window.showAlert(response?.message || "Debe seleccionar un grupo de implementos", "error");
+        return
       }
+      
+      // obtener los datos de la API
+      const response = await ImplementService.getImplementsByIdGroup(groupImplementId);
 
       if (!response.success) {
         window.showAlert(response?.message || "Error al obtener los implementos", "error");
@@ -40,8 +48,7 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
         return;
       }
       setImplements(response.data);
-      window.showAlert(response?.message || "Grupo de implementos creado exitosamente", "success");
-      console.log(1)
+      // window.showAlert(response?.message || "Grupo de implementos creado exitosamente", "success");
     };
 
     fetch();
@@ -50,7 +57,7 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
       ignore = true;
     };
 
-  }, []);
+  }, [groupImplementId, refresh]);
   
   const handleAddImplementClick = (id) => {
     onAddImplement(id); // notifica al padre
@@ -60,9 +67,102 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
     onEdit(id); // envía el id al padre
   };
 
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((i) => i !== id)
+        : [...prev, id];
 
+      // Notificar al padre si existe la prop
+      if (onSelectedImplements) {
+        onSelectedImplements(updated);
+      }
+
+      if(updated.length > 0){
+        setSelected(true);
+      }else{
+        setSelected(false);
+      }
+
+      return updated;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === implementList.length) {
+      // Si todos están seleccionados, desmarcar todos
+      setSelectedIds([]);
+      setSelected(false);
+    } else {
+      // Si no, seleccionar todos los IDs visibles
+      const allIds = implementList.map((imp) => {if(imp.status !== "borrowed" && imp.status !== "retired")  return imp.id});
+      setSelectedIds(allIds);
+      setSelected(true);
+    }
+  };
+
+  const handleStatus = async (e) => {
+
+    if (!groupImplementId || isNaN(Number(groupImplementId))) {
+      window.showAlert(
+        response?.message || "Debe seleccionar un grupo de implementos",
+        "error"
+      );
+      return;
+    }
+
+    if (selectedIds.length <= 0) {
+      window.showAlert("Debe selecciona al menos 1 implemento", "error");
+      return;
+    }
+
+    const newStatus = {};
+
+    newStatus.updates = selectedIds.map((i) => ({
+      id: i,
+      status: e.target.value,
+    }));
+
+    const response = await ImplementService.updateManyImplements(newStatus);
+    if (!response.success) {
+      window.showAlert(
+        response.error.message || "Error al actualizar los estados",
+        "error"
+      );
+      return;
+    }
+
+    window.showAlert(
+      response.message || "Estados actualizados exitosamente",
+      "success"
+    );
+
+    setSelected(false);
+    setSelectedIds([]);
+
+    // En base a la lista prev
+    setImplements((prev) =>
+      // La recorremos
+      prev.map((imp) => {
+        // Luego comparamos el id de la lista actualizada con el id de la lista actual
+        const update = response.data.find((u) => u.id === imp.id);
+        // Si hay un implemento actualizado, retornamos
+        return update ? { ...imp, status: update.status } : imp;
+      })
+    );
+  };
+  
   const columnsHead = [
-    {header: 'Selección', accessor: 'select'},
+    {
+      header: (
+        <CheckboxList
+          title="Todo"
+          checked={selectedIds.length === implementList.length && implementList.length > 0}
+          onChange={toggleSelectAll}
+        />
+      ),
+      accessor: 'select'
+    },
     {header: 'Imagen', accessor: 'img'},
     {header: 'Código', accessor: 'cod'},
     {header: 'Estado', accessor: 'status'},
@@ -100,7 +200,9 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
           }}
         >
           <CheckboxList
-            checked='false'
+            disabled={implement.status === "borrowed" ? true : implement.status === "retired" ? true : false}
+            checked={selectedIds.includes(implement.id)}
+            onChange={() => toggleSelect(implement.id)}
           />
         </div>
       )
@@ -190,6 +292,16 @@ const ImplementListContainer = ({ refresh, groupImplementId, onEdit}) => {
   return (
     <>
       <AlertContainer/>
+      {
+        selected && 
+        <>
+          <ImplementSelectFieldContainer
+            onStatus={(e) => handleStatus(e)}
+          />
+          <h5 className="sub-title">Los implementos prestados y retirados no pueden cambiar su estado</h5>
+        </>
+
+      }          
       <ReusableTable columnsHead={columnsHead} columns={columns} data={dataWithActions} columnStyles={columnStyles} />
     </>
   );

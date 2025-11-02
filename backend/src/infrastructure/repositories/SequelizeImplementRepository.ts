@@ -59,6 +59,25 @@ export class SequelizeImplementRepository implements IImplementRepository {
     return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));
   }
 
+  async findByStatus(status: string): Promise<ImplementEntity[]> {
+    const implementList = await ImplementModel.findAll({
+      where: { 
+        status: status 
+      },
+      include: [{
+        model: ImgModel,
+        attributes: [
+          'id',
+          'file_name',
+          'file_path',
+          'mime_type',
+          'description'
+        ]
+      }]
+    });
+    return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));
+  }
+
   async save(implement: ImplementEntity): Promise<ImplementEntity> {
     // Convertir la Entidad de Dominio a un objeto plano para Sequelize
     const persistenceData = ImplementMapper.toPersistence(implement);

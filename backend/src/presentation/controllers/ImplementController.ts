@@ -7,6 +7,7 @@ import {
   resolveCreateImplementUseCase,
   resolveGetImplementsUseCase,
   resolveGetImplementByIdGroup,
+  resolveGetImplementByStatus,
   resolveUpdateImplement,
   resolveUpdateManyImplement
 } from "../../composition/compositionRoot";
@@ -15,17 +16,20 @@ import { GetImplements } from "../../application/use-cases/implements/GetImpleme
 import { idSchema } from "../../application/schemas/IdSchema";
 import z, { success } from "zod";
 import { GetImplementByIdGroup } from "../../application/use-cases/implements/GetImplementByIdGroup";
+import { GetImplementByStatus } from "../../application/use-cases/implements/GetImplementByStatus";
 import { UploadedFile } from "express-fileupload";
 import { ImgInputDto } from "../../application/dtos/img-file/ImgInputDto";
 import { UpdateImplement } from "../../application/use-cases/implements/UpdateImplement";
 import { UpdateMultipleImplements } from "../../application/use-cases/implements/UpdateMultipleImplements";
 import { ImplementUpdateDto } from "../../application/dtos/implements/ImplementUpdateDto";
+import { statusSchema } from "../../application/schemas/statusSchema";
 
 export class ImplementController {
   // Declara una propiedad para el caso de uso
   private createImplementUseCase: CreateImplement;
   private getImplementsUseCase: GetImplements;
   private getImplementByIdGroup: GetImplementByIdGroup;
+  private getImplementByStatus: GetImplementByStatus;
   private updateImplement: UpdateImplement;
   private updateManyImplements: UpdateMultipleImplements;
 
@@ -35,6 +39,7 @@ export class ImplementController {
     this.createImplementUseCase = resolveCreateImplementUseCase();
     this.getImplementsUseCase = resolveGetImplementsUseCase();
     this.getImplementByIdGroup = resolveGetImplementByIdGroup();
+    this.getImplementByStatus = resolveGetImplementByStatus();
     this.updateImplement = resolveUpdateImplement();
     this.updateManyImplements = resolveUpdateManyImplement();
   }
@@ -192,4 +197,38 @@ export class ImplementController {
     }
   }
   
+  
+  public async getByStatus(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try{
+      
+      const result = statusSchema.safeParse({status: req.params.status});
+      
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.status?.errors.map(e => ({
+            path: "status",
+            message: e
+          })),
+        });
+      }
+
+      // Ahora TypeScript sabe que result.success === true
+      const status = result.data.status; // número seguro
+
+      const implement = await this.getImplementByStatus.execute(status);
+      
+      return res.status(200).json({
+        success: true,
+        message: "Implementos obtenido exitosamente",
+        data: implement
+      });
+
+    }catch (error){
+      next(error);
+    }
+  }
 }

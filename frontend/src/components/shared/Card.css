@@ -1,5 +1,6 @@
 .card {
   min-width: 180px;
+  flex: 1 1 0%;
   height: fit-content;
   background: #fff;
   border-radius: 12px;
@@ -20,8 +21,13 @@
 }
 
 .card-available {
-  /* --box-shadow: #4caf50 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px; */
-  box-shadow: var(--box-shadow);
+  --box-shadow: #4caf50 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
+  /* box-shadow: var(--box-shadow); */
+}
+
+.card-borrowed {
+  --box-shadow: #FF6F61 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
+  /* box-shadow: var(--box-shadow); */
 }
 
 .card-maintenance {

@@ -3,11 +3,12 @@ import "./CheckboxList.css";
 import CheckedIcon from "../icons/CheckedIcon";
 import UncheckedIcon from "../icons/UnCheckedIcon";
 
-const CheckboxList = ({ title, checked, onChange }) => {
+const CheckboxList = ({ title, checked, onChange, disabled }) => {
   return (
     <label className="checkbox-label">
       <input 
         type="checkbox" 
+        disabled={disabled}
         checked={checked} 
         onChange={onChange} 
       />

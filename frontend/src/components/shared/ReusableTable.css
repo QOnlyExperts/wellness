@@ -6,7 +6,7 @@
   border-radius: 10px;
   font-size: .9rem;
   /* arriba | derecha | abajo | izquierda */
-  padding: 0px 10px 10px 0px;
+  padding: 0px 10px 10px 10px;
   overflow: auto;
   overflow-x: auto;
   /* box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */

@@ -28,10 +28,11 @@ const SideBar = () =>{
   // })
 
   const statusImplement = [
-    {label: 'available', labelSpanish: 'Disponible', to: '/admin/implement/available'},
-    {label: 'borrowed', labelSpanish: 'Prestado', to: '/admin/implement/borrowed'},
-    {label: 'maintenance', labelSpanish: 'Mantenimiento', to: '/admin/implement/maintenance'},
-    {label: 'retired', labelSpanish: 'Retirado', to: '/admin/implement/retired'}
+    {label: 'all', labelSpanish: 'Todos', to: '/admin/implement/status/all'},
+    {label: 'available', labelSpanish: 'Disponible', to: '/admin/implement/status/available'},
+    {label: 'borrowed', labelSpanish: 'Prestado', to: '/admin/implement/status/borrowed'},
+    {label: 'maintenance', labelSpanish: 'Mantenimiento', to: '/admin/implement/status/maintenance'},
+    {label: 'retired', labelSpanish: 'Retirado', to: '/admin/implement/status/retired'}
   ]
 
   const navigate = useNavigate();
@@ -41,7 +42,8 @@ const SideBar = () =>{
     return savedState !== null ? JSON.parse(savedState) : false;
   });
 
-  const [openImplementStatusConfig, setOpenPImplementStatusConfig] = useState(false);
+  const [openImplementConfig, setOpenImplementConfig] = useState(false);
+  const [openImplementStatusConfig, setOpenImplementStatusConfig] = useState(false);
 
   const toggleActiveClass = () => {
     setIsActive(!isActive);
@@ -96,13 +98,26 @@ const SideBar = () =>{
     navigate('/')
   }
 
+  const viewImplementConfig = () =>{
+    if(openImplementConfig){
+      
+      setOpenImplementConfig(false)
+    }else{
+      setOpenImplementConfig(true)
+    }
+
+  }
   const viewImplementStatusConfig = () =>{
     if(openImplementStatusConfig){
       
-      setOpenPImplementStatusConfig(false)
+      setOpenImplementStatusConfig(false)
     }else{
-      setOpenPImplementStatusConfig(true)
+      setOpenImplementStatusConfig(true)
     }
+  }
+
+  const closeViews = () => {
+    setOpenImplementStatusConfig(false)
   }
 
   const viewProductConfig = () => {
@@ -151,40 +166,42 @@ const SideBar = () =>{
 
           
           <Link className="link" 
-            id='openImplementStatusConfig'
+            id='openImplementConfig'
             to="/admin/group-implement"
-            onClick={() => viewImplementStatusConfig()}
+            onClick={() => viewImplementConfig()}
           >
             <GamingIcon
               color='#ffffff'
             />
-            <span className="hidden">Grupo de implementos</span>
+            <span className="hidden">Implementos</span>
           </Link>
+
           {
-            // Si openImplementStatusConfig es true se muestra el sub-link
+            // Si openImplementConfig es true se muestra el sub-link
             // De lo contrario no muestra nada.
-            openImplementStatusConfig &&
+            openImplementConfig &&
             <div className='sub-link'>
-              <h5
-                style={{
-                  borderBottom: '1px solid #ffffffff',
-                  padding: '5px 10px'
-                }}
-              >Estados de implementos</h5>
-              {
-                statusImplement.map(status => (
-                  <Link className='link' to={status.to} title=''>
-                    {/* <span className="hidden">{status.labelSpanish}</span> */}
-                    <Badge
-                      style={{
-                        
-                      }}
-                      label={status.label}
-                      value={status.label}
-                    />
-                  </Link>
-                ))
-              }
+              <Link className="link" 
+                id='openImplementConfig'
+                to="/admin/group-implement"
+                onClick={closeViews}
+              >
+                <GamingIcon
+                  color='#ffffff'
+                />
+                <span className="hidden">Grupos</span>
+              </Link>
+
+              <Link className="link" 
+                id='openImplementStatusConfig'
+                to="/admin/implement/status/all"
+                onClick={() => viewImplementStatusConfig()}
+              >
+                <GamingIcon
+                  color='#ffffff'
+                />
+                <span className="hidden">Estados</span>
+              </Link>
             </div>
           }
 {/*           

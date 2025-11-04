@@ -13,36 +13,48 @@ export class UpdateProgram {
     input: UpdateProgramInputDto
   ): Promise<ProgramOutputDto> {
     
-    // Validar si el ID existe
     const existingProgram = await this.programRepository.findById(id);
     if (!existingProgram) {
-      throw new NotFoundError(`el Programa no fue encontrado.`);
+      // CORRECCIÓN: Solo pasamos el nombre de la entidad
+      throw new NotFoundError("Programa");
     }
 
-    // Validar si el nuevo nombre ya existe en OTRO programa
     if (input.name) {
       const existingName = await this.programRepository.findByName(input.name);
       if (existingName && existingName.id !== id) {
-        throw new DuplicateNameError(`Un programa con el nombre "${input.name}" ya existe.`);
+        // CORRECCIÓN: Solo pasamos el parámetro del nombre
+        throw new DuplicateNameError(input.name);
       }
     }
 
-    // Validar si el nuevo código (cod) ya existe en OTRO programa
     if (input.cod) {
       const existingCod = await this.programRepository.findByCod(input.cod);
       if (existingCod && existingCod.id !== id) {
-        throw new ValidationError(`Un programa con el código "${input.cod}" ya existe.`);
+        throw new ValidationError("El código del programa ya existe.");
       }
     }
 
-    // Aplicar los campos del DTO a la entidad existente
-    // Usamos 'Object.assign' para actualizar solo los campos que vienen en el input
-    Object.assign(existingProgram, input);
+    //Actualizar campos opcionales uno por uno
+    if (input.name !== undefined) {
+      existingProgram.name = input.name;
+    }
+    if (input.cod !== undefined) {
+      existingProgram.cod = input.cod;
+    }
+    if (input.facult !== undefined) {
+      existingProgram.facult = input.facult;
+    }
+    if (input.status !== undefined) {
+      existingProgram.status = input.status;
+    }
+    if (input.date !== undefined) {
+      existingProgram.date = input.date;
+    }
 
-    // Guardar los cambios
+   //Guardar la entidad actualizada
     const updatedProgram = await this.programRepository.save(existingProgram);
 
-    // Mapear a DTO de salida
+    //Mapear a DTO de salida
     return ProgramMapper.toOutputDto(updatedProgram);
   }
 }

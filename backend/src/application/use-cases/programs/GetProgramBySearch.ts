@@ -10,29 +10,26 @@ export class GetProgramBySearch {
 
   public async execute(input: ProgramFindDto): Promise<ProgramOutputDto[]> {
     
-    // Validar que se haya proporcionado al menos un criterio
     if (!input.name && !input.cod && !input.facult) {
       throw new ValidationError("Se debe proporcionar al menos un criterio de búsqueda (nombre, código o facultad).");
     }
 
     let programList: ProgramEntity[] = [];
 
+    // ... (lógica de búsqueda sigue igual)
     if (input.name) {
       const program = await this.programRepository.findByName(input.name);
       if (program) programList.push(program);
     }
-
     if (input.cod) {
       const program = await this.programRepository.findByCod(input.cod);
       if (program && !programList.find(p => p.id === program.id)) {
         programList.push(program);
       }
     }
-    
-    // (Añadir lógica similar para 'facult' si creas el método 'findByFacult' en el repositorio)
 
     if (programList.length === 0) {
-      throw new NotFoundError(`No se encontraron programas con los criterios proporcionados.`);
+      throw new NotFoundError("Programa");
     }
 
     return programList.map((entity) => ProgramMapper.toOutputDto(entity));

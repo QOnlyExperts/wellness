@@ -38,7 +38,7 @@ router.get('/programs/:id',
 );
 
 // Actualizar un programa por ID [PUT /api/v1/programs/:id]
-router.put('/programs/:id',
+router.patch('/programs/:id',
   [
     // Usamos .partial() para permitir actualizaciones parciales
     validator.validateSchema(CreateProgramInputDtoSchema.partial())

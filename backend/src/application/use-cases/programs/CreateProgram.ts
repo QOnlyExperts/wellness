@@ -12,18 +12,20 @@ export class CreateProgram {
     // Validar si el nombre ya existe
     const existingName = await this.programRepository.findByName(input.name);
     if (existingName) {
-      throw new DuplicateNameError(`Un programa con el nombre "${input.name}" ya existe.`);
+      // CORRECCIÓN: Solo pasamos el parámetro del nombre
+      throw new DuplicateNameError(input.name);
     }
 
     // Validar si el código (cod) ya existe
     const existingCod = await this.programRepository.findByCod(input.cod);
     if (existingCod) {
-      throw new ValidationError(`Un programa con el código "${input.cod}" ya existe.`);
+      // CORRECCIÓN: Pasamos un mensaje genérico
+      throw new ValidationError("El código del programa ya existe.");
     }
 
-    // Crear Entidad Pura sin ID
+    // ... (el resto del método create y save sigue igual)
     const newProgram = ProgramEntity.create({
-      id: null, // ID es null porque aún no existe en BD
+      id: null,
       name: input.name,
       cod: input.cod,
       facult: input.facult,
@@ -32,8 +34,6 @@ export class CreateProgram {
     });
 
     const createdProgram = await this.programRepository.save(newProgram);
-
-    // Mapear a DTO de salida
     return ProgramMapper.toOutputDto(createdProgram);
   }
 }

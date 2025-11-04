@@ -7,16 +7,15 @@ export class GetProgramById {
   constructor(private readonly programRepository: IProgramRepository) {}
 
   public async execute(id: number): Promise<ProgramOutputDto> {
-    // Validación de ID
     if (isNaN(id) || id <= 0) {
       throw new ValidationError("El ID del programa no es válido.");
     }
 
     const program = await this.programRepository.findById(id);
 
-    // Si no se encuentra, lanzar un error
     if (!program) {
-      throw new NotFoundError(`Programa con id ${id} no encontrado.`);
+      // CORRECCIÓN: Solo pasamos el nombre de la entidad
+      throw new NotFoundError("Programa");
     }
 
     return ProgramMapper.toOutputDto(program);

@@ -14,7 +14,7 @@ import {
 import { CreateProgramInputDto } from "../../application/dtos/programs/CreateProgramInputDto";
 import { ProgramFindDto } from "../../application/dtos/programs/ProgramFindDto";
 import { idSchema } from "../../application/schemas/IdSchema";
-import { CreateProgramInputDtoSchema } from "../../application/schemas/ProgramSchema";
+import { CreateProgramInputDtoSchema, FindProgramSchema } from "../../application/schemas/ProgramSchema";
 
 // Casos de Uso (para tipado en el constructor)
 import { CreateProgram } from "../../application/use-cases/programs/CreateProgram";
@@ -108,14 +108,21 @@ export class ProgramController {
   // --- Método GetBySearch ---
   public async getBySearch(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
-      // Obtenemos los criterios de búsqueda desde req.query
-      const { name, cod, facult } = req.query;
+      // CORRECCIÓN: Validamos req.query usando el nuevo schema
+      const result = FindProgramSchema.safeParse(req.query);
 
-      const inputDto: ProgramFindDto = {
-        name: name as string | undefined,
-        cod: cod as string | undefined,
-        facult: facult as string | undefined
-      };
+      // Si la validación falla, devolvemos un error 400 detallado
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        return res.status(400).json({
+          success: false,
+          message: "Parámetros de búsqueda inválidos.",
+          errors: formattedError.errors, // 'errors' es más genérico para un objeto
+        });
+      }
+
+      // El input DTO ahora son los datos validados
+      const inputDto: ProgramFindDto = result.data;
 
       const programs = await this.getProgramBySearchUseCase.execute(inputDto);
       return res.status(200).json({

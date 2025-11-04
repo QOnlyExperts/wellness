@@ -42,3 +42,13 @@ export const CreateProgramInputDtoSchema = z.object({
 
 // Inferimos el tipo de TypeScript, tal como en el ejemplo
 export type CreateProgramInputDto = z.infer<typeof CreateProgramInputDtoSchema>;
+
+export const FindProgramSchema = z.object({
+  name: z.string().optional(),
+  cod: z.string().optional(),
+  facult: z.string().optional()
+})
+.strict() // No permite parámetros extra
+.refine(data => data.name || data.cod || data.facult, { // Valida que al menos uno exista
+  message: "Se debe proporcionar al menos un criterio de búsqueda (nombre, código o facultad)."
+});

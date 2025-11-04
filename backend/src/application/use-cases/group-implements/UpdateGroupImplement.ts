@@ -24,27 +24,19 @@ export class UpdateGroupImplement {
 
     // Validar si el nombre ya existe
     const existingName = await this.groupImplementRepository.findByName(input.name);
-    if (existingName) {
-      throw new DuplicateNameError(input.name);
-    }
+    if(existingName)
+      if (existingId.id !== existingName?.id) {
+        throw new DuplicateNameError(input.name);
+      }
 
-    // Generamos el prefijo
-    let prefix: string = "";
+    let prefix: string = existingId.prefix;
 
-    let attempts = 0;
-    // Mantener hasta 10 intentos para evitar bucles infinitos
-    while (attempts < 10) {
-      // Generar prefijo
+    if(existingId.name !== existingName?.name){
+      // Generamos el prefijo
       prefix = this.generatePrefix(input.name);
-      // Verificar si el prefijo ya existe
-      const exists = await this.groupImplementRepository.findByPrefix(prefix);
-      // Si no existe, salir del bucle
-      if (!exists) break;
-      // Si existe, intentar de nuevo
-      attempts++;
+      // const exists = await this.groupImplementRepository.findByPrefix(prefix);
+      // if (exists) throw new ValidationError("No se pudo generar un prefijo único, por favor intente con un nombre diferente.");
     }
-
-    if (attempts === 10) throw new ValidationError("No se pudo generar un prefijo único, por favor intente con un nombre diferente.");
 
     // Crear Entidad con ID de entrada
     const newGroupImplement = GroupImplementEntity.create({

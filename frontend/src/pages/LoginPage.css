@@ -108,7 +108,7 @@
   width: 25%;
   height: auto;
   /* border-radius: .75rem; */
-  border-radius: .375rem;
+  border-radius: 10px;
   padding: 20px;
   gap: 10px;
   box-shadow: var(--box-shadow);

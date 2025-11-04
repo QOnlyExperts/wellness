@@ -18,7 +18,10 @@ const ImplementService = {
     return service('/implements/batch', {
       method: 'PATCH',
       body: JSON.stringify(data),
-      headers: headers
+      headers: {
+        ...headers, // <-- 1. Copia todos los headers base
+        "Content-Type": "application/json" // <-- 2. Añade o sobrescribe el Content-Type
+      }
     });
   },
   getImplements: () => {

@@ -33,12 +33,49 @@ export class SequelizeUserRepository implements IUserRepository {
     return userList.map(user => UserMapper.toDomain(user.toJSON()));
   }
 
-  findById(id: number): Promise<UserEntity | null> {
-    
+  async findById(id: number): Promise<UserEntity | null> {
+    const user = await LoginModel.findByPk(id, {
+      attributes: [
+        'email',
+        'is_verified',
+        'is_active',
+        'created_at',
+        'updated_at',
+        'last_login',
+        'info_person_id',
+        'rol_id'
+      ],
+      include: [
+        {
+          model: InfoPersonModel,
+        },{
+          model: RoleModel
+        }
+      ]
+    });
+
+    return UserMapper.toDomain(user?.toJSON());
   }
 
-  findByIdProfile(id: number): Promise<UserEntity | null> {
-    
+  async findByIdProfile(id: number): Promise<UserEntity | null> {
+    const user = await LoginModel.findByPk(id, {
+      attributes: [
+        'email',
+        'is_verified',
+        'is_active',
+        'info_person_id',
+        'rol_id'
+      ],
+      include: [
+        {
+          model: InfoPersonModel,
+        },{
+          model: RoleModel
+        }
+      ]
+    });
+
+    return UserMapper.toDomain(user?.toJSON());
   }
 
   save(user: UserEntity, t: Transaction): Promise<UserEntity> {

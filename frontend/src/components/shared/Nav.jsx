@@ -8,7 +8,8 @@ import './Nav.css';
 // import Logout from '../imgs/logout.svg';
 import { Link } from 'react-router-dom';
 
-import Logo from '../../assets/img/logo-sfn.png'
+// import Logo from '../../assets/img/logo-sfn.png'
+import Logo from '../../assets/img/wellness-logo.png'
 import LogoUcc from '../../assets/img/ucc.png'
 import ConfigIcon from '../icons/Config';
 

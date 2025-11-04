@@ -27,7 +27,8 @@ const GroupImplementService = {
   updateGroupImplement: (id, data) => {
     return service(`/group-implements/${id}`,{
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      headers: headers
     });
   }
 }

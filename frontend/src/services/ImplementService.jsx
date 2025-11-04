@@ -1,7 +1,7 @@
 import service from './indexService.jsx';
 
 const headers = {
-  "Content-Type": "application/json",
+  // "Content-Type": "application/json",
   Accept: "application/json",
   // "Authorization":`Bearer ${localStorage.getItem('token')}`
 };
@@ -10,7 +10,7 @@ const ImplementService = {
   postImplement: (data) => {
     return service('/implements', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data,
       headers: headers
     });
   },

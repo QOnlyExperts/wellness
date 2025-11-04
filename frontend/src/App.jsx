@@ -5,6 +5,7 @@ import SideBar from './components/shared/SideBar';
 import Nav from './components/shared/Nav';
 
 import GroupImplementPage from './pages/group-implement/GroupImplementPage';
+import ImplementPage from './pages/implements/ImplementPage';
 import HomePage from './pages/HomePage';
 import PatternBackground from './components/shared/PatternBackground';
 import LoginPage from './pages/LoginPage';
@@ -16,6 +17,7 @@ function AdminRoutes() {
       <SideBar />
       <Routes>
         <Route path="/group-implement" element={<GroupImplementPage />} />
+        <Route path="/implement/status/:status" element={<ImplementPage />} />
 
         {/* Otras rutas del panel administrativo */}
       </Routes>

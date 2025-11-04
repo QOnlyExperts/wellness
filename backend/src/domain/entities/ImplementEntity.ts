@@ -3,6 +3,7 @@ import { ImplementStatus } from "../enums/ImplementStatus";
 import { ImplementCondition } from "../enums/ImplementCondition";
 import { ImgEntity } from "./ImgEntity";
 import { GroupImplementEntity } from "./GroupImplementEntity";
+import { ValidationError } from "../../shared/errors/DomainErrors";
 
 export class ImplementEntity {
   public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
@@ -66,17 +67,20 @@ export class ImplementEntity {
   }
 
   changeStatus(newStatus: ImplementStatus) {
-    // Reglas de negocio: por ejemplo, no se puede "prestar" un instrumento retirado
-    if (this.status === ImplementStatus.RETIRED && newStatus === ImplementStatus.BORROWED) {
-      throw new Error("No se puede prestar un instrumento retirado");
+    const validTransitions: Record<ImplementStatus, ImplementStatus[]> = {
+      [ImplementStatus.AVAILABLE]: [ImplementStatus.AVAILABLE, ImplementStatus.BORROWED, ImplementStatus.RETIRED, ImplementStatus.MAINTENANCE],
+      [ImplementStatus.BORROWED]: [ImplementStatus.AVAILABLE],
+      [ImplementStatus.RETIRED]: [],
+      [ImplementStatus.MAINTENANCE]: [ImplementStatus.AVAILABLE, ImplementStatus.RETIRED, ImplementStatus.MAINTENANCE],
+    };
+
+    const allowed = validTransitions[this.status] || [];
+
+    if (!allowed.includes(newStatus)) {
+      throw new ValidationError(`No se puede cambiar el estado del implemento ${this.cod} de ${this.status} a ${newStatus}`);
     }
 
     this.status = newStatus;
   }
-
-  isAvailable(): boolean {
-    return this.status === ImplementStatus.AVAILABLE;
-  }
-
 
 }

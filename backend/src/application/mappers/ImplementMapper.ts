@@ -65,14 +65,18 @@ export class ImplementMapper {
     });
   }
 
+  // Extra — soporte para actualizaciones parciales
   // Entidad → objeto para la base de datos (repositorio)
-  public static toPersistence(entity: ImplementEntity): any {
-    return {
-      id: entity.id,
-      cod: entity.cod,
-      status: entity.status,
-      group_implement_id: entity.group_implement_id,
-      categories_id: entity.categories_id
-    };
+  public static toPersistence(entity: Partial<ImplementEntity>): any {
+    const data: any = {};
+    
+    if (entity.id !== undefined) data.id = entity.id;
+    if (entity.cod !== undefined) data.cod = entity.cod;
+    if (entity.status !== undefined) data.status = entity.status;
+    if (entity.condition !== undefined) data.condition = entity.condition;
+    if (entity.group_implement_id !== undefined) data.group_implement_id = entity.group_implement_id;
+    if (entity.categories_id !== undefined) data.categories_id = entity.categories_id;
+
+    return data;
   }
 }

@@ -26,11 +26,12 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   const [errors, setErrors] = useState([]);
   const [formImplement, setFormImplement] = useState({
     prefix: null,
-    status: "available",
+    status: "Seleccionar...",
     condition: "new",
     group_implement_id: null,
     categories_id: null,
-    amount: 0,
+    name: null,
+    amount: null,
     imgs: []
   });
   
@@ -119,10 +120,11 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   const clearInputs = () => {
     setFormImplement({
       prefix: null,
-      status: "available",
+      status: "Seleccionar...",
       condition: "new",
       group_implement_id: null,
       categories_id: null,
+      name: null,
       amount: 0,
       imgs: []
     });
@@ -138,8 +140,8 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     //   otherErrors.push({ path: 'cod', message: 'El código no debe estar vacío' });
     // }
 
-    if (!formImplement.status || formImplement.status.trim() === '' || hasNoXSSAndInjectionSql(formImplement.status)) {
-      otherErrors.push({ path: 'status', message: 'El estado no debe estar vacío' });
+    if (!formImplement.status || formImplement.status.trim() === '' || hasNoXSSAndInjectionSql(formImplement.status) || formImplement.status === 'Seleccionar...') {
+      otherErrors.push({ path: 'status', message: 'Debe seleccionar un estado valido' });
     }
 
     if (!formImplement.condition || formImplement.condition.trim() === '' || hasNoXSSAndInjectionSql(formImplement.condition)) {
@@ -160,7 +162,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
 
     // Validaciones adicionales según sea necesario
     if (otherErrors.length > 0) {
-      window.showAlert("Error en datos del formulario", "error");
+      // window.showAlert("Error en datos del formulario", "error");
       setErrors(otherErrors);
       return;
     }
@@ -185,6 +187,11 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     // Validaciones de respuesta del servidor
     let response;
     if (implementId) {
+      
+      if (isNaN(Number(implementId))) {
+        window.showAlert("Debes seleccionar un implemento valido antes de actualizar", "error")
+        return;
+      }
       // Lógica para actualizar un grupo de implementos existente
       response = await ImplementService.updateGroupImplement(implementId, formImplement);
     }else{
@@ -260,7 +267,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
             <button
               style={{
                 position: "absolute",
-                marginTop: "-270px",
+                marginTop: "-250px",
                 // marginTop: "10px",
               }}
               className="btn-tertiary"
@@ -310,6 +317,15 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
           <h4>Información del instrumento</h4>
           <ImplementSelectFieldContainer
             onStatus={handleChange}
+            errors={errors}
+          />
+
+          <InputField
+            type="text"
+            label="Nombre"
+            name="name"
+            value={formImplement.name}
+            onChange={handleChange}
             errors={errors}
           />
 

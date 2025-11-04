@@ -84,16 +84,6 @@ const ImplementModalContainer = ({ groupImplementId, onClose, onSaved }) => {
                     color="var(--color-tertiary)"
                   />
                 </Button>
-                
-                <div
-                  style={{
-                    display: 'flex',
-                  }}
-                >
-                  <CheckboxList
-                    title="Seleccionar todo"
-                  />
-                </div>
               </div>
               
               <ImplementListContainer 

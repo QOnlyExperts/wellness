@@ -19,6 +19,7 @@ import Chart from "../components/shared/Chart";
 import ChartDoughnutContainer from "../containers/shared/ChartDoughnutContainer";
 import DashboardCard from "../components/shared/DashboardCardDoughnut";
 import ImplementListContainer from "../containers/implement/ImplementListContainer";
+import ImplementUsedList from "../containers/home/ImplementUsedList";
 
 const HomePage = () => {
   const [isOpenModal, setIsModalOpen] = useState(false);
@@ -29,21 +30,20 @@ const HomePage = () => {
   const [implementListByIdGroup, setImplementListByIdGroup] = useState([]);
 
   const horasPorMes = [
-  { mes: "Ene", horas: 10 },
-  { mes: "Feb", horas: 26 },
-  { mes: "Mar", horas: 30 },
-  { mes: "Abr", horas: 10 },
-];
+    { mes: "Ene", horas: 10 },
+    { mes: "Feb", horas: 26 },
+    { mes: "Mar", horas: 30 },
+    { mes: "Abr", horas: 10 },
+  ];
 
   useEffect(() => {
-
     const fetch = async () => {
       showLoader();
       // const response = await GroupImplementService.getGroupImplements();
       const [groupResponse, implementResponse] = await Promise.all([
-          GroupImplementService.getGroupImplements(),
-          ImplementService.getImplements(),
-        ]);
+        GroupImplementService.getGroupImplements(),
+        ImplementService.getImplements(),
+      ]);
 
       if (!groupResponse.success && !implementResponse.success) {
         window.showAlert(
@@ -65,8 +65,7 @@ const HomePage = () => {
     fetch();
   }, []);
 
-  const handleImplement = async(groupId) => {
-
+  const handleImplement = async (groupId) => {
     // if (!implementsByGroup[groupId]) significa:
 
     //   “Si aún no hemos cargado los implementos de este grupo…”
@@ -74,129 +73,146 @@ const HomePage = () => {
     // es decir, si en el objeto implementsByGroup no existe una entrada para ese groupId,
     // entonces haz la petición al backend para traerlos.
 
-  // Si el grupo no tiene datos cargados aún, los obtenemos del backend
-  if (!implementListByIdGroup[groupId]) {
-    const response = await ImplementService.getImplementsByIdGroup(groupId);
+    // Si el grupo no tiene datos cargados aún, los obtenemos del backend
+    if (!implementListByIdGroup[groupId]) {
+      const response = await ImplementService.getImplementsByIdGroup(groupId);
 
-    if (!response.success) return;
+      if (!response.success) return;
 
-    // Hacemos una copia profunda de los datos
-    // Esto evita que las referencias se mezclen entre grupos
-    const cleanData = JSON.parse(JSON.stringify(response.data));
+      // Hacemos una copia profunda de los datos
+      // Esto evita que las referencias se mezclen entre grupos
+      const cleanData = JSON.parse(JSON.stringify(response.data));
 
-    // Guardamos los implementos en el estado, sin mutar otros grupos
-    setImplementListByIdGroup((prev) => ({
-      ...prev,
-      [groupId]: cleanData,
-    }));
-  }
+      // Guardamos los implementos en el estado, sin mutar otros grupos
+      setImplementListByIdGroup((prev) => ({
+        ...prev,
+        [groupId]: cleanData,
+      }));
+    }
 
-  // Aseguramos que se muestre siempre el grupo correcto
-  setGroupImplementId(groupId);
+    // Aseguramos que se muestre siempre el grupo correcto
+    setGroupImplementId(groupId);
 
-  // Abrimos el modal (fuera del if, por si ya estaba cacheado)
-  setIsModalOpen(true);
-};
-
+    // Abrimos el modal (fuera del if, por si ya estaba cacheado)
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="div-principal-home">
-      <div>
-        <AlertContainer />
-        <Head title="Grupos de Implementos"></Head>
+      <AlertContainer />
+      <Head
+        title="Grupos de Implementos"
+        subTitle="Selecciona un grupo para ver sus implementos"
+      />
 
-        <h5 className="sub-title">
-          Selecciona un grupo para ver sus implementos
-        </h5>
-        <HorizontalScroll>
-          {groupImplementsList.length > 0 ? (
-            groupImplementsList.map((imp, i) => (
-              <Card
-                key={i}
-                onClick={() => handleImplement(imp.id)}
-                type={imp.status}
-                images={
-                  imp.images_preview && imp.images_preview.length > 0
-                    ? imp.images_preview.map(
-                        (img) => `http://localhost:4000/${img}`
-                      )
-                    : [NotFoundImage]
-                }
-                title={imp.name}
-                // description={formImplement.status}
-              ></Card>
-            ))
-          ) : (
-            <h4>No hay implementos en el inventario</h4>
-          )}
-        </HorizontalScroll>
-        {/* </section> */}
 
-        <Head title="Implementos en uso" />
+      <HorizontalScroll>
+        {groupImplementsList.length > 0 ? (
+          groupImplementsList.map((imp, i) => (
+            <Card
+              key={i}
+              onClick={() => handleImplement(imp.id)}
+              type={imp.status}
+              images={
+                imp.images_preview && imp.images_preview.length > 0
+                  ? imp.images_preview.map(
+                      (img) => `http://localhost:4000/${img}`
+                    )
+                  : [NotFoundImage]
+              }
+              title={imp.name}
+              // description={formImplement.status}
+            ></Card>
+          ))
+        ) : (
+          <h4>No hay implementos en el inventario</h4>
+        )}
+      </HorizontalScroll>
+      {/* </section> */}
 
-        <h5 className="sub-title">Selecciona para devolver</h5>
-        <HorizontalScroll>
-          {implementList.length > 0 ? (
-            implementList.map(
-              (imp, i) =>
-                imp.status === "borrowed" && (
-                  <Card
-                    key={i}
-                    onClick={() => handleImplement(imp.id)}
-                    type={imp.status}
-                    images={
-                      imp.imgs && imp.imgs.length > 0
-                        ? imp.imgs.map(
-                            (img) => `http://localhost:4000/${img.description}`
-                          )
-                        : [NotFoundImage]
-                    }
-                    title={imp.groupImplement.name}
-                    // description={formImplement.status}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Badge
-                        value={imp.status || "available"}
-                        label={imp.status || "available"}
-                      />
-
-                      <span>{imp.cod}</span>
-                    </div>
-                  </Card>
-                )
-            )
-          ) : (
-            <h3>No hay implementos en uso</h3>
-          )}
-        </HorizontalScroll>
-      </div>
+      <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
 
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           gap: '10px'
         }}
       >
-        <ProgressBar
-          label="Horas acumuladas"
-          min={0}
-          value={96}
-          max={96}
-          color="#29b6f6"
-        />
+        {implementList.length > 0 ? (
+          implementList.map(
+            (imp, i) =>
+              imp.status === "borrowed" && (
+                <Card
+                  key={i}
+                  onClick={() => handleImplement(imp.id)}
+                  type={imp.status}
+                  images={
+                    imp.imgs && imp.imgs.length > 0
+                      ? imp.imgs.map(
+                          (img) => `http://localhost:4000/${img.description}`
+                        )
+                      : [NotFoundImage]
+                  }
+                  title={imp.groupImplement.name}
+                  // description={formImplement.status}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Badge
+                      value={imp.status || "available"}
+                      label={imp.status || "available"}
+                    />
 
-        <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
+                    <span>{imp.cod}</span>
+                  </div>
+                </Card>
+              )
+          )
+        ) : (
+          <h3>No hay implementos en uso</h3>
+        )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            {/* <ProgressBar
+              label="Horas acumuladas"
+              min={0}
+              value={96}
+              max={96}
+              color="#29b6f6"
+            /> */}
 
-        
+            <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
+            <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              height: '30vh',
+              padding: '10px',
+              borderRadius: '10px',
+              boxSizing: 'border-box',
+              overflowY: 'auto',
+              backgroundColor: '#ffffff'
+            }}>
+            <ImplementUsedList/>
+          </div>
       </div>
 
+        
       {isOpenModal && (
         <Modal title="Implementos" onClose={() => setIsModalOpen(false)}>
           <HorizontalScroll>

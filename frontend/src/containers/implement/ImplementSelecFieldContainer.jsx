@@ -2,10 +2,11 @@ import { useState } from "react";
 import SelectField from "../../components/shared/SelectField";
 
 const ImplementSelectFieldContainer = ({onStatus, onCondition, errors}) => {
-  const [status, setStatus] = useState("available");
+  const [status, setStatus] = useState("Seleccionar...");
   const [condition, setCondition] = useState("new");
 
   const optionsStatus = [
+    { value: "select", label: "Seleccionar..." },
     { value: "available", label: "Disponible" },
     // { value: "borrowed", label: "Prestado" },
     { value: "maintenance", label: "En mantenimiento" },
@@ -18,6 +19,9 @@ const ImplementSelectFieldContainer = ({onStatus, onCondition, errors}) => {
 
   const handleStatus = (e) => {
     const select = e.target
+    if(select.value === 'select'){
+      return;
+    }
     setStatus(select.value);
     onStatus(e);
   }
@@ -33,25 +37,26 @@ const ImplementSelectFieldContainer = ({onStatus, onCondition, errors}) => {
         padding: "",
         display: "flex",
         flexDirection: "column",
+        width: '100%',
         gap: "10px",
       }}>
       <SelectField
         label="Estado"
         name="status"
-        value={status || "available"}
+        value={status || "Seleccionar..."}
         options={optionsStatus}
         onChange={(e) => handleStatus(e)}
         errors={errors}
       />
 
-      <SelectField
+      {/* <SelectField
         label="Condición"
         name="condition"
         value={condition || "new"}
         options={optionsCondition}
         onChange={(e) => handleCondition(e)}
         errors={errors}
-      />
+      /> */}
     </div>
   );
 };

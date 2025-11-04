@@ -59,12 +59,12 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
         // background: "linear-gradient(135deg, #E6FFFA, #B2F5EA)",
         background: "#ffffff",
         borderRadius: "10px",
-        padding: "10px",
+        padding: "5px",
         width: "300px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        boxShadow: "var(--box-shadow)",
       }}
     >
-      <h3 style={{ marginBottom: "10px", fontWeight: "bold" }}>Dashboard</h3>
+      <h3 style={{ fontWeight: "bold" }}>Dashboard</h3>
 
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <div style={{ width: "100px", position: "relative" }}>

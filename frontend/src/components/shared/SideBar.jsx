@@ -12,6 +12,8 @@ import HomeIcon from '../icons/HomeIcon';
 import DashboardIcon from '../icons/DashboardIcon';
 import GamingIcon from '../icons/GAmingIcon';
 import Badge from './Badge';
+import ImplementIcon from '../icons/ImplementIcon';
+import GroupImplementIcon from '../icons/GroupImplementIcon';
 
 
 const SideBar = () =>{
@@ -186,7 +188,7 @@ const SideBar = () =>{
                 to="/admin/group-implement"
                 onClick={closeViews}
               >
-                <GamingIcon
+                <GroupImplementIcon
                   color='#ffffff'
                 />
                 <span className="hidden">Grupos</span>
@@ -197,7 +199,7 @@ const SideBar = () =>{
                 to="/admin/implement/status/all"
                 onClick={() => viewImplementStatusConfig()}
               >
-                <GamingIcon
+                <ImplementIcon
                   color='#ffffff'
                 />
                 <span className="hidden">Estados</span>

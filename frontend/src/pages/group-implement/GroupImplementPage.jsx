@@ -3,70 +3,66 @@ import { useState } from "react";
 import GroupImplementHeadContainer from "../../containers/group-implement/GroupImplementHeadContainer";
 import GroupImplementListContainer from "../../containers/group-implement/GroupImplementListContainer";
 import GroupImplementModalContainer from "../../containers/group-implement/GroupImplementModalContainer";
-
 import ImplementModalContainer from "../../containers/implement/ImplementModalContainer";
-
+import GroupStatsContainer from "../../containers/group-implement/GroupStatsContainer";
 
 const GroupImplementPage = () => {
-  
   const [modalType, setModalType] = useState(null); // "group" | "implement" | null
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGroupImplementId, setSelectedGroupImplementId] = useState(null); // nuevo estado
-  const [refreshFlag, setRefreshFlag] = useState(false); // Refresca la lista si el modal guarda cambios
-
+  const [selectedGroupImplementId, setSelectedGroupImplementId] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(false);
   const [selectedSearch, setSelectedSearch] = useState({
     type: null,
-    value: null
+    value: null,
   });
 
   const handleOpenModal = (type, id = null) => {
-
     setModalType(type);
     setSelectedGroupImplementId(id ?? null);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false)
+    setIsModalOpen(false);
     setModalType(null);
     setSelectedGroupImplementId(null);
   };
 
-
   const handleRefresh = () => {
     setRefreshFlag((prev) => !prev);
-
     setSelectedSearch({ type: null, value: null });
-  }
+  };
 
   const handlerSearch = (selected, search) => {
-    // Actualiza los estados de búsqueda según el tipo seleccionado
     if (selected === "name") {
       setSelectedSearch({ type: "name", value: search });
     } else if (selected === "prefix") {
       setSelectedSearch({ type: "prefix", value: search });
     }
+    setRefreshFlag((prev) => !prev);
+  };
 
-    setRefreshFlag((prev) => !prev); // Refresca la lista con los nuevos filtros
-  }
-
-  return(
-    <div className='div-principal'>
+  return (
+    <div className="div-principal">
       <GroupImplementHeadContainer
         onSearch={handlerSearch}
         onRefresh={handleRefresh}
-        onAdd={(id) => handleOpenModal("group")} 
+        onAdd={() => handleOpenModal("group")}
       />
 
-      {/* Maneja la lógica solo de grupos de implementos */}
-      <GroupImplementListContainer 
+      {/* Contenedor de estadísticas */}
+      <GroupStatsContainer refresh={refreshFlag} />
+
+      {/* Lista de grupos */}
+      <GroupImplementListContainer
         refresh={refreshFlag}
         onAddImplement={(id) => handleOpenModal("implement", id)}
         onEdit={(id) => handleOpenModal("group", id)}
         onSearch={selectedSearch}
       />
-      
+
       {/* Modal de Grupo */}
-      {modalType === "group" && (
+      {modalType === "group" && isModalOpen && (
         <GroupImplementModalContainer
           groupImplementId={selectedGroupImplementId}
           onClose={handleCloseModal}
@@ -75,7 +71,7 @@ const GroupImplementPage = () => {
       )}
 
       {/* Modal de Implemento */}
-      {modalType === "implement" && (
+      {modalType === "implement" && isModalOpen && (
         <ImplementModalContainer
           groupImplementId={selectedGroupImplementId}
           onClose={handleCloseModal}
@@ -83,7 +79,7 @@ const GroupImplementPage = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
 export default GroupImplementPage;

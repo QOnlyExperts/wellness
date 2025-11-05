@@ -78,11 +78,14 @@ export class SequelizeUserRepository implements IUserRepository {
     return UserMapper.toDomain(user?.toJSON());
   }
 
-  save(user: UserEntity, t: Transaction): Promise<UserEntity> {
-    
+  async save(user: UserEntity, t: Transaction): Promise<UserEntity> {
+    const persistenceData = UserMapper.toPersistence(user);
+    const saveModel = await LoginModel.create(persistenceData, {transaction: t});
+
+    return UserMapper.toDomain(saveModel.toJSON());
   }
 
-  updatePassword(id: number, data: Partial<UserEntity>): Promise<UserEntity> {
-    
+  async updatePassword(id: number, user: Partial<UserEntity>): Promise<UserEntity> {
+    await LoginModel.update({password: user.password}, {where: {id: id}});
   }
 }

@@ -33,7 +33,7 @@
   display: flex;
   justify-content: start;
   align-items: center;
-  width: 60%;
+  width: 80%;
   height: 80px;
   padding: 10px;
   gap: 25px;
@@ -138,7 +138,7 @@
 .menu ul{
   display: flex;
   justify-content: end;
-  width: 60%;
+  width: 80%;
 }
 
 .menu li {
@@ -282,6 +282,15 @@
   background-color: #f0f0f0;
 }
 
+
+@media only screen and (min-width: 1369px) {
+  .menu2 {
+    width: 60%;
+  }
+  .menu ul{
+    width: 60%;
+  }
+}
 
 /* @media only screen and (min-width: 1368px) {
   .menu, .categories{

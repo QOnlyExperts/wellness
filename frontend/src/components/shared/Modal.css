@@ -22,7 +22,7 @@
   border-bottom: 1px solid #ddd;
 }
 
-.modal {
+.modal-content {
   display: flex;
   flex-direction: column;
   height: auto;

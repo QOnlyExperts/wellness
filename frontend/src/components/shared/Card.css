@@ -1,18 +1,72 @@
-.card {
-  min-width: 180px;
-  /* flex: 1 1 0%; */
-  /* Para uso con flex, mantengan el contenedor completamente lleno */
-  /* flex-basis: 15%; */
-  /* flex-basis: calc(20% - 1rem); */
-  /* min-width: calc(25% - 1rem); */
-  height: fit-content;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: var(--box-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+
+
+.implements-list {
+  display: flex;
+  flex-wrap: nowrap;
+  /* padding: 10px; */
+  /* overflow-x: auto; */
+  scrollbar-width: none;
 }
+
+.implements-list::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  min-width: 200px;
+  min-height: 260px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.15s;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  border-radius: 12px;
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.card-front {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #00b8b8, #008c8c);
+  color: #fff;
+  z-index: 1;
+}
+
+.close-btn {
+  background: #fff;
+  color: #00b8b8;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn:hover {
+  background: #f1f1f1;
+}
+
+
+
 
 .card:hover {
   transform: translateY(-1px);
@@ -79,7 +133,6 @@
 .description {
   text-align: center;
   text-transform: uppercase;
-  margin: 10px;
   border-radius: 5px;
   padding: 10px;
   font-size: 0.9rem;

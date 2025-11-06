@@ -1,3 +1,6 @@
+
+import bcrypt from 'bcrypt';
+
 import { Transaction } from "sequelize";
 import { UserEntity } from "../../domain/entities/UserEntity";
 import { IUserRepository } from "../../domain/interfaces/IUserRepository";
@@ -80,12 +83,24 @@ export class SequelizeUserRepository implements IUserRepository {
 
   async save(user: UserEntity, t: Transaction): Promise<UserEntity> {
     const persistenceData = UserMapper.toPersistence(user);
+    // Encriptamos la contraseña
+    const password = await bcrypt.hash(user.password, 10);
+    const newUser = {
+      ...user,
+      password
+    }
+
     const saveModel = await LoginModel.create(persistenceData, {transaction: t});
 
     return UserMapper.toDomain(saveModel.toJSON());
   }
 
-  async updatePassword(id: number, user: Partial<UserEntity>): Promise<UserEntity> {
-    await LoginModel.update({password: user.password}, {where: {id: id}});
-  }
+  // async updatePassword(id: number, user: Partial<UserEntity>): Promise<UserEntity> {
+  
+  //   if(!user){
+
+  //   }
+
+  //   await LoginModel.update({password: user.password}, {where: {id: id}});
+  // }
 }

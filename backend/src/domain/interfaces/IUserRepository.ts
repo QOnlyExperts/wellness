@@ -6,6 +6,6 @@ export interface IUserRepository {
   findById(id: number): Promise<UserEntity | null>;
   findByIdProfile(id: number): Promise<UserEntity | null>;
   save(user: UserEntity, t: Transaction): Promise<UserEntity>;
-  updatePassword(id: number, data: Partial<UserEntity>): Promise<UserEntity>;
+  // updatePassword(id: number, data: Partial<UserEntity>): Promise<UserEntity>;
   // updatePartial(id: number, data: Partial<UserEntity>): Promise<UserEntity>;
 }

@@ -131,11 +131,6 @@ export class ImplementController {
     try {
       
       const { updates } = req.body;
-      console.log(updates)
-
-      if (!Array.isArray(updates) || updates.length === 0) {
-        return res.status(400).json({ message: "Se requiere un arreglo de implementos para actualizar" });
-      }
 
       // Ejecutar el caso de uso sin necesidad de DTO de entrada
       const implementsList = await this.updateManyImplements.execute(updates);

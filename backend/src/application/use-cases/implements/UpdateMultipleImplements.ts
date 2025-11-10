@@ -13,6 +13,11 @@ export class UpdateMultipleImplements {
   public async execute(
     updates: ImplementUpdateDto[]
   ): Promise<ImplementOutputDto[]> {
+    
+    // Validar que el parámetro no esté vacío o nulo
+    if (!Array.isArray(updates) || updates.length === 0) {
+      throw new Error("El arreglo de implementos no puede estar vacío.");
+    }
 
     const updatedImplements: ImplementOutputDto[] = [];
 

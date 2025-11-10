@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -44,6 +44,8 @@ import { CreateRole } from "../application/use-cases/roles/CreateRole";
 import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
+
+// import {  }
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies = {

@@ -51,8 +51,8 @@ export class InfoPersonEntity {
       throw new ValidationError("La identificación es obligatoria");
     }
 
-    if (props.identification.length > 10) {
-      throw new ValidationError("La identificación no puede tener más de 10 caracteres");
+    if (props.identification.length < 8 || props.identification.length > 10) {
+      throw new ValidationError("La identificación no puede tener menos de 8 caracteres ni mas de 10");
     }
 
     if (!props.program_id) {

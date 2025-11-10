@@ -44,6 +44,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
   /* // 👈 ocupa espacio proporcional dentro del contenedor */
   background: #ffffffff;
   border-radius: 12px;

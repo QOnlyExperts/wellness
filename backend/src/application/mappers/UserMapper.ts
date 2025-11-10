@@ -17,6 +17,8 @@ export class UserMapper {
       created_at: user.created_at,
       updated_at: user.updated_at,
       last_login: user.last_login ?? null,
+      info_person_id: user.info_person_id,
+      rol_id: user.rol_id,
       info_person: user.info_person ? InfoPersonMapper.toOutputDto(user.info_person) : null,
       role: user.role
         ? {
@@ -36,9 +38,6 @@ export class UserMapper {
    * (igual que en tus otros mappers). Ajusta si tu modelo usa otros alias.
    */
   public static toDomain(data: any): UserEntity {
-    if (!data) {
-      throw new Error("No se recibió data válida para mapear a UserEntity");
-    }
 
     // Role (si viene cargada desde Sequelize)
     const role: RoleEntity | undefined = data.Role
@@ -57,13 +56,15 @@ export class UserMapper {
     return UserEntity.create({
       id: data.id ?? null,
       email: data.email,
-      password: data.password,
+      password: data.password ?? "",
       salt: data.salt,
       is_verified: data.is_verified ?? false,
-      is_active: data.is_active ?? true,
+      is_active: data.is_active ?? false,
       created_at: data.created_at ? new Date(data.created_at) : new Date(),
       updated_at: data.updated_at ? new Date(data.updated_at) : new Date(),
-      last_login: data.last_login ? new Date(data.last_login) : null,
+      last_login: data.last_login ? new Date(data.last_login) : new Date(),
+      info_person_id: data.info_person_id,
+      rol_id: data.rol_id,
       info_person: infoPerson,
       role,
     });

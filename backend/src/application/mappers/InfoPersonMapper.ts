@@ -23,7 +23,7 @@ export class InfoPersonMapper {
       name2: data.name2 ?? "",
       last_name1: data.last_name1,
       last_name2: data.last_name2 ?? "",
-      identification: data.identification,
+      identification: data.identification ?? '',
       program_id: data.program_id,
     });
   }

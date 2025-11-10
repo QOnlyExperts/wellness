@@ -7,3 +7,6 @@ export const ICategoryRepositoryToken = Symbol.for('ICategoryRepository');
 
 export const ImgServiceToken = Symbol.for('ImgService');
 export const IRoleRepositoryToken = Symbol.for('IRoleRepository');
+
+export const IUserRepositoryToken = Symbol.for('IUserRepository');
+export const IInfoPersonRepositoryToken = Symbol.for('IInfoPersonRepository');

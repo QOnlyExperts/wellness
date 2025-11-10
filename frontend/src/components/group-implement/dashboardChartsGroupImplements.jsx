@@ -47,7 +47,9 @@ const DashboardChartsGroupImplements = ({ implementCategory}) => {
       {/* Gráfica de barras */}
       <div
         style={{
-          // width: '100%'
+          position: 'relative',
+          width: '100%',
+          height: '200px'
           // background: "#fff",
           // borderRadius: "12px",
           // padding: "15px",

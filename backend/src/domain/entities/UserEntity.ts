@@ -7,12 +7,14 @@ export class UserEntity {
   public readonly id: number | null;
   public email: string;
   public password: string;
-  public salt: string;
+  public salt?: string;
   public is_verified: boolean;
   public is_active: boolean;
   public created_at: Date;
   public updated_at: Date;
   public last_login?: Date | null;
+  public info_person_id: number;
+  public rol_id: number;
   public info_person?: InfoPersonEntity;
   public role?: RoleEntity;
 
@@ -20,12 +22,14 @@ export class UserEntity {
     id: number | null;
     email: string;
     password: string;
-    salt: string;
+    salt?: string;
     is_verified: boolean;
     is_active: boolean;
     created_at: Date;
     updated_at: Date;
     last_login?: Date | null;
+    info_person_id: number;
+    rol_id: number;
     info_person?: InfoPersonEntity;
     role?: RoleEntity;
   }) {
@@ -38,6 +42,8 @@ export class UserEntity {
     this.created_at = props.created_at;
     this.updated_at = props.updated_at;
     this.last_login = props.last_login;
+    this.info_person_id = props.info_person_id;
+    this.rol_id = props.rol_id;
     this.info_person = props.info_person;
     this.role = props.role;
   }
@@ -52,6 +58,8 @@ export class UserEntity {
     created_at?: Date;
     updated_at?: Date;
     last_login?: Date | null;
+    info_person_id: number;
+    rol_id: number;
     info_person?: InfoPersonEntity;
     role?: RoleEntity;
   }): UserEntity {
@@ -59,7 +67,7 @@ export class UserEntity {
       throw new ValidationError("El correo electrónico no es válido");
     }
 
-    if (props.password.length < 8) {
+    if (props.password.length < 8 || props.password.length > 16) {
       throw new ValidationError("La contraseña debe tener entre 8 y 16 caracteres");
     }
 
@@ -67,12 +75,14 @@ export class UserEntity {
       id: props.id,
       email: props.email,
       password: props.password,
-      salt: props.salt,
+      salt: props.salt ?? "",
       is_verified: props.is_verified ?? false,
-      is_active: props.is_active ?? true,
+      is_active: props.is_active ?? false,
       created_at: props.created_at ?? new Date(),
       updated_at: props.updated_at ?? new Date(),
-      last_login: props.last_login ?? null,
+      last_login: props.last_login ?? new Date(),
+      info_person_id: props.info_person_id,
+      rol_id: props.rol_id,
       info_person: props.info_person,
       role: props.role,
     });

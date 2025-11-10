@@ -67,35 +67,33 @@ const Card = React.memo(
           {footer && <div className="footer">{footer}</div>}
 
           {children && <div className="children">{children}</div>}
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: '10px'
-            }}
-          >
-            <Badge
-              value={type || "available"}
-              label={type || "available"}
-            />
-            <span>{cod}</span>
-          </div>
+          
+          {
+            type && 
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Badge value={type || "available"} label={type || "available"} />
+                <span>{cod}</span>
+              </div>
+          }
         </div>
 
         {/* --- Cara trasera --- */}
-        <div className="card-face card-back">
+        <div
+          className="card-face card-back"
+          onClick={(e) => {
+            e.stopPropagation(); // evita que se dispare el click principal
+            onClose();
+          }}
+        >
           <h5>{title}</h5>
-          <button
-            className="close-btn"
-            onClick={(e) => {
-              e.stopPropagation(); // evita que se dispare el click principal
-              onClose();
-            }}
-          >
-            Cerrar
-          </button>
+          {/* <button className="close-btn">Cerrar</button> */}
         </div>
       </motion.div>
     );

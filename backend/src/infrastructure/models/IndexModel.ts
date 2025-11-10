@@ -5,6 +5,8 @@ import { GroupImplementModel } from "./GroupImplementModel";
 import { LoginModel } from "./LoginModel";
 import { InfoPersonModel } from "./InfoPersonModel";
 
+// import 
+
 ImplementModel.hasMany(ImgModel, {foreignKey: "implement_id"});
 ImgModel.belongsTo(ImplementModel, {foreignKey: "implement_id"});
 

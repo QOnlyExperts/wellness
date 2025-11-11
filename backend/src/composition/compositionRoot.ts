@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken, IHashServiceToken, IEmailServiceToken, IInfoPersonCreatorToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -49,10 +49,15 @@ import { RegisterUseCase } from '../application/use-cases/users/register/Registe
 import { SequelizeUserRepository } from '../infrastructure/repositories/SequelizeUserRepository';
 import { SequelizeInfoPersonRepository } from '../infrastructure/repositories/SequelizeInfoPersonRepository';
 import { CreateUserUseCase } from '../application/use-cases/users/CreateUserUseCase';
+import { CreateInfoPersonUseCase } from '../application/use-cases/info-person/CreateInfoPersonUseCase';
+import { HashService } from '../application/services/HashService';
+import { EmailService } from '../application/services/EmailService';
+import { IUserCreator } from '../domain/interfaces/IUserCreator';
+import { IInfoPersonCreator } from '../domain/interfaces/IInfoPersonCreator';
 // import {  }
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
-export const Dependencies = {
+export const Dependencies: Record<symbol, any> = {
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
     [IImgRepositoryToken]: new SequelizeImgRepository(),
     [IImplementCounterPortToken]: new SequelizeImplementCounterAdapter(),
@@ -60,11 +65,41 @@ export const Dependencies = {
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
     [ImgServiceToken]: new ImgService(),
     [IRoleRepositoryToken]: new SequelizeRoleRepository(),
+
     [IUserRepositoryToken]: new SequelizeUserRepository(),
     [IInfoPersonRepositoryToken]: new SequelizeInfoPersonRepository(),
-    [IUserCreatorToken]: new CreateUserUseCase(),
+
+    [IHashServiceToken]: new HashService(), // por ejemplo, 10 saltRounds
+    [IEmailServiceToken]: new EmailService(),
     
 };
+// Caso de uso de crear usuario
+Dependencies[IUserCreatorToken] = new CreateUserUseCase(
+    Dependencies[IUserRepositoryToken],
+);
+
+// Caso de uso de crear usuario
+Dependencies[IInfoPersonCreatorToken] = new CreateInfoPersonUseCase(
+    Dependencies[IInfoPersonRepositoryToken],
+);
+
+export function resolveRegisterUserUseCase(): RegisterUseCase {
+    const userCreator = Dependencies[IUserCreatorToken] as IUserCreator;
+    const infoPersonCreator = Dependencies[IInfoPersonCreatorToken] as IInfoPersonCreator;
+    const hashService = Dependencies[IHashServiceToken] as HashService;
+    const emailService = Dependencies[IEmailServiceToken] as EmailService;
+    // const infoPersonCreator = Dependencies[IInfoPersonCreatorToken];
+
+
+    return new RegisterUseCase(
+        userCreator,
+        infoPersonCreator,
+        hashService,
+        emailService
+    );
+}
+
+
 
 // --- RESOLVERS ---
 

@@ -3,10 +3,10 @@ import { InfoPersonEntity } from "../../../domain/entities/InfoPersonEntity";
 import { InfoPersonInputDto } from "../../dtos/info-person/InfoPersonInputDto";
 import { InfoPersonOutputDto } from "../../dtos/info-person/InfoPersonOutputDto";
 import { Transaction } from "sequelize";
-import { ValidationError } from "../../../shared/errors/DomainErrors";
+import { DomainError, ValidationError } from "../../../shared/errors/DomainErrors";
 import { InfoPersonMapper } from "../../mappers/InfoPersonMapper";
 
-export class CreateInfoPersonUserCase {
+export class CreateInfoPersonUseCase {
   constructor(
     private userInfoPersonRepository: IInfoPersonRepository
   ) {}
@@ -16,8 +16,8 @@ export class CreateInfoPersonUserCase {
     t: Transaction
   ): Promise<InfoPersonOutputDto>{
 
-    if(!input){
-      throw new ValidationError("No se encontraron datos personales");
+    if (!input.name1 || !input.last_name1 || !input.identification) {
+      throw new ValidationError("Los campos obligatorios están incompletos.");
     }
 
     const info = InfoPersonEntity.create({
@@ -31,8 +31,8 @@ export class CreateInfoPersonUserCase {
     });
 
     const createdInfo = await this.userInfoPersonRepository.save(info, t);
-    if(!createdInfo){
-      throw new ValidationError("No se pudo crear la información personal");
+    if (!createdInfo) {
+      throw new DomainError("No se pudo persistir la información personal en la base de datos.");
     }
 
     return {

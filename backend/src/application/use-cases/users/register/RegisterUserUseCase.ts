@@ -49,7 +49,7 @@ export class RegisterUseCase {
         email: input.email,
         password: hashedPassword,
         salt: salt,
-        info_person_id: 1,
+        info_person_id: info.id!, // id garantizado tras persistencia
         rol_id: 1,
       },
       t

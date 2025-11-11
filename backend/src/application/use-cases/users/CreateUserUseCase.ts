@@ -7,7 +7,7 @@ import { UserOutputDto } from "../../dtos/users/UserOutputDto";
 
 import { Transaction } from "sequelize";
 import { InfoPersonEntity } from "../../../domain/entities/InfoPersonEntity";
-import { ValidationError } from "../../../shared/errors/DomainErrors";
+import { DomainError, ValidationError } from "../../../shared/errors/DomainErrors";
 import { UserMapper } from "../../mappers/UserMapper";
 // import
 
@@ -20,6 +20,10 @@ export class CreateUserUseCase {
     input: UserInputDto,
     t: Transaction
   ): Promise<UserOutputDto> {
+
+    if(!input.email || !input.password || !input.salt){
+      throw new ValidationError("Los campos obligatorios están incompletos.");
+    }
 
     const user = UserEntity.create({
       id: null,
@@ -39,7 +43,7 @@ export class CreateUserUseCase {
     // Pasamos el usuario creado y la transacción
     const createdUser = await this.userRepository.save(user, t);
     if (!createdUser) {
-      throw new ValidationError("No se pudo crear el usuario");
+      throw new DomainError("No se pudo persistir la información personal en la base de datos.");
     }
 
     // Retornamos con el dto de salida

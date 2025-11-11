@@ -17,3 +17,9 @@ export class ValidationError extends AppError {
     super(message, 400, "ValidationError");
   }
 }
+
+export class DomainError extends AppError {
+  constructor(message: string = "Error interno del dominio") {
+    super(message, 500, "DomainError");
+  }
+}

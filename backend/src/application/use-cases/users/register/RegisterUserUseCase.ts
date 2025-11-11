@@ -8,12 +8,16 @@ import { UserOutputDto } from "../../../dtos/users/UserOutputDto";
 import db from "../../../../infrastructure/database/db";
 import { RegisterUserInputDto } from "../../../dtos/users/register/RegisterUserInputDto";
 import { RegisterUserOutputDto } from "../../../dtos/users/register/RegisterUserOutputDto";
+import { IHashService } from '../../../../domain/interfaces/services/IHashService';
+import { IEmailService } from '../../../../domain/interfaces/services/EmailServer';
 
 export class RegisterUseCase {
 
   constructor(
     private readonly userCreator: IUserCreator,
-    private readonly infoPersonCreator: IInfoPersonCreator
+    private readonly infoPersonCreator: IInfoPersonCreator,
+    private readonly hashService: IHashService,
+    private readonly emailService: IEmailService
   ) {}
 
 
@@ -40,7 +44,7 @@ export class RegisterUseCase {
     const hashedPassword = await bcrypt.hash(input.password, salt);
 
     // Creamos el usuario
-    const user = await this.userCreator.execute({
+    await this.userCreator.execute({
         id: null,
         email: input.email,
         password: hashedPassword,

@@ -10,3 +10,9 @@ export const IRoleRepositoryToken = Symbol.for('IRoleRepository');
 
 export const IUserRepositoryToken = Symbol.for('IUserRepository');
 export const IInfoPersonRepositoryToken = Symbol.for('IInfoPersonRepository');
+
+export const IUserCreatorToken = Symbol.for('IUserCreator');
+export const IInfoPersonCreatorToken = Symbol.for('IInfoPersonCreator');
+
+export const IHashServiceToken = Symbol.for('IHashService');
+export const IEmailServiceToken = Symbol.for('IEmailService');

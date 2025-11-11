@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -45,6 +45,10 @@ import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
 
+import { RegisterUseCase } from '../application/use-cases/users/register/RegisterUserUseCase';
+import { SequelizeUserRepository } from '../infrastructure/repositories/SequelizeUserRepository';
+import { SequelizeInfoPersonRepository } from '../infrastructure/repositories/SequelizeInfoPersonRepository';
+import { CreateUserUseCase } from '../application/use-cases/users/CreateUserUseCase';
 // import {  }
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
@@ -56,6 +60,10 @@ export const Dependencies = {
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
     [ImgServiceToken]: new ImgService(),
     [IRoleRepositoryToken]: new SequelizeRoleRepository(),
+    [IUserRepositoryToken]: new SequelizeUserRepository(),
+    [IInfoPersonRepositoryToken]: new SequelizeInfoPersonRepository(),
+    [IUserCreatorToken]: new CreateUserUseCase(),
+    
 };
 
 // --- RESOLVERS ---

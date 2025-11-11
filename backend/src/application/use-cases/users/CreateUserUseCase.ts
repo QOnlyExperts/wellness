@@ -1,6 +1,3 @@
-import bcrypt from 'bcrypt';
-
-
 import { IUserRepository } from "../../../domain/interfaces/IUserRepository";
 
 import { UserEntity } from "../../../domain/entities/UserEntity";
@@ -23,24 +20,19 @@ export class CreateUserUseCase {
     input: UserInputDto,
     t: Transaction
   ): Promise<UserOutputDto> {
-    // Encriptamos la contraseña
-    // Al crear usuario
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds); // Salt aleatorio único por usuario
-    const password = await bcrypt.hash(input.password, salt);
 
     const user = UserEntity.create({
       id: null,
       email: input.email,
-      password: password,
-      salt: salt,
-      is_verified: input.is_verified ?? false,
-      is_active: input.is_active ?? false,
-      created_at: input.created_at ?? new Date(),
-      updated_at: input.updated_at ?? new Date(),
-      last_login: input.last_login ?? new Date(),
-      info_person_id: 1,
-      rol_id: 1,
+      password: input.password,
+      salt: input.salt,
+      is_verified: false,
+      is_active: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+      last_login: new Date(),
+      info_person_id: input.info_person_id,
+      rol_id: input.rol_id,
     });
     // user.verifyEmail();
 

@@ -76,85 +76,99 @@ const HomePage = () => {
 
   return (
     <div className="div-principal-home">
-      
-      <Head title="Grupos de implementos" subTitle="Selecciona para solicitar" />
+      <Head
+        title="Grupos de implementos"
+        subTitle="Selecciona para solicitar"
+      />
 
       <HorizontalScroll>
-        {groupImplementsList.map((imp) =>
-          selectedGroup === null || selectedGroup === imp.id ? (
-            <div
-              key={imp.id}
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Card
-                onClick={() => {
-                  handleImplement(imp.id);
-                  setSelectedGroup(selectedGroup === imp.id ? null : imp.id);
+        {groupImplementsList.length > 0 ?
+          groupImplementsList.map((imp) =>
+            selectedGroup === null || selectedGroup === imp.id ? (
+              <div
+                key={imp.id}
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-                type="retired"
-                images={
-                  imp.images_preview?.length
-                    ? imp.images_preview.map(
-                        (img) => `http://localhost:4000/${img}`
-                      )
-                    : [NotFoundImage]
-                }
-                title={imp.name}
-                expanded={expandedCardId === imp.id}
-                onClose={() => {
-                  setExpandedCardId(null);
-                  setSelectedGroup(selectedGroup === imp.id ? null : imp.id);
-                }} // cierre al presionar el botón
-              />
+              >
+                <Card
+                  onClick={() => {
+                    handleImplement(imp.id);
+                    setSelectedGroup(selectedGroup === imp.id ? null : imp.id);
+                  }}
+                  type="no-border"
+                  images={
+                    imp.images_preview?.length
+                      ? imp.images_preview.map(
+                          (img) => `http://localhost:4000/${img}`
+                        )
+                      : [NotFoundImage]
+                  }
+                  title={imp.name}
+                  expanded={expandedCardId === imp.id}
+                  onClose={() => {
+                    setExpandedCardId(null);
+                    setSelectedGroup(selectedGroup === imp.id ? null : imp.id);
+                  }} // cierre al presionar el botón
+                />
 
-              {/* Aparecen los implementos uno por uno */}
-              <AnimatePresence>
-                {expandedCardId === imp.id && (
-                  <motion.div
-                    className="implements-list"
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ staggerChildren: 0.15, delayChildren: 0.3 }}
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      paddingLeft: "20px",
-                    }}
-                  >
-                    {implementListByIdGroup[imp.id]?.map((child, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -30 }}
-                        transition={{ duration: 0.4 }}
-                      >
-                        <Card
-                          type={child.status}
-                          cod={child.cod}
-                          title={child.cod}
-                          images={
-                            child.imgs?.length
-                              ? child.imgs.map(
-                                  (img) =>
-                                    `http://localhost:4000/${img.description}`
-                                )
-                              : [NotFoundImage]
-                          }
-                          // onClick={}
-                        />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : null
+                {/* Aparecen los implementos uno por uno */}
+                <AnimatePresence>
+                  {expandedCardId === imp.id && (
+                    <motion.div
+                      className="implements-list"
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ staggerChildren: 0.15, delayChildren: 0.3 }}
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        paddingLeft: "20px",
+                      }}
+                    >
+                      {implementListByIdGroup[imp.id]?.map((child, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -30 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -30 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <Card
+                            type={child.status}
+                            cod={child.cod}
+                            title={child.cod}
+                            images={
+                              child.imgs?.length
+                                ? child.imgs.map(
+                                    (img) =>
+                                      `http://localhost:4000/${img.description}`
+                                  )
+                                : [NotFoundImage]
+                            }
+                            // onClick={}
+                          />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : null
+          )
+          : (
+          <div>
+            {/* <h3>No hay implementos en uso</h3> */}
+            <Card
+              // type={}
+              // cod={child.cod}
+              title={"No seleccionado"}
+              images={[NotFoundImage]}
+            />
+          </div>
         )}
       </HorizontalScroll>
 
@@ -165,6 +179,7 @@ const HomePage = () => {
           display: "flex",
           flexDirection: "row",
           gap: "10px",
+          padding: ".5rem"
         }}
       >
         {implementList.length > 0 ? (
@@ -194,9 +209,7 @@ const HomePage = () => {
               // type={}
               // cod={child.cod}
               title={"No seleccionado"}
-              images={
-                [NotFoundImage]
-              }
+              images={[NotFoundImage]}
             />
           </div>
         )}

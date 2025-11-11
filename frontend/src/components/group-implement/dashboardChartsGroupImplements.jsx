@@ -49,7 +49,7 @@ const DashboardChartsGroupImplements = ({ implementCategory}) => {
         style={{
           position: 'relative',
           width: '100%',
-          height: '200px'
+          height: '100px'
           // background: "#fff",
           // borderRadius: "12px",
           // padding: "15px",

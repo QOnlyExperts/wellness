@@ -69,18 +69,18 @@ const Card = React.memo(
           {children && <div className="children">{children}</div>}
           
           {
-            type && 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
-                <Badge value={type || "available"} label={type || "available"} />
-                <span>{cod}</span>
-              </div>
+            // type && 
+            //   <div
+            //     style={{
+            //       display: "flex",
+            //       justifyContent: "space-between",
+            //       alignItems: "center",
+            //       gap: "10px",
+            //     }}
+            //   >
+            //     <Badge value={type || "available"} label={type || "available"} />
+            //     <span>{cod}</span>
+            //   </div>
           }
         </div>
 

@@ -74,6 +74,10 @@
 }
 
 /* Colores opcionales por tipo */
+.card-no-border {
+  /* --box-shadow: #ffffff 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px; */
+}
+
 .card-retired {
   --box-shadow: #9e9e9e 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
 }

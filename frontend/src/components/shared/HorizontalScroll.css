@@ -16,8 +16,8 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   gap: 1rem;
-  padding: 1.5rem;
-  background-color: #ffffff;
+  padding: .5rem;
+  /* background-color: #ffffff; */
   scrollbar-width: none; /* Firefox */
 }
 

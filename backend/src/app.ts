@@ -15,6 +15,8 @@ import { implementRouter } from './presentation/routers/implementRoutes';
 import { categoryRouter } from "./presentation/routers/CategoryRoutes";
 
 import { roleRouter } from './presentation/routers/RoleRoutes';
+import { programRouter } from './presentation/routers/ProgramRoutes';
+
 
 import path from 'path';
 // Crear la aplicación Express
@@ -45,6 +47,7 @@ app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);
 app.use('/api/v1', categoryRouter);
 app.use('/api/v1', roleRouter);
+app.use('/api/v1', programRouter);
 app.use(errorHandler);
 
 app.use('/', (req: Request, res: Response) => {

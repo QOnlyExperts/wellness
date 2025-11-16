@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -45,6 +45,18 @@ import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
 
+// Importaciones de Casos de Uso (Program)
+import { CreateProgram } from "../application/use-cases/programs/CreateProgram";
+import { GetPrograms } from "../application/use-cases/programs/GetPrograms";
+import { GetProgramById } from "../application/use-cases/programs/GetProgramById";
+import { UpdateProgram } from "../application/use-cases/programs/UpdateProgram";
+import { GetProgramBySearch } from "../application/use-cases/programs/GetProgramBySearch";
+
+// Importa la interfaz y el repositorio de Program
+import { IProgramRepository } from '../domain/interfaces/IProgramRepository';
+import { SequelizeProgramRepository } from '../infrastructure/repositories/SequelizeProgramRepository';
+
+
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies = {
     [IImplementRepositoryToken]: new SequelizeImplementRepository(),
@@ -54,6 +66,7 @@ export const Dependencies = {
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
     [ImgServiceToken]: new ImgService(),
     [IRoleRepositoryToken]: new SequelizeRoleRepository(),
+    [IProgramRepositoryToken]: new SequelizeProgramRepository(),
 };
 
 // --- RESOLVERS ---
@@ -166,4 +179,31 @@ export function resolveGetRoleByIdUseCase(): GetRoleById {
 export function resolveUpdateRoleUseCase(): UpdateRole {
     const roleRepository = Dependencies[IRoleRepositoryToken] as IRoleRepository; // <-- Usa el Symbol para buscar
     return new UpdateRole(roleRepository);
+}
+
+// --- Program Resolvers ---
+
+export function resolveCreateProgramUseCase(): CreateProgram {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new CreateProgram(programRepository);
+}
+
+export function resolveGetProgramsUseCase(): GetPrograms {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetPrograms(programRepository);
+}
+
+export function resolveGetProgramByIdUseCase(): GetProgramById {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetProgramById(programRepository);
+}
+
+export function resolveUpdateProgramUseCase(): UpdateProgram {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new UpdateProgram(programRepository);
+}
+
+export function resolveGetProgramBySearchUseCase(): GetProgramBySearch {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetProgramBySearch(programRepository);
 }

@@ -13,8 +13,8 @@ import { errorHandler } from './presentation/middleware/errorHandler';
 import { groupImplementRouter } from './presentation/routers/GroupImplementRoutes';
 import { implementRouter } from './presentation/routers/implementRoutes';
 import { categoryRouter } from "./presentation/routers/CategoryRoutes";
-
 import { roleRouter } from './presentation/routers/RoleRoutes';
+import { phoneRouter } from './presentation/routers/PhoneRoutes';
 import { programRouter } from './presentation/routers/ProgramRoutes';
 
 
@@ -47,6 +47,7 @@ app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);
 app.use('/api/v1', categoryRouter);
 app.use('/api/v1', roleRouter);
+app.use('/api/v1', phoneRouter);
 app.use('/api/v1', programRouter);
 app.use(errorHandler);
 

@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken, IPhoneRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -45,6 +45,16 @@ import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
 
+// Importaciones de Casos de Uso (Phone)
+import { CreatePhone } from "../application/use-cases/phones/CreatePhone";
+import { GetPhones } from "../application/use-cases/phones/GetPhones";
+import { GetPhoneById } from "../application/use-cases/phones/GetPhoneById";
+import { UpdatePhone } from "../application/use-cases/phones/UpdatePhone";
+import { GetPhonesByInfoPersonId } from "../application/use-cases/phones/GetPhonesByInfoPersonId";
+
+// Importa la interfaz y el repositorio de Phone
+import { IPhoneRepository } from '../domain/interfaces/IPhoneRepository';
+import { SequelizePhoneRepository } from '../infrastructure/repositories/SequelizePhoneRepository';
 // Importaciones de Casos de Uso (Program)
 import { CreateProgram } from "../application/use-cases/programs/CreateProgram";
 import { GetPrograms } from "../application/use-cases/programs/GetPrograms";
@@ -66,6 +76,7 @@ export const Dependencies = {
     [ICategoryRepositoryToken]: new SequelizeCategoryRepository(),
     [ImgServiceToken]: new ImgService(),
     [IRoleRepositoryToken]: new SequelizeRoleRepository(),
+    [IPhoneRepositoryToken]: new SequelizePhoneRepository(),
     [IProgramRepositoryToken]: new SequelizeProgramRepository(),
 };
 
@@ -180,6 +191,31 @@ export function resolveUpdateRoleUseCase(): UpdateRole {
     const roleRepository = Dependencies[IRoleRepositoryToken] as IRoleRepository; // <-- Usa el Symbol para buscar
     return new UpdateRole(roleRepository);
 }
+// --- Phone Resolvers ---
+
+export function resolveCreatePhoneUseCase(): CreatePhone {
+    const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
+    return new CreatePhone(phoneRepository);
+}
+
+export function resolveGetPhonesUseCase(): GetPhones {
+    const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
+    return new GetPhones(phoneRepository);
+}
+
+export function resolveGetPhoneByIdUseCase(): GetPhoneById {
+    const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
+    return new GetPhoneById(phoneRepository);
+}
+
+export function resolveUpdatePhoneUseCase(): UpdatePhone {
+    const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
+    return new UpdatePhone(phoneRepository);
+}
+
+export function resolveGetPhonesByInfoPersonIdUseCase(): GetPhonesByInfoPersonId {
+    const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
+    return new GetPhonesByInfoPersonId(phoneRepository);
 
 // --- Program Resolvers ---
 

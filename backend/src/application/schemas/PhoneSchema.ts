@@ -3,9 +3,10 @@ import { z } from 'zod';
 export const CreatePhoneInputDtoSchema = z.object({
   
 
-  number: z.coerce.bigint(
-    "El número de teléfono debe ser un valor numérico válido."
-  ),
+  number: z.coerce.string()
+    .length(10, "El número de teléfono debe tener 10 dígitos.")
+    .regex(/^\d+$/, "El número de teléfono debe contener solo números.")
+    .transform((val) => BigInt(val)),
   
 
   info_person_id: z.coerce.number(

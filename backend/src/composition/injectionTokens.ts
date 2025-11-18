@@ -17,3 +17,4 @@ export const IInfoPersonCreatorToken = Symbol.for('IInfoPersonCreator');
 export const IHashServiceToken = Symbol.for('IHashService');
 export const IEmailServiceToken = Symbol.for('IEmailService');
 export const IJwtServiceToken = Symbol.for('IJwtService');
+export const IProgramRepositoryToken = Symbol.for('IProgramRepository');

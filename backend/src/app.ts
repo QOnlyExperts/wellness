@@ -16,6 +16,8 @@ import { categoryRouter } from "./presentation/routers/CategoryRoutes";
 
 import { roleRouter } from './presentation/routers/RoleRoutes';
 import { userRouter } from './presentation/routers/UserRouter';
+import { programRouter } from './presentation/routers/ProgramRoutes';
+
 
 import path from 'path';
 // Crear la aplicación Express
@@ -47,8 +49,12 @@ app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);
 app.use('/api/v1', categoryRouter);
 app.use('/api/v1', roleRouter);
+<<<<<<< HEAD
 
 // Middleware de error
+=======
+app.use('/api/v1', programRouter);
+>>>>>>> dev
 app.use(errorHandler);
 
 app.use('/', (req: Request, res: Response) => {

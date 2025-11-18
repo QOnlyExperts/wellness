@@ -212,18 +212,10 @@ const HomePage = () => {
             display: "flex",
             flexDirection: "column",
             width: '100%',
+            // height: "auto",
             gap: "10px",
           }}
         >
-          {/* <ProgressBar
-              label="Horas acumuladas"
-              min={0}
-              value={96}
-              max={96}
-              color="#29b6f6"
-            /> */}
-
-          <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
           <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
         </div>
 

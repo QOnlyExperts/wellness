@@ -61,28 +61,37 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
         borderRadius: "10px",
         padding: "5px",
         width: "auto",
+        height: "100%",
+        textAlign: "center",
         boxShadow: "var(--box-shadow)",
       }}
     >
-      <h3 style={{ fontWeight: "bold" }}>Dashboard</h3>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <div style={{ width: "100px", position: "relative" }}>
-          <Doughnut data={donutData} options={donutOptions} />
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontWeight: "bold",
-              fontSize: "18px",
-              color: "#2D3748",
-            }}
-          >
-            {totalHoras}H
+      <div style={{ 
+        display: "flex", 
+          flexDirection: "column", 
+          // justifyContent: "space-between", 
+          alignItems: "center", 
+          height: "100%",
+          gap: "20px" 
+        }}>
+          <h3 style={{ fontWeight: "bold" }}>Horas acumuladas</h3>
+          <div style={{ width: "100px", height:"50%", position: "relative" }}>
+            {/* <Doughnut data={donutData} options={donutOptions} /> */}
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontWeight: "bold",
+                fontSize: "4rem",
+                color: "#2D3748",
+              }}
+            >
+              {96}
+            </div>
           </div>
-        </div>
 
         <div style={{ flex: 1 }}>
           <p style={{ fontWeight: "600", fontSize: "14px" }}>Horas por mes</p>

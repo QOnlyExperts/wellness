@@ -8,6 +8,7 @@ import InputField from "../../components/shared/Inputfield";
 import Logo from '../../assets/img/wellness-logo.png'
 import Slogan from '../../components/shared/SLogan';
 import Button from '../../components/shared/Button';
+import LoaderIcon from '../../components/icons/LoaderIcon';
 import Head from '../../components/shared/Head';
 import '../../components/shared/SelectBox.css';
 import Modal from '../../components/shared/Modal';
@@ -15,6 +16,7 @@ import Modal from '../../components/shared/Modal';
 import UserService from '../../services/UserService';
 import ProgramService from '../../services/ProgramService';
 import AlertContainer from '../shared/AlertContainer';
+import LoginService from '../../services/LoginService';
 
 
 const LoginContainer = ({ onRegister }) => {
@@ -233,43 +235,56 @@ const LoginContainer = ({ onRegister }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const allowedDomain = "@campusucc.edu.co";
 
-    if (!form.email || form.email === '' || typeof form.email !== 'string' || !emailRegex.test(form.email) || !form.email.endsWith(allowedDomain)) {
-      otherErrors.push({ path: 'email', message: 'El email tiene que ser valido. ejemplo@campusucc.edu.co' });
+    if (
+      !form.email ||
+      form.email === "" ||
+      typeof form.email !== "string" ||
+      !emailRegex.test(form.email) ||
+      !form.email.endsWith(allowedDomain)
+    ) {
+      otherErrors.push({
+        path: "email",
+        message: "El email tiene que ser valido. ejemplo@campusucc.edu.co",
+      });
     }
 
-    if (!form.password || form.password === '') {
-      otherErrors.push({path: 'password', message: 'La contraseña no puede ser vacía'});
+    if (!form.password || form.password === "") {
+      otherErrors.push({
+        path: "password",
+        message: "La contraseña no puede ser vacía",
+      });
     }
 
-    if(otherErrors.length){
+    if (otherErrors.length) {
       setErrors(otherErrors);
-      return
+      return;
     }
 
     const formData = {
-      'email': form.email,
-      'password': form.password
-    }
+      email: form.email,
+      password: form.password,
+    };
 
     setIsLoading(true);
 
-    const response = await emailServices.login(formData);
+    const response = await LoginService.postLogin(formData);
 
-    if(response.errors){
-      setErrors(response.errors);
+    if (!response.success) {
+      window.showAlert(response.error.message, "error");
+      setIsLoading(false);
+      setErrors(response.errors || []);
+      return;
     }
-    setErrors([]);
 
+    window.showAlert(response.message, "success");
     setIsLoading(false);
 
-    if(response.success){
-      // console.log(response.res)
-      localStorage.setItem('email', JSON.stringify(response.res));
-      localStorage.setItem('token', response.token)
-      setTimeout(() => {
-        navigate('/');
-      }, 2500)
-    }
+    // console.log(response.res)
+    sessionStorage.setItem("data", JSON.stringify(response.data));
+    sessionStorage.setItem("token", response.data.token);
+    setTimeout(() => {
+      navigate("/");
+    }, 2500);
   }
 
   const handleRegister = async(e) => {
@@ -324,7 +339,6 @@ const LoginContainer = ({ onRegister }) => {
       }
     }, 2000);
     // Aquí va la lógica para registrar al usuario
-    console.log('Registrando usuario...');
     setErrors([]);
 
   }
@@ -391,6 +405,7 @@ const LoginContainer = ({ onRegister }) => {
           <h6 id="alert-message"></h6>
         </div>
         
+        <AlertContainer />
         <div className='view-wrapper-login'>
 
           { view === 'first' && (
@@ -427,11 +442,17 @@ const LoginContainer = ({ onRegister }) => {
                 gap: '10px'
               }}>
                 <Button
-                  className="btn-login"
-                  text="Iniciar sesión"
+                  className={`btn-${isLoading ? 'icon' : 'login'}`}
+                  text={isLoading ? "": "Iniciar sesión"}
                   id="btn-login"
+                  disabled={isLoading}
                   onClick={handleSubmit}
-                />
+                >
+                  {
+                    isLoading &&
+                    <LoaderIcon color="var(--color-primary)" />
+                  }
+                </Button>
 
                 <Button
                   className="btn-icon"

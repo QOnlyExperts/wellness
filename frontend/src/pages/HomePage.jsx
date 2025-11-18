@@ -29,6 +29,7 @@ const HomePage = () => {
   const [groupImplementsList, setGroupImplementList] = useState([]);
   const [groupImplementId, setGroupImplementId] = useState(null);
   const [implementList, setImplementList] = useState([]);
+  const [implementListBorrowed, setImplementListBorrowed] = useState([]);
   const [implementListByIdGroup, setImplementListByIdGroup] = useState([]);
   
   const [expandedCardId, setExpandedCardId] = useState(null);
@@ -45,8 +46,9 @@ const HomePage = () => {
     const fetch = async () => {
       showLoader();
       // const response = await GroupImplementService.getGroupImplements();
+      const response = await ImplementService.getImplements();
       const groupResponse = await  GroupImplementService.getGroupImplements();
-      if (!groupResponse.success) {
+      if (!groupResponse.success || !response.success) {
         window.showAlert(
           response?.message || "Error al obtener los implementos",
           "Error"
@@ -54,6 +56,7 @@ const HomePage = () => {
         return;
       }
 
+      setImplementListBorrowed(response.data);
       setGroupImplementList(groupResponse.data);
       hideLoader();
     };
@@ -176,8 +179,8 @@ const HomePage = () => {
       <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
 
       <div className="div-home-implements-not-used">
-        {implementList.length > 0 ? (
-          implementList.map(
+        {implementListBorrowed.length > 0 ? (
+          implementListBorrowed.map(
             (imp, i) =>
               imp.status === "borrowed" && (
                 <Card
@@ -196,7 +199,8 @@ const HomePage = () => {
                 />
               )
           )
-        ) : (
+        ) : 
+        (
           <div>
             {/* <h3>No hay implementos en uso</h3> */}
             <Card

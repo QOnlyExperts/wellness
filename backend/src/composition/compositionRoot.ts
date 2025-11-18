@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -6,6 +5,13 @@ dotenv.config();
 const {
     SECRET_KEY
 } = process.env;
+
+if (!SECRET_KEY) {
+    // Si esta línea se ejecuta, el error está en la carga de tu .env o en el entorno.
+    throw new Error("ERROR: La variable de entorno SECRET_KEY no está definida.");
+}
+
+
 // -- src/composition/compositionRoot.ts --
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
@@ -63,7 +69,6 @@ import { EmailService } from '../application/services/EmailService';
 import { IUserCreator } from '../domain/interfaces/IUserCreator';
 import { IInfoPersonCreator } from '../domain/interfaces/IInfoPersonCreator';
 import { JwtService } from '../application/services/JwtService';
-import { JwkKeyExportOptions } from 'crypto';
 // import {  }
 // Importaciones de Casos de Uso (Program)
 import { CreateProgram } from "../application/use-cases/programs/CreateProgram";
@@ -94,7 +99,7 @@ export const Dependencies: Record<symbol, any> = {
 
     [IHashServiceToken]: new HashService(), // por ejemplo, 10 saltRounds
     [IEmailServiceToken]: new EmailService(),
-    [IJwtServiceToken]: new JwtService(SECRET_KEY!),
+    [IJwtServiceToken]: new JwtService(SECRET_KEY),
     [IProgramRepositoryToken]: new SequelizeProgramRepository(),
 };
 // Caso de uso de crear usuario

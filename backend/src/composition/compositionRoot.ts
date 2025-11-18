@@ -2,7 +2,7 @@
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IPhoneRepositoryToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken, IPhoneRepositoryToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -55,6 +55,17 @@ import { GetPhonesByInfoPersonId } from "../application/use-cases/phones/GetPhon
 // Importa la interfaz y el repositorio de Phone
 import { IPhoneRepository } from '../domain/interfaces/IPhoneRepository';
 import { SequelizePhoneRepository } from '../infrastructure/repositories/SequelizePhoneRepository';
+// Importaciones de Casos de Uso (Program)
+import { CreateProgram } from "../application/use-cases/programs/CreateProgram";
+import { GetPrograms } from "../application/use-cases/programs/GetPrograms";
+import { GetProgramById } from "../application/use-cases/programs/GetProgramById";
+import { UpdateProgram } from "../application/use-cases/programs/UpdateProgram";
+import { GetProgramBySearch } from "../application/use-cases/programs/GetProgramBySearch";
+
+// Importa la interfaz y el repositorio de Program
+import { IProgramRepository } from '../domain/interfaces/IProgramRepository';
+import { SequelizeProgramRepository } from '../infrastructure/repositories/SequelizeProgramRepository';
+
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies = {
@@ -66,6 +77,7 @@ export const Dependencies = {
     [ImgServiceToken]: new ImgService(),
     [IRoleRepositoryToken]: new SequelizeRoleRepository(),
     [IPhoneRepositoryToken]: new SequelizePhoneRepository(),
+    [IProgramRepositoryToken]: new SequelizeProgramRepository(),
 };
 
 // --- RESOLVERS ---
@@ -204,4 +216,30 @@ export function resolveUpdatePhoneUseCase(): UpdatePhone {
 export function resolveGetPhonesByInfoPersonIdUseCase(): GetPhonesByInfoPersonId {
     const phoneRepository = Dependencies[IPhoneRepositoryToken] as IPhoneRepository;
     return new GetPhonesByInfoPersonId(phoneRepository);
+
+// --- Program Resolvers ---
+
+export function resolveCreateProgramUseCase(): CreateProgram {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new CreateProgram(programRepository);
+}
+
+export function resolveGetProgramsUseCase(): GetPrograms {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetPrograms(programRepository);
+}
+
+export function resolveGetProgramByIdUseCase(): GetProgramById {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetProgramById(programRepository);
+}
+
+export function resolveUpdateProgramUseCase(): UpdateProgram {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new UpdateProgram(programRepository);
+}
+
+export function resolveGetProgramBySearchUseCase(): GetProgramBySearch {
+    const programRepository = Dependencies[IProgramRepositoryToken] as IProgramRepository;
+    return new GetProgramBySearch(programRepository);
 }

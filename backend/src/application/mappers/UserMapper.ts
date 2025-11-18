@@ -87,8 +87,10 @@ export class UserMapper {
       created_at: user.created_at,
       updated_at: user.updated_at,
       last_login: user.last_login ?? null,
-      info_person_id: user.info_person?.id ?? null,
-      rol_id: user.role?.id ?? null,
+      info_person_id: user.info_person_id?? null,
+      rol_id: user.rol_id ?? null,
+      // info_person: user.info_person?.id ?? null,
+      // role: user.role?.id ?? null,
     };
 
     // Elimina campos undefined para que el repo los ignore al crear/actualizar

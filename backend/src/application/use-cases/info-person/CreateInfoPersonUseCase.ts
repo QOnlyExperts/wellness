@@ -37,9 +37,9 @@ export class CreateInfoPersonUseCase {
 
     return {
       id: createdInfo.id,
+      full_name: createdInfo.getFullName(),
       identification: createdInfo.identification,
       program_id: createdInfo.program_id,
-      full_name: createdInfo.getFullName(),
     };
   }
 }

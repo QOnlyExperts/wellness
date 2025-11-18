@@ -6,14 +6,10 @@ const headers = {
   // "Authorization":`Bearer ${localStorage.getItem('token')}`
 };
 
-const UserService = {
-  postUser: (data) => {
-    return service('/user', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: headers
-    });
+const ProgramService = {
+  getPrograms: () => {
+    return service('/programs');
   },
 }
 
-export default UserService;
+export default ProgramService;

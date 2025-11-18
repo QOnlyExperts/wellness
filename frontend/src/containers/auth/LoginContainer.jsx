@@ -9,12 +9,21 @@ import Logo from '../../assets/img/wellness-logo.png'
 import Slogan from '../../components/shared/SLogan';
 import Button from '../../components/shared/Button';
 import Head from '../../components/shared/Head';
+import '../../components/shared/SelectBox.css';
 import Modal from '../../components/shared/Modal';
 
 import UserService from '../../services/UserService';
+import ProgramService from '../../services/ProgramService';
+import AlertContainer from '../shared/AlertContainer';
 
 
 const LoginContainer = ({ onRegister }) => {
+  const [programs, setPrograms] = useState([]);
+
+  const [selects, setSelects] = useState({
+    program: '',
+    idProgram: 0,
+  })
 
   const[isOpenModal, setIsOpenModal] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -82,21 +91,33 @@ const LoginContainer = ({ onRegister }) => {
     validatePassword();
   }, [form.password, form.confirmPassword]);
 
+  useEffect(() => {
+    // Aquí puedes cargar las ciudades desde un servicio o definirlas estáticamente
+    const fetchPrograms = async () => {
+      try {
+        const response = await ProgramService.getPrograms();
+        if(response.errors){
+          console.error('Error fetching programs:', response.errors);
+          return;
+        }
+
+        setPrograms(response.data);
+      }
+      catch (error) {
+        console.error('Error fetching cities:', error);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
 
 
   // Inicio de sesion
   const handleBack = () => {
 
     // Solo limpiamos si venimos de la vista de credenciales
-    if(view === 'second'){
-      // Mostramos la ventana de confirmación
-      if(!isOpenModal){
-        handleOpenModal(); // True
-        // Finaliza
-        return;
-      }
       // La persona acepta cancelar el registro
-      if(confirm){
         // Limpiamos los datos del formulario
         setForm({
           email: "",
@@ -110,14 +131,17 @@ const LoginContainer = ({ onRegister }) => {
           number_phone: "",
         });
 
+        setSelects({
+          program: '',
+          idProgram: 0,
+        })
+
         // Limpiamos los errores
         setErrors([]);
 
         // Mostramos la vista del login
         setDirection("to-right");
         setView("first");
-      }
-    }
   };
 
   // A credenciales
@@ -149,6 +173,10 @@ const LoginContainer = ({ onRegister }) => {
     if (!form.confirmPassword || form.confirmPassword.trim() === "" || hasNoXSSAndInjectionSql(form.confirmPassword) || form.confirmPassword.length < 8 || form.confirmPassword.length > 16) {
       otherErrors.push({ path: 'confirmPassword', message: 'Debe coincidir con la contraseña' });
     }
+
+    if(selects.idProgram === 0){
+      otherErrors.push({ path: 'idProgram', message: 'Debe seleccionar un programa' });
+    }
       
     const phoneRegex = /^3\d{9}$/; // Valido solo números de celular colombianos
 
@@ -178,6 +206,24 @@ const LoginContainer = ({ onRegister }) => {
       ...prev,
       [name]: value
     }));
+  };
+
+ // Para los selects options
+  const handleSelectOptionClick = (id) => {
+    const selectBox = document.getElementById(id);
+    selectBox.classList.toggle('active');
+  };
+
+  // Modifica los datos de ids
+  const handleOptionClick = (field, text, value) => {
+    const fieldText = field.charAt(0).toUpperCase() + field.slice(1).toLowerCase();
+    setSelects((prevData) => ({
+      ...prevData,
+      [field]: text,
+      [`id${fieldText}`]: value,
+    }));
+    const selectBox = document.getElementById(`select-box-${field}`);
+    selectBox.classList.remove('active');
   };
   
   const handleSubmit = async(e) => {
@@ -256,7 +302,27 @@ const LoginContainer = ({ onRegister }) => {
       return;
     }
 
-    const response = await UserService.postUser(form);
+    const formData = {
+      ...form,
+      program_id: selects.idProgram
+    }
+
+    const response = await UserService.postUser(formData);
+
+    if(!response.success){
+      window.showAlert(response.error.message, "error");
+      setErrors(response.errors || []);
+      return;
+    }
+    
+    window.showAlert(response.message, "success")
+
+    setTimeout(() => {
+      if(response.success){
+        // Regresamos al login
+        handleBack();
+      }
+    }, 2000);
     // Aquí va la lógica para registrar al usuario
     console.log('Registrando usuario...');
     setErrors([]);
@@ -294,8 +360,6 @@ const LoginContainer = ({ onRegister }) => {
               text="Aceptar"
               onClick={(e) => {
                 e.preventDefault();
-                // Confirmamos que si
-                setConfirm(true);
                 // Cerramos el modal
                 handleCloseModal();
                 // Regresamos a la vista de inicio
@@ -444,6 +508,25 @@ const LoginContainer = ({ onRegister }) => {
                 </ul>
               </div>
 
+              <div className="select-box" id="select-box-program">
+                <div className="select-option" id="select-option-program" onClick={() => handleSelectOptionClick('select-box-program')}>
+                  <InputField id={'idProgram'} name={'idProgram'} label={'Programas'} type={'text'} value={selects.program} errors={errors} />
+                  
+                </div>
+
+                <div className="content">
+                  <ul className="options" id="optionsProgram">
+                    {
+                      programs.map((program) => (
+                        <li key={program.id} onClick={() => handleOptionClick('program', program.name, program.id)}>
+                          {program.name}
+                        </li>
+                      ))
+                    }
+                  </ul>
+                </div>
+              </div>
+
               <InputField
                 id="number_phone"
                 name="number_phone"
@@ -460,7 +543,17 @@ const LoginContainer = ({ onRegister }) => {
                 width: '100%',
                 marginTop:'20px'
               }}>
-                <Button className="btn-icon" text="Inicio de sesión" onClick={handleBack} />
+                <Button className="btn-icon" text="Inicio de sesión" 
+                  onClick={() => {
+                    
+                    // Mostramos la ventana de confirmación
+                    if(!isOpenModal){
+                      handleOpenModal(); // True
+                      // Finaliza
+                      return;
+                    }
+                  }} 
+                />
                 <Button className="btn-icon" text="Siguiente" onClick={handleFinish} />
               </div>
             </div>
@@ -468,6 +561,7 @@ const LoginContainer = ({ onRegister }) => {
 
           { view === 'third' && (
             <div key="third" className={`login-form-login slide-${direction}`}>
+              <AlertContainer />
               <Head title="Registro de usuario" subTitle="Completa los siguientes campos para crear tu cuenta"/>
 
               <InputField
@@ -506,6 +600,17 @@ const LoginContainer = ({ onRegister }) => {
                 label="Segundo apellido"
                 type="text"
                 value={form.lastName2}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+              
+
+              <InputField
+                id="identification"
+                name="identification"
+                label="Identificación"
+                type="text"
+                value={form.identification}
                 onChange={handleInputChange}
                 errors={errors}
               />

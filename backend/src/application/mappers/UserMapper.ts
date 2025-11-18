@@ -20,11 +20,11 @@ export class UserMapper {
       info_person_id: user.info_person_id,
       rol_id: user.rol_id,
       info_person: user.info_person ? InfoPersonMapper.toOutputDto(user.info_person) : null,
-      role: user.role
+      rol: user.rol
         ? {
-            id: user.role.id,
-            name: user.role.name,
-            status: user.role.status,
+            id: user.rol.id,
+            name: user.rol.name,
+            status: user.rol.status,
           }
         : null,
     };
@@ -40,11 +40,11 @@ export class UserMapper {
   public static toDomain(data: any): UserEntity {
 
     // Role (si viene cargada desde Sequelize)
-    const role: RoleEntity | undefined = data.Role
+    const rol: RoleEntity | undefined = data.rol
       ? RoleEntity.create({
-          id: data.Role.id ?? null,
-          name: data.Role.name,
-          status: Boolean(data.Role.status),
+          id: data.rol.id ?? null,
+          name: data.rol.name,
+          status: Boolean(data.rol.status),
         })
       : undefined;
 
@@ -66,7 +66,7 @@ export class UserMapper {
       info_person_id: data.info_person_id,
       rol_id: data.rol_id,
       info_person: infoPerson,
-      role,
+      rol,
     });
   }
 

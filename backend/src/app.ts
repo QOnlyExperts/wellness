@@ -15,6 +15,7 @@ import { implementRouter } from './presentation/routers/implementRoutes';
 import { categoryRouter } from "./presentation/routers/CategoryRoutes";
 
 import { roleRouter } from './presentation/routers/RoleRoutes';
+import { loginRouter } from './presentation/routers/LoginRoutes';
 import { userRouter } from './presentation/routers/UserRouter';
 import { programRouter } from './presentation/routers/ProgramRoutes';
 
@@ -44,6 +45,7 @@ app.use('/static', (req, res) => {
 // Rutas
 
 // Si luego habilitas tus rutas:
+app.use('/api/v1', loginRouter);
 app.use('/api/v1', userRouter);
 app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);

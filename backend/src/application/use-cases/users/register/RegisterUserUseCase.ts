@@ -51,7 +51,7 @@ export class RegisterUserUseCase {
       // Al crear usuario
       const hashedPassword = await this.hashService.hash(input.password);
       const salt = await this.hashService.salt();
-      console.log(info.id);
+      console.log(info);
       // Creamos el usuario
       await this.userCreator.execute({
           id: null,

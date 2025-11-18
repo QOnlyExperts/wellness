@@ -16,7 +16,7 @@ export class UserEntity {
   public info_person_id: number;
   public rol_id: number;
   public info_person?: InfoPersonEntity;
-  public role?: RoleEntity;
+  public rol?: RoleEntity;
 
   constructor(props: {
     id: number | null;
@@ -31,7 +31,7 @@ export class UserEntity {
     info_person_id: number;
     rol_id: number;
     info_person?: InfoPersonEntity;
-    role?: RoleEntity;
+    rol?: RoleEntity;
   }) {
     this.id = props.id;
     this.email = props.email;
@@ -45,7 +45,7 @@ export class UserEntity {
     this.info_person_id = props.info_person_id;
     this.rol_id = props.rol_id;
     this.info_person = props.info_person;
-    this.role = props.role;
+    this.rol = props.rol;
   }
 
   static create(props: {
@@ -61,7 +61,7 @@ export class UserEntity {
     info_person_id: number;
     rol_id: number;
     info_person?: InfoPersonEntity;
-    role?: RoleEntity;
+    rol?: RoleEntity;
   }): UserEntity {
     if (!props.email.includes("@campusucc.edu.co")) {
       throw new ValidationError("El correo electrónico no es válido");
@@ -82,7 +82,7 @@ export class UserEntity {
       info_person_id: props.info_person_id,
       rol_id: props.rol_id,
       info_person: props.info_person,
-      role: props.role,
+      rol: props.rol,
     });
   }
 

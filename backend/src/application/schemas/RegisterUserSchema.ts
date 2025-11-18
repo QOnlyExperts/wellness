@@ -1,12 +1,17 @@
 import { z } from 'zod';
-import { hasNoXSSAndInjectionSql, onlyLettersRegex, isValidEmail} from '../../utils/validator';
+import { hasNoXSSAndInjectionSql, onlyLettersRegex, isValidEmail, isPasswordComplex} from '../../utils/validator';
 
 // Reglas base para contraseña
+// Reglas base para contraseña (USANDO FUNCIONES)
 const passwordSchema = z
   .string()
-  .min(8, "La contraseña debe tener entre 8 y 16 caracteres válidos")
-  .max(16, "La contraseña debe tener entre 8 y 16 caracteres válidos")
-  .refine((val) => !hasNoXSSAndInjectionSql(val) && !/\d/.test(val), {
+  // 1. Usamos .refine para aplicar la función de complejidad
+  // La función .refine falla si la función de callback devuelve FALSE
+  .refine(isPasswordComplex, {
+    message: "La contraseña debe tener entre 8 y 16 caracteres, incluir mayúscula, letra y número, y no tener espacios."
+  })
+  // 2. Usamos .refine para aplicar la función de seguridad
+  .refine((val) => !hasNoXSSAndInjectionSql(val), {
     message: "La contraseña contiene caracteres no permitidos",
   });
 
@@ -14,9 +19,9 @@ const passwordSchema = z
 export const RegisterUserInputDtoSchema = z.object({
   email: z
     .string()
-    .min(1, "El email tiene que ser válido. ejemplo@ejemplo.com")
+    .min(1, "El email tiene que ser válido. ejemplo@campusucc.edu.co")
     .refine((val) => isValidEmail(val.trim()), {
-      message: "El email tiene que ser válido. ejemplo@ejemplo.com",
+      message: "El email tiene que ser válido. ejemplo@campusucc.edu.co",
     }),
   password: passwordSchema,
   confirmPassword: passwordSchema,
@@ -46,7 +51,7 @@ export const RegisterUserInputDtoSchema = z.object({
     }),
   number_phone: z
     .string()
-    .regex(/^\d{10} $/, "El número de teléfono debe contener exactamente 10 dígitos y solo números"),
+    .regex(/^\d{10}$/, "El número de teléfono debe contener exactamente 10 dígitos y solo números"),
   identification: z.coerce
     .string("La identificación debe ser un número")
     .min(1, "La identificación debe ser un número entero")

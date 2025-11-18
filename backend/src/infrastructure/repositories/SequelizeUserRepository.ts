@@ -34,6 +34,40 @@ export class SequelizeUserRepository implements IUserRepository {
     return userList.map(user => UserMapper.toDomain(user.toJSON()));
   }
 
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const user = await LoginModel.findOne({
+      where: {
+        email
+      },
+      attributes: [
+        'id',
+        'email',
+        'password',
+        'is_verified',
+        'is_active',
+        'created_at',
+        'updated_at',
+        'last_login',
+        'info_person_id',
+        'rol_id'
+      ],
+      include: [
+        {
+          model: InfoPersonModel,
+        },{
+          model: RoleModel
+        }
+      ]
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return UserMapper.toDomain(user?.toJSON());
+  }
+
+
   async findById(id: number): Promise<UserEntity | null> {
     const user = await LoginModel.findByPk(id, {
       attributes: [
@@ -55,6 +89,10 @@ export class SequelizeUserRepository implements IUserRepository {
       ]
     });
 
+    if (!user) {
+      return null;
+    }
+
     return UserMapper.toDomain(user?.toJSON());
   }
 
@@ -75,6 +113,10 @@ export class SequelizeUserRepository implements IUserRepository {
         }
       ]
     });
+
+    if (!user) {
+      return null;
+    }
 
     return UserMapper.toDomain(user?.toJSON());
   }

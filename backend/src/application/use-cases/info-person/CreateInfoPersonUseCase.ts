@@ -20,6 +20,11 @@ export class CreateInfoPersonUseCase {
       throw new ValidationError("Los campos obligatorios están incompletos.");
     }
 
+    const existingInfo = await this.userInfoPersonRepository.findByIdentification(input.identification);
+    if (existingInfo) {
+      throw new ValidationError("Ya existe una persona registrada con esta identificación. Comuníquese con administración");
+    }
+
     const info = InfoPersonEntity.create({
       id: null,
       name1: input.name1,
@@ -34,6 +39,7 @@ export class CreateInfoPersonUseCase {
     if (!createdInfo) {
       throw new DomainError("No se pudo persistir la información personal en la base de datos.");
     }
+    
 
     return {
       id: createdInfo.id,

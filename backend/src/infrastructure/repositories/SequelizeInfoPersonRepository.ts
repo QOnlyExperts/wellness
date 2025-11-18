@@ -12,9 +12,27 @@ export class SequelizeInfoPersonRepository implements IInfoPersonRepository {
     return infoList.map(info => InfoPersonMapper.toDomain(info.toJSON()));
   }
 
+  async findByIdentification(identification: string): Promise<InfoPersonEntity | null> {
+    const info = await InfoPersonModel.findOne({
+      where: {
+        identification
+      }
+    });
+
+    if(!info) {
+      return null;
+    }
+
+    return InfoPersonMapper.toDomain(info?.toJSON());
+  }
+
   async findById(id: number): Promise<InfoPersonEntity | null> {
     // Hay que retornar con el programa asociado al usuario
     const info = await InfoPersonModel.findByPk(id);
+
+    if(!info) {
+      return null;
+    }
 
     return InfoPersonMapper.toDomain(info?.toJSON());
   }

@@ -25,6 +25,11 @@ export class CreateUserUseCase {
       throw new ValidationError("Los campos obligatorios están incompletos.");
     }
 
+    const existingUser = await this.userRepository.findByEmail(input.email);
+    if (existingUser) {
+      throw new ValidationError("Ya existe un usuario registrado con este correo electrónico.");
+    }
+
     const user = UserEntity.create({
       id: null,
       email: input.email,
@@ -38,6 +43,7 @@ export class CreateUserUseCase {
       info_person_id: input.info_person_id,
       rol_id: input.rol_id,
     });
+    console.log(user);
 
     // Pasamos el usuario creado y la transacción
     const createdUser = await this.userRepository.save(user, t);

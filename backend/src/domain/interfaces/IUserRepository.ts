@@ -3,6 +3,7 @@ import { Transaction } from "sequelize";
 
 export interface IUserRepository {
   findAll(): Promise<UserEntity[]>;
+  findByEmail(email: string): Promise<UserEntity | null>;
   findById(id: number): Promise<UserEntity | null>;
   findByIdProfile(id: number): Promise<UserEntity | null>;
   save(user: UserEntity, t: Transaction): Promise<UserEntity>;

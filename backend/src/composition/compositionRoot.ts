@@ -75,6 +75,8 @@ import { GetProgramBySearch } from "../application/use-cases/programs/GetProgram
 // Importa la interfaz y el repositorio de Program
 import { IProgramRepository } from '../domain/interfaces/IProgramRepository';
 import { SequelizeProgramRepository } from '../infrastructure/repositories/SequelizeProgramRepository';
+import { LoginUseCase } from '../application/use-cases/users/login/LoginUseCase';
+import { IUserRepository } from '../domain/interfaces/IUserRepository';
 
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
@@ -104,6 +106,14 @@ Dependencies[IUserCreatorToken] = new CreateUserUseCase(
 Dependencies[IInfoPersonCreatorToken] = new CreateInfoPersonUseCase(
     Dependencies[IInfoPersonRepositoryToken],
 );
+
+export function resolveLoginUseCase(): LoginUseCase {
+    const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
+    const hashService = Dependencies[IHashServiceToken] as HashService;
+    const jwtService = Dependencies[IJwtServiceToken] as JwtService;
+    return new LoginUseCase(userRepository, hashService, jwtService);
+}
+
 
 export function resolveRegisterUserUseCase(): RegisterUserUseCase {
     const userCreator = Dependencies[IUserCreatorToken] as IUserCreator;

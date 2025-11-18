@@ -67,9 +67,7 @@ export class UserEntity {
       throw new ValidationError("El correo electrónico no es válido");
     }
 
-    if (props.password.length < 8 || props.password.length > 16) {
-      throw new ValidationError("La contraseña debe tener entre 8 y 16 caracteres");
-    }
+
 
     return new UserEntity({
       id: props.id,

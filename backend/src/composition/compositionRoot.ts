@@ -1,8 +1,16 @@
+
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const {
+    SECRET_KEY
+} = process.env;
 // -- src/composition/compositionRoot.ts --
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken, IHashServiceToken, IEmailServiceToken, IInfoPersonCreatorToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken, IHashServiceToken, IEmailServiceToken, IInfoPersonCreatorToken, IJwtServiceToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -45,7 +53,7 @@ import { GetRoles } from "../application/use-cases/roles/GetRoles";
 import { GetRoleById } from "../application/use-cases/roles/GetRoleById";
 import { UpdateRole } from "../application/use-cases/roles/UpdateRole";
 
-import { RegisterUseCase } from '../application/use-cases/users/register/RegisterUserUseCase';
+import { RegisterUserUseCase } from '../application/use-cases/users/register/RegisterUserUseCase';
 import { SequelizeUserRepository } from '../infrastructure/repositories/SequelizeUserRepository';
 import { SequelizeInfoPersonRepository } from '../infrastructure/repositories/SequelizeInfoPersonRepository';
 import { CreateUserUseCase } from '../application/use-cases/users/CreateUserUseCase';
@@ -54,6 +62,8 @@ import { HashService } from '../application/services/HashService';
 import { EmailService } from '../application/services/EmailService';
 import { IUserCreator } from '../domain/interfaces/IUserCreator';
 import { IInfoPersonCreator } from '../domain/interfaces/IInfoPersonCreator';
+import { JwtService } from '../application/services/JwtService';
+import { JwkKeyExportOptions } from 'crypto';
 // import {  }
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
@@ -71,7 +81,7 @@ export const Dependencies: Record<symbol, any> = {
 
     [IHashServiceToken]: new HashService(), // por ejemplo, 10 saltRounds
     [IEmailServiceToken]: new EmailService(),
-    
+    [IJwtServiceToken]: new JwtService(SECRET_KEY!)
 };
 // Caso de uso de crear usuario
 Dependencies[IUserCreatorToken] = new CreateUserUseCase(
@@ -83,19 +93,21 @@ Dependencies[IInfoPersonCreatorToken] = new CreateInfoPersonUseCase(
     Dependencies[IInfoPersonRepositoryToken],
 );
 
-export function resolveRegisterUserUseCase(): RegisterUseCase {
+export function resolveRegisterUserUseCase(): RegisterUserUseCase {
     const userCreator = Dependencies[IUserCreatorToken] as IUserCreator;
     const infoPersonCreator = Dependencies[IInfoPersonCreatorToken] as IInfoPersonCreator;
     const hashService = Dependencies[IHashServiceToken] as HashService;
     const emailService = Dependencies[IEmailServiceToken] as EmailService;
+    const jwtService = Dependencies[IJwtServiceToken] as JwtService;
     // const infoPersonCreator = Dependencies[IInfoPersonCreatorToken];
 
 
-    return new RegisterUseCase(
+    return new RegisterUserUseCase(
         userCreator,
         infoPersonCreator,
         hashService,
-        emailService
+        emailService,
+        jwtService
     );
 }
 

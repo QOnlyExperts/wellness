@@ -5,6 +5,8 @@ import { GroupImplementModel } from "./GroupImplementModel";
 import { LoginModel } from "./LoginModel";
 import { InfoPersonModel } from "./InfoPersonModel";
 
+import { RoleModel } from "./RoleModel";
+
 // import 
 
 ImplementModel.hasMany(ImgModel, {foreignKey: "implement_id"});
@@ -25,6 +27,16 @@ LoginModel.belongsTo(InfoPersonModel, {
 InfoPersonModel.hasOne(LoginModel, {
   foreignKey: "info_person_id",
   // as: "login",
+});
+
+RoleModel.hasOne(LoginModel, {
+  foreignKey: "rol_id",
+  // sourceKey: "id"
+});
+
+LoginModel.belongsTo(RoleModel, {
+  foreignKey: "rol_id",
+  // targetKey: "id"
 });
 
 export { 

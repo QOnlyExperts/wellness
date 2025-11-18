@@ -1,9 +1,12 @@
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import Badge from "./Badge";
 
 import "./Card.css";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Card = React.memo(
   ({
@@ -49,7 +52,7 @@ const Card = React.memo(
         {/* --- Cara frontal --- */}
         <div className="card-face card-front">
           <div className="div-img">
-            <img src={currentImage} alt={title || "Imagen"} />
+            <img src={currentImage.replace("http://localhost:4000", `${apiUrl}:4000`)} alt={title || "Imagen"} />
             {images.length > 1 && (
               <div className="carousel-dots">
                 {images.map((_, idx) => (

@@ -21,6 +21,7 @@ import ChartDoughnutContainer from "../containers/shared/ChartDoughnutContainer"
 import DashboardCard from "../components/shared/DashboardCardDoughnut";
 import ImplementListContainer from "../containers/implement/ImplementListContainer";
 import ImplementUsedList from "../containers/home/ImplementUsedList";
+import CheckIcon from "../components/icons/CheckIcon";
 
 const HomePage = () => {
   const [isOpenModal, setIsModalOpen] = useState(false);
@@ -174,14 +175,7 @@ const HomePage = () => {
 
       <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "10px",
-          padding: ".5rem"
-        }}
-      >
+      <div className="div-home-implements-not-used">
         {implementList.length > 0 ? (
           implementList.map(
             (imp, i) =>
@@ -217,6 +211,7 @@ const HomePage = () => {
           style={{
             display: "flex",
             flexDirection: "column",
+            width: '100%',
             gap: "10px",
           }}
         >
@@ -238,7 +233,7 @@ const HomePage = () => {
             flexDirection: "column",
             width: "100%",
             height: "30vh",
-            padding: "10px",
+            padding: "1px",
             borderRadius: "10px",
             boxSizing: "border-box",
             overflowY: "auto",
@@ -248,6 +243,20 @@ const HomePage = () => {
           <ImplementUsedList />
         </div>
       </div>
+      {/* <Modal>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '20px'
+          }}
+        >
+          Solicitud realizada con éxito
+          <CheckIcon color="#17c700ff" size={50} />
+        </div>
+      </Modal> */}
     </div>
   );
 };

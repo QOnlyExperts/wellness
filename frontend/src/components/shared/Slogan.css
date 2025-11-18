@@ -33,3 +33,10 @@
     font-size: 14px;
   }
 }
+
+@media (max-width: 768px) {
+  .slogan{
+    width: 100%;
+    font-size: 12px;
+  }
+}

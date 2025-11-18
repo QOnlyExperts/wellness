@@ -15,21 +15,16 @@ a{
 
 .side{
   position: fixed;
-  width: 4rem;
+  width: 15rem;
   top: 0;
   left: 0px;
   font-size: .9rem;
-  /* height: 90vh; */
   height: calc(100vh - 0.75rem);
-  
   background-color: var(--sidebar);
-  /* padding: 1rem 0.75rem; */
-  /* border-radius: 0.75rem; */
   padding: 5px;
   display: flex;
   flex-direction: column;
   z-index: 10;
-
   box-shadow: var(--box-shadow);
   transition: width 500ms ease, background-color 500ms ease;
 }
@@ -39,23 +34,20 @@ body.active nav{
   background-color: var(--sidebar);
   color: white;
   transition: width 500ms ease, background-color 500ms ease;
-  
 }
 
 .sidebar-header{
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden;  <-- REMOVIDO PARA QUE EL BOTÓN NO SE CORTE */
 }
 
 .sidebar-links{
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   overflow: auto;
-  gap: .25rem
-
+  gap: .25rem;
 }
 
 .sidebar-header{
@@ -87,10 +79,12 @@ nav > .sidebar-links{
   border-top: 1px solid rgb(211, 211, 211);
 }
 
-body.active .sidebar-links,
+/* body.active .sidebar-links,
 body.active .sidebar-header,
-body.active .user-profile{
-  /* justify-content: start; */
+body.active .user-profile */
+.sidebar-links,
+.sidebar-header,
+.user-profile{
   align-items: stretch;
 }
 
@@ -105,7 +99,8 @@ body.active .user-profile{
   display: none;
 }
 
-body.active .hidden{
+/* body.active .hidden{ */
+.hidden{
   display: flex;
   align-items: center;
   font-size: 0.9rem;
@@ -118,7 +113,7 @@ body.active .hidden{
 
 .link.active{
   background-color: var(--color-primary-active);
-  color: #ffffff
+  color: #ffffff;
 }
 
 .link > img{
@@ -126,11 +121,9 @@ body.active .hidden{
   height: 30px;
 }
 
-
 .sub-link {
   display: flex;
   flex-direction: column;
-  /* padding: 0.6rem; */
   margin-left: 20px;
   gap: .25rem;
 }
@@ -144,6 +137,7 @@ body.active .hidden{
 }
 
 .toggle-btn{
+  display: none;
   position: absolute;
   width: 15px;
   height: 15px;
@@ -152,9 +146,6 @@ body.active .hidden{
   padding: 0.2rem;
   background-color: #dddddd;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   box-shadow: var(--box-shadow);
   transition: transform 0.5s ease;
 }
@@ -169,11 +160,11 @@ body.active .toggle-btn{
   transform: rotate(180deg);
 }
 
-body.active .div-principal{
-  /* transform: rotate(180deg); */
+/* body.active .div-principal{ */
+/* .div-principal{
   margin-left: 15rem;
   transition: margin-left 500ms ease;
-}
+} */
 
 .user-profile{
   display: flex;
@@ -215,4 +206,36 @@ body.active .div-principal{
 .user-details .user-email{
   font-size: 0.8rem;
   word-wrap: break-word;
+}
+
+
+@media (max-width: 768px) {
+  .side{
+    width: 0;
+    left: -10px;
+    /* visibility: hidden;          Oculta visualmente */
+    /* pointer-events: none;        No recibe clics */
+    /* overflow: hidden;            Oculta contenido interno */
+    transition: width 500ms ease, background-color 500ms ease;
+  }
+
+  body.active .side{
+    position: fixed;
+    z-index: 20;
+    width: 15rem;
+    visibility: visible;         /* Muestra */
+    pointer-events: auto;        /* Permite clics */
+  }
+  
+
+  .toggle-btn {
+    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: -35px; 
+    z-index: 9; /* EL BOTÓN QUEDA SIEMPRE ENCIMA */
+    width: 25px;
+    height: 25px;
+  }
 }

@@ -48,7 +48,7 @@ const DashboardChartsGroupImplements = ({ implementCategory}) => {
       <div
         style={{
           position: 'relative',
-          width: '100%',
+          // width: '100%',
           height: '100px'
           // background: "#fff",
           // borderRadius: "12px",

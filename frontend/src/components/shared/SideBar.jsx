@@ -51,8 +51,12 @@ const SideBar = () =>{
     setIsActive(!isActive);
   };
 
+  // Activamos para mantener asi
+  document.body.classList.add('active');
+
   useEffect(() => {
     // Añadir o quitar la clase 'active' al body según el estado actual
+
     if (isActive) {
       document.body.classList.add('active');
     } else {
@@ -139,7 +143,7 @@ const SideBar = () =>{
 
   return(
     <>
-      <nav className='side'>
+      <nav className='side active'>
         <div className="sidebar-header">
           <Link className="logo-wrapper" to='/'>
             <img src={Logo} alt="Logo" />

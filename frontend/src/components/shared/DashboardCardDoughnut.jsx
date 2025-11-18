@@ -60,7 +60,7 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
         background: "#ffffff",
         borderRadius: "10px",
         padding: "5px",
-        width: "300px",
+        width: "auto",
         boxShadow: "var(--box-shadow)",
       }}
     >
@@ -86,7 +86,7 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
 
         <div style={{ flex: 1 }}>
           <p style={{ fontWeight: "600", fontSize: "14px" }}>Horas por mes</p>
-          <div style={{ height: "60px" }}>
+          <div style={{ height: "60px", width: '100%' }}>
             <Bar data={barData} options={barOptions} />
           </div>
         </div>

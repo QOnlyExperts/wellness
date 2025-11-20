@@ -21,6 +21,7 @@ a{
   font-size: .9rem;
   height: calc(100vh - 0.75rem);
   background-color: var(--sidebar);
+  color: white;
   padding: 5px;
   display: flex;
   flex-direction: column;

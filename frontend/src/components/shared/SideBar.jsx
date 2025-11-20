@@ -7,14 +7,15 @@ import Home from '../../assets/home.svg';
 import Dashboard from '../../assets/dashboard.svg';
 import Group from '../../assets/groupImplements.svg';
 
-import Logo from '../../assets/img/logo-sfn.png'
+import Logo from '../../assets/img/wellness-logo.png'
 import HomeIcon from '../icons/HomeIcon';
 import DashboardIcon from '../icons/DashboardIcon';
 import GamingIcon from '../icons/GAmingIcon';
 import Badge from './Badge';
 import ImplementIcon from '../icons/ImplementIcon';
 import GroupImplementIcon from '../icons/GroupImplementIcon';
-
+import RequestIcon from '../icons/Request';
+import UsersIcon from '../icons/UsersIcon';
 
 const SideBar = () =>{
 
@@ -210,15 +211,19 @@ const SideBar = () =>{
               </Link>
             </div>
           }
-{/*           
-          <Link className="link" to="/admin/product" title="Producto">
-            <img src={ProductoConfig} alt=""/>
-            <span className="hidden">Producto</span>
+          <Link className="link" to="/admin/requests" title="Solicitudes">
+            <RequestIcon
+              color='#ffffff'
+            />
+            <span className="hidden">Solicitudes</span>
           </Link>
-          <Link className="link" to="/admin/product" title="Producto">
-            <img src={ProductoConfig} alt=""/>
-            <span className="hidden">Producto</span>
-          </Link> */}
+          
+          <Link className="link" to="/admin/users" title="Usuarios">
+            <UsersIcon
+              color='#ffffff'
+            />
+            <span className="hidden">Usuarios</span>
+          </Link>
 
 
         </div>

@@ -80,7 +80,7 @@ const ImplementPage = () => {
       <div
         style={{
           display: "flex",
-          height: "350px",
+          height: "80px",
           overflowX: "auto",
           // marginBottom: "10px",
           padding: "10px",

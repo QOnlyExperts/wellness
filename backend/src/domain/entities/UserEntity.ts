@@ -2,6 +2,7 @@
 import { ValidationError } from "../../shared/errors/DomainErrors";
 import { RoleEntity } from "./RoleEntity";
 import { InfoPersonEntity } from "./InfoPersonEntity";
+import { ProgramEntity } from "./ProgramEntity";
 
 export class UserEntity {
   public readonly id: number | null;
@@ -17,6 +18,7 @@ export class UserEntity {
   public rol_id: number;
   public info_person?: InfoPersonEntity;
   public rol?: RoleEntity;
+  public program?: ProgramEntity;
 
   constructor(props: {
     id: number | null;
@@ -32,6 +34,7 @@ export class UserEntity {
     rol_id: number;
     info_person?: InfoPersonEntity;
     rol?: RoleEntity;
+    program?: ProgramEntity
   }) {
     this.id = props.id;
     this.email = props.email;
@@ -46,6 +49,7 @@ export class UserEntity {
     this.rol_id = props.rol_id;
     this.info_person = props.info_person;
     this.rol = props.rol;
+    this.program = props.program;
   }
 
   static create(props: {
@@ -62,6 +66,7 @@ export class UserEntity {
     rol_id: number;
     info_person?: InfoPersonEntity;
     rol?: RoleEntity;
+    program?: ProgramEntity
   }): UserEntity {
     if (!props.email.includes("@campusucc.edu.co")) {
       throw new ValidationError("El correo electrónico no es válido");
@@ -83,6 +88,7 @@ export class UserEntity {
       rol_id: props.rol_id,
       info_person: props.info_person,
       rol: props.rol,
+      program: props.program
     });
   }
 

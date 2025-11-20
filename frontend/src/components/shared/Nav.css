@@ -39,9 +39,6 @@
   gap: 25px;
   background-color: #ffffff;
 
-  @media (max-width: 552px) {
-    width: auto
-  }
 }
 
 .menu {
@@ -55,11 +52,7 @@
   background-color: var(--color-primary);
 }
 
-@media (max-width: 768px) {
-  .menu{
-    width: 100%;
-  }
-}
+
 
 .menu .input-search{
   display: flex;
@@ -169,13 +162,13 @@
   margin-right: 20px;
 } */
 
-.menu li a:nth-child(3){
+/* .menu li a:nth-child(3){
   margin-right: 5px;
 }
 
 .menu li a:nth-child(4){
   margin-right: 0px;
-}
+} */
 
 
 .menu li a .cart{
@@ -298,7 +291,7 @@
   list-style: none;
   display: inline-block;
   position: relative; /* Es la referencia para el dropdown-content */
-  padding: 0 10px;
+  /* padding: 0 10px; */
   cursor: pointer;
 }
 
@@ -316,7 +309,6 @@
   position: absolute;
   top: 100%; 
   right: 0; 
-  margin-top: 5px; 
   width: 200px;
   background-color: white; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
@@ -350,6 +342,17 @@
   }
   .menu ul{
     width: 60%;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu ul{
+    width: 100%;
+  }
+
+  .menu2{
+    width: 100%;
+    justify-content: space-between;
   }
 }
 

@@ -1,18 +1,28 @@
-
+import LoaderIcon from "../icons/LoaderIcon";
 import "./Button.css"
 
-const Button = ({style, disabled, text, className, onClick, children, type = 'button'}) => {
+const Button = ({style, disabled, text, className, onClick, children, type = 'button', isLoading, colorIcon}) => {
 
   return(
     <button
-    style={style}
+      style={style}
       disabled={disabled}
-      className={className}
+      className={!isLoading ? className : 'btn-icon'}
       onClick={onClick}
       type={type}
     >
-      {children}
-      {text}
+
+      {
+        isLoading ? (
+          <LoaderIcon size={20} color={colorIcon} />
+        ) : (
+          <>
+            {children}
+            {text}
+          </>
+        )
+      }
+
     </button>
   )
 }

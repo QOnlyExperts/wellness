@@ -16,7 +16,7 @@ if (!SECRET_KEY) {
 
 // Importaciones del NÚCLEO (Interfaces, Casos de Uso)
 // Symbols para inyección
-import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IUserCreatorToken, IHashServiceToken, IEmailServiceToken, IInfoPersonCreatorToken, IJwtServiceToken } from './injectionTokens';
+import { IImplementRepositoryToken, IImplementCounterPortToken, IImgRepositoryToken, ImgServiceToken, IGroupImplementRepositoryToken, ICategoryRepositoryToken, IRoleRepositoryToken, IProgramRepositoryToken, IUserRepositoryToken, IInfoPersonRepositoryToken, IRequestRepositoryToken, IUserCreatorToken, IHashServiceToken, IEmailServiceToken, IInfoPersonCreatorToken, IJwtServiceToken } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
 import { IGroupImplementRepository } from '../domain/interfaces/IGroupImplementRepository';
@@ -63,6 +63,8 @@ import { RegisterUserUseCase } from '../application/use-cases/users/register/Reg
 import { SequelizeUserRepository } from '../infrastructure/repositories/SequelizeUserRepository';
 import { SequelizeInfoPersonRepository } from '../infrastructure/repositories/SequelizeInfoPersonRepository';
 import { CreateUserUseCase } from '../application/use-cases/users/CreateUserUseCase';
+import { GetUserByIdUseCase } from '../application/use-cases/users/GetUserByIdUseCase';
+import { GetUsersUseCase } from '../application/use-cases/users/GetUsersUSeCase';
 import { CreateInfoPersonUseCase } from '../application/use-cases/info-person/CreateInfoPersonUseCase';
 import { HashService } from '../application/services/HashService';
 import { EmailService } from '../application/services/EmailService';
@@ -82,7 +84,14 @@ import { IProgramRepository } from '../domain/interfaces/IProgramRepository';
 import { SequelizeProgramRepository } from '../infrastructure/repositories/SequelizeProgramRepository';
 import { LoginUseCase } from '../application/use-cases/users/login/LoginUseCase';
 import { IUserRepository } from '../domain/interfaces/IUserRepository';
-
+import { CreateRequestUseCase } from '../application/use-cases/request/CreateRequestUseCase';
+import { IRequestRepository } from '../domain/interfaces/IRequestRepository';
+import { GetRequestUseCase } from '../application/use-cases/request/GetRequestUseCase';
+import { GetRequestByStatusByIdInfoPersonUseCase } from '../application/use-cases/request/GetRequestByStatusByIdInfoPersonUseCase';
+import { GetRequestByIdUseCase } from '../application/use-cases/request/GetRequestByIdUseCase';
+import { GetRequestByIdInfoPersonUseCase } from '../application/use-cases/request/GetRequestByIdInfoPersonUseCase';
+import { UpdateRequestUseCase } from '../application/use-cases/request/UpdateRequestUseCase';
+import { SequelizeRequestRepository } from '../infrastructure/repositories/SequelizeRequestRepository';
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies: Record<symbol, any> = {
@@ -96,6 +105,8 @@ export const Dependencies: Record<symbol, any> = {
 
     [IUserRepositoryToken]: new SequelizeUserRepository(),
     [IInfoPersonRepositoryToken]: new SequelizeInfoPersonRepository(),
+    [IRequestRepositoryToken]: new SequelizeRequestRepository(),
+
 
     [IHashServiceToken]: new HashService(), // por ejemplo, 10 saltRounds
     [IEmailServiceToken]: new EmailService(),
@@ -111,6 +122,18 @@ Dependencies[IUserCreatorToken] = new CreateUserUseCase(
 Dependencies[IInfoPersonCreatorToken] = new CreateInfoPersonUseCase(
     Dependencies[IInfoPersonRepositoryToken],
 );
+
+export function resolveJwtTokenService(): JwtService {
+    // const jwtService = Dependencies[IJwtServiceToken] as JwtService;
+    if (!SECRET_KEY) {
+        // Si esta línea se ejecuta, el error está en la carga de tu .env o en el entorno.
+        throw new Error("ERROR: La variable de entorno SECRET_KEY no está definida.");
+    }
+
+    return new JwtService(SECRET_KEY);
+}
+
+
 
 export function resolveLoginUseCase(): LoginUseCase {
     const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
@@ -138,7 +161,53 @@ export function resolveRegisterUserUseCase(): RegisterUserUseCase {
     );
 }
 
+export function resolveGetUserByIdUseCase(): GetUserByIdUseCase {
+    const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
+    return new GetUserByIdUseCase(userRepository);
+}
 
+export function resolveGetUsersUseCase(): GetUsersUseCase {
+    const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
+    return new GetUsersUseCase(userRepository);
+}
+
+// SOLICITUDES ------------
+
+// Creaa la solicitud
+export function resolveCreateRequestUseCase(): CreateRequestUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new CreateRequestUseCase(requestRepository);
+}
+
+// Carga las solicitudes para el admin
+export function resolveGetRequestUseCase(): GetRequestUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new GetRequestUseCase(requestRepository);
+}
+
+// Carga la solicitud por id
+export function resolveGetRequestByIdUseCase(): GetRequestByIdUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new GetRequestByIdUseCase(requestRepository);
+}
+
+// Carga las solicitudes por id de persona
+export function resolveGetRequestByIdInfoPersonUseCase(): GetRequestByIdInfoPersonUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new GetRequestByIdInfoPersonUseCase(requestRepository);
+}
+
+// Carga la solicitud por estado prestado e id de persona
+export function resolveGetRequestByStatusByIdInfoPersonUseCase(): GetRequestByStatusByIdInfoPersonUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new GetRequestByStatusByIdInfoPersonUseCase(requestRepository);
+}
+
+export function resolveUpdateRequestUseCase(): UpdateRequestUseCase {
+    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
+    return new UpdateRequestUseCase(requestRepository);
+}
+// FIN SOLICITUDES ------------
 
 // --- RESOLVERS ---
 

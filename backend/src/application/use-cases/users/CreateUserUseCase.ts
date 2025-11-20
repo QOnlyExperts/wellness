@@ -43,7 +43,6 @@ export class CreateUserUseCase {
       info_person_id: input.info_person_id,
       rol_id: input.rol_id,
     });
-    console.log(user);
 
     // Pasamos el usuario creado y la transacción
     const createdUser = await this.userRepository.save(user, t);

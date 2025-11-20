@@ -6,7 +6,11 @@ export interface UserOutputDto {
   email: string;
   is_verified: boolean;
   is_active: boolean;
+  created_at?: Date;
+  updated_at?: Date;
   last_login?: Date | null;
+  info_person_id: number;
+  rol_id: number;
   info_person?: InfoPersonInputDto;
-  role?: CreateRoleInputDto;
+  rol?: CreateRoleInputDto;
 }

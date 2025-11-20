@@ -1,5 +1,7 @@
 // application/mappers/InfoPersonMapper.ts
 import { InfoPersonEntity } from "../../domain/entities/InfoPersonEntity";
+import { ProgramEntity } from "../../domain/entities/ProgramEntity";
+import { ProgramMapper } from "./ProgramMapper";
 
 export class InfoPersonMapper {
   // Entidad → DTO plano
@@ -12,11 +14,18 @@ export class InfoPersonMapper {
       last_name2: infoPerson.last_name2,
       identification: infoPerson.identification,
       program_id: infoPerson.program_id,
+      program: infoPerson.program ? ProgramMapper.toOutputDto(infoPerson.program) : null
+
     };
   }
 
   // Objeto (de BD o request) → Entidad de dominio
   public static toDomain(data: any): InfoPersonEntity {
+
+    const program: ProgramEntity | undefined = data.Program
+      ? ProgramMapper.toDomain(data.Program)
+      : undefined;
+
     return InfoPersonEntity.create({
       id: data.id ?? null,
       name1: data.name1,
@@ -25,6 +34,7 @@ export class InfoPersonMapper {
       last_name2: data.last_name2 ?? "",
       identification: data.identification ?? '',
       program_id: data.program_id,
+      program: program
     });
   }
 

@@ -14,6 +14,12 @@ const UserService = {
       headers: headers
     });
   },
+  getUsers: () => {
+    return service('/users');
+  },
+  getUserById: (id) => {
+    return service(`/user/${id}`);
+  },
 }
 
 export default UserService;

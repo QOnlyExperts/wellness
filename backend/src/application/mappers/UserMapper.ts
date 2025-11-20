@@ -3,6 +3,8 @@ import { UserEntity } from "../../domain/entities/UserEntity";
 import { RoleEntity } from "../../domain/entities/RoleEntity";
 import { InfoPersonEntity } from "../../domain/entities/InfoPersonEntity";
 import { InfoPersonMapper } from "./InfoPersonMapper";
+import { ProgramEntity } from "../../domain/entities/ProgramEntity";
+import { RoleMapper } from "./RoleMapper";
 
 export class UserMapper {
   /**
@@ -40,12 +42,8 @@ export class UserMapper {
   public static toDomain(data: any): UserEntity {
 
     // Role (si viene cargada desde Sequelize)
-    const rol: RoleEntity | undefined = data.rol
-      ? RoleEntity.create({
-          id: data.rol.id ?? null,
-          name: data.rol.name,
-          status: Boolean(data.rol.status),
-        })
+    const rol: RoleEntity | undefined = data.Role
+      ? RoleMapper.toDomain(data.Role)
       : undefined;
 
     // InfoPerson (si viene cargada desde Sequelize)
@@ -57,7 +55,7 @@ export class UserMapper {
       id: data.id ?? null,
       email: data.email,
       password: data.password ?? "",
-      salt: data.salt,
+      salt: data.salt ?? "",
       is_verified: data.is_verified ?? false,
       is_active: data.is_active ?? false,
       created_at: data.created_at ? new Date(data.created_at) : new Date(),

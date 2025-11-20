@@ -22,6 +22,8 @@ import DashboardCard from "../components/shared/DashboardCardDoughnut";
 import ImplementListContainer from "../containers/implement/ImplementListContainer";
 import ImplementUsedList from "../containers/home/ImplementUsedList";
 import CheckIcon from "../components/icons/CheckIcon";
+import { ASSET_STATUS_FILTERS } from "../constants/assetStatuses";
+import InfoIcon from "../components/icons/InfoIcon";
 
 const HomePage = () => {
   const [isOpenModal, setIsModalOpen] = useState(false);
@@ -78,15 +80,77 @@ const HomePage = () => {
     setExpandedCardId(expandedCardId === groupId ? null : groupId);
   };
 
+  const renderFiltroOpciones = () => {
+    return ASSET_STATUS_FILTERS.map((status) => (
+      <Badge key={status.value} value={status.value} />
+    ));
+  };
+
   return (
     <div className="div-principal-home">
+
+      {
+        /* Modal de información */
+        isOpenModal && (
+
+          <Modal
+            title="Información sobre Estados de implementos"
+            isOpen={isOpenModal}
+            onClose={() => setIsModalOpen(false)}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+                justifyContent: "center",
+                textAlign: "justify",
+                gap: "20px",  
+              }}
+            >
+              <h4>Indicadores de color</h4>
+              <p>
+                  Los indicadores de estados se muestran así para{" "}
+                  <strong>identificar rápidamente</strong> la situación actual de cada
+                  <strong>implemento</strong>. Esta codificación de colores permite a los usuarios{" "}
+                  <strong>conocer inmediatamente</strong> si un implemento está <strong>Disponible</strong> (verde),{" "}
+                  <strong>Prestado</strong> (rojo), en <strong>Reparación</strong>{" "}
+                  (amarillo/naranja) o <strong>Retirado</strong> (gris), garantizando una{" "}
+                  <strong>visualización rápida del estado</strong> y facilitando la labor de filtrado.
+              </p>
+
+              <h4>Significado de los Bordes de Color</h4>
+              <p>
+                  El borde de color que rodea el ícono de cada implemento (como se ve en las cartas de implementos)
+                  es un <strong>indicador visual rápido</strong> del estado, reforzando la información de los indicadores.
+                  Esto permite identificar de un vistazo si un implemento está <strong>disponible</strong> (verde)
+                  o si está <strong>en posesión de otro usuario</strong> (rojo).
+              </p>
+              <Button className="btn-icon" onClick={() => setIsModalOpen(false)}>
+                Cerrar
+              </Button>
+            </div>
+          </Modal>
+        )
+      }
+
       <Head
         title="Grupos de implementos"
-        subTitle="Selecciona para solicitar"
+        subTitle="Toca para seleccionar y ver implementos"
       />
-
+      <div className="div-badge-container">
+        <div className="div-badge-content">
+          {renderFiltroOpciones()}
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="btn-icon"
+          >
+            <InfoIcon size={20} color="#555555" />
+          </Button>
+        </div>
+      </div>
       <HorizontalScroll>
-        {groupImplementsList.length > 0 ?
+        {groupImplementsList.length > 0 ? (
           groupImplementsList.map((imp) =>
             selectedGroup === null || selectedGroup === imp.id ? (
               <div
@@ -163,7 +227,7 @@ const HomePage = () => {
               </div>
             ) : null
           )
-          : (
+        ) : (
           <div>
             {/* <h3>No hay implementos en uso</h3> */}
             <Card
@@ -199,8 +263,7 @@ const HomePage = () => {
                 />
               )
           )
-        ) : 
-        (
+        ) : (
           <div>
             {/* <h3>No hay implementos en uso</h3> */}
             <Card
@@ -215,7 +278,7 @@ const HomePage = () => {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: '100%',
+            width: "100%",
             // height: "auto",
             gap: "10px",
           }}

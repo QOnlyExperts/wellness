@@ -95,6 +95,9 @@ button:focus-visible {
   --color-borrowed: #F44336; /* Red */
 
   --sidebar: #00677F;
+  
+  --color-active: #4CAF50;
+  --color-inactive: #F44336; /* Red */
 
 }
 
@@ -119,6 +122,15 @@ body {
       background: #c0392b;
       transform: translateY(-2px);
     } */
+
+.not-found-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
 
 .sub-title{
   color: #6b6b6b;
@@ -188,8 +200,8 @@ body {
   /* arriba | derecha | abajo | izquierda */
   padding: 10px;
   gap: 10px;
-  background-color: #fbfbfb;
-  box-shadow: var(--box-shadow);
+  /* background-color: #fbfbfb;
+  box-shadow: var(--box-shadow); */
 
   transition: padding 500ms ease;
 }

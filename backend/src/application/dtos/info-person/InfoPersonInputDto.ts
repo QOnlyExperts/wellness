@@ -1,3 +1,5 @@
+import { CreateProgramInputDto } from "../../schemas/ProgramSchema";
+
 
 export interface InfoPersonInputDto {
   id: number | null;
@@ -7,4 +9,6 @@ export interface InfoPersonInputDto {
   last_name2?: string | null;
   identification: string;
   program_id: number;
+  program?: CreateProgramInputDto;
+
 }

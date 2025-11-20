@@ -16,5 +16,8 @@ router.post('/user', [
   validator.validateSchema(RegisterUserInputDtoSchema)
 ], userController.create.bind(userController));
 
+router.get('/users', userController.getAll.bind(userController));
+
+router.get('/user/:id', userController.getById.bind(userController));
 
 export { router as userRouter };

@@ -1,5 +1,6 @@
 // domain/entities/InfoPersonEntity.ts
 import { ValidationError } from "../../shared/errors/DomainErrors";
+import { ProgramEntity } from "./ProgramEntity";
 
 export class InfoPersonEntity {
   public readonly id: number | null;
@@ -9,6 +10,8 @@ export class InfoPersonEntity {
   public last_name2?: string | null;
   public identification: string;
   public program_id: number;
+  public program?: ProgramEntity;
+
 
   constructor(props: {
     id: number | null;
@@ -18,6 +21,7 @@ export class InfoPersonEntity {
     last_name2?: string | null;
     identification: string;
     program_id: number;
+    program?: ProgramEntity;
   }) {
     this.id = props.id;
     this.name1 = props.name1;
@@ -26,6 +30,7 @@ export class InfoPersonEntity {
     this.last_name2 = props.last_name2 ?? null;
     this.identification = props.identification;
     this.program_id = props.program_id;
+    this.program = props.program;
   }
 
   // Fábrica estática para crear la entidad con validaciones de dominio
@@ -37,6 +42,7 @@ export class InfoPersonEntity {
     last_name2?: string | null;
     identification: string;
     program_id: number;
+    program?: ProgramEntity;
   }): InfoPersonEntity {
     // --- Validaciones de dominio ---
     if (!props.name1 || props.name1.trim().length === 0) {
@@ -67,6 +73,7 @@ export class InfoPersonEntity {
       last_name2: props.last_name2?.trim() ?? null,
       identification: props.identification.trim(),
       program_id: props.program_id,
+      program: props.program
     });
   }
 

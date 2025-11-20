@@ -15,6 +15,16 @@ export const translateStatus = (value) => {
         return "Retirado";
       case "borrowed":
         return "Prestado";
+      case "is_verified":
+        return "Verificado";
+      case "no_verified":
+        return "No Verificado";
+        
+      case "inactive":
+        return "Inactivo";
+      case "active":
+        return "Activo";
+
 
       // Condiciones de implementos
       case "new":

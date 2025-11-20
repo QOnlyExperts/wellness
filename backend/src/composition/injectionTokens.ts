@@ -11,6 +11,7 @@ export const IRoleRepositoryToken = Symbol.for('IRoleRepository');
 export const IUserRepositoryToken = Symbol.for('IUserRepository');
 export const IInfoPersonRepositoryToken = Symbol.for('IInfoPersonRepository');
 
+export const IRequestRepositoryToken = Symbol.for('IRequestRepository');
 export const IUserCreatorToken = Symbol.for('IUserCreator');
 export const IInfoPersonCreatorToken = Symbol.for('IInfoPersonCreator');
 

@@ -1,8 +1,11 @@
+/* ReusableTable.css */
+
 /* La solución más sencilla, utilizando sólo CSS y no JS, sería recurrir a la propiedad position: sticky;. La parte mala es que hay algunas limitaciones de uso en ciertos navegadores, aunque en la gran mayoría de los modernos debería funcionar. */
 
 .table-wrapper {
   width: 100%;
-  height: 100%; /* Altura de ejemplo */
+  height: 100%;
+  /* Altura de ejemplo */
   min-height: 200px;
   border-radius: 10px;
   font-size: .9rem;
@@ -25,18 +28,19 @@
 }
 
 .table-wrapper table thead {
-  position: -webkit-sticky; /* Safari... */
+  position: -webkit-sticky;
+  /* Safari... */
   position: sticky;
   top: 0;
   /* left: 0; */
   z-index: 2;
 }
 
-.table-wrapper table thead th{
+.table-wrapper table thead th {
   text-align: start;
   /* border: 1px solid #000; */
   background-color: #FFF;
-  padding: 10px 0px 10px 0px;
+  padding: 10px 10px 10px 10px;
   white-space: nowrap;
 }
 
@@ -45,20 +49,29 @@
   text-align: start;
   /* border: 1px solid #000; */
   background-color: #f1f1f1;
-  padding: 5px;
+  padding: 10px;
   white-space: nowrap;
   font-weight: 500;
 }
 
-.table-wrapper table tbody   tr td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-  }
+.table-wrapper table tbody tr td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
 
-.table-wrapper table tbody   tr td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
+.table-wrapper table tbody tr td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 💡 CORRECCIÓN PARA DROPDOWNS: CELDA DE ACCIONES */
+.table-wrapper table tbody td.td-actions {
+  /* ¡ESTO ES LO CRÍTICO! Permite que el elemento con position: absolute (el dropdown) 
+       se desborde de la celda. */
+  overflow: visible !important;
+  z-index: 1;
+  /* Asegura un contexto de apilamiento */
+}
 
 @media (max-width: 768px) {
 

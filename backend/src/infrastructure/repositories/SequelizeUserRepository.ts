@@ -1,9 +1,7 @@
-
 import { Transaction } from "sequelize";
 import { UserEntity } from "../../domain/entities/UserEntity";
 import { IUserRepository } from "../../domain/interfaces/IUserRepository";
-import { LoginModel } from "../models/indexModel";
-import { InfoPersonModel } from "../models/InfoPersonModel";
+import { LoginModel, InfoPersonModel, ProgramModel } from "../models/indexModel";
 import { RoleModel } from "../models/RoleModel";
 import { UserMapper } from "../../application/mappers/UserMapper";
 
@@ -13,6 +11,7 @@ export class SequelizeUserRepository implements IUserRepository {
   async findAll(): Promise<UserEntity[]> {
     const userList = await LoginModel.findAll({
       attributes: [
+        'id',
         'email',
         'is_verified',
         'is_active',
@@ -25,13 +24,18 @@ export class SequelizeUserRepository implements IUserRepository {
       include: [
         {
           model: InfoPersonModel,
+          include: [
+            {
+              model: ProgramModel
+            }
+          ]
         },{
           model: RoleModel
         }
       ]
     });
 
-    return userList.map(user => UserMapper.toDomain(user.toJSON()));
+    return userList.map(user => UserMapper.toDomain(user?.toJSON()));
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -51,13 +55,6 @@ export class SequelizeUserRepository implements IUserRepository {
         'info_person_id',
         'rol_id'
       ],
-      include: [
-        {
-          model: InfoPersonModel,
-        },{
-          model: RoleModel
-        }
-      ]
     });
 
     if (!user) {
@@ -71,6 +68,7 @@ export class SequelizeUserRepository implements IUserRepository {
   async findById(id: number): Promise<UserEntity | null> {
     const user = await LoginModel.findByPk(id, {
       attributes: [
+        'id',
         'email',
         'is_verified',
         'is_active',
@@ -83,8 +81,11 @@ export class SequelizeUserRepository implements IUserRepository {
       include: [
         {
           model: InfoPersonModel,
-        },{
-          model: RoleModel
+          include: [
+            {
+              model: ProgramModel
+            }
+          ]
         }
       ]
     });
@@ -99,17 +100,24 @@ export class SequelizeUserRepository implements IUserRepository {
   async findByIdProfile(id: number): Promise<UserEntity | null> {
     const user = await LoginModel.findByPk(id, {
       attributes: [
+        'id',
         'email',
         'is_verified',
         'is_active',
+        'created_at',
+        'updated_at',
+        'last_login',
         'info_person_id',
         'rol_id'
       ],
       include: [
         {
           model: InfoPersonModel,
-        },{
-          model: RoleModel
+          include: [
+            {
+              model: ProgramModel
+            }
+          ]
         }
       ]
     });

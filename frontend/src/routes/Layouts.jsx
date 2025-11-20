@@ -7,6 +7,7 @@ import Sidebar from '../components/shared/SideBar'; // Componente ficticio
 import HomePage from '../pages/HomePage';
 import GroupImplementPage from '../pages/group-implement/GroupImplementPage';
 import ImplementPage from '../pages/implements/ImplementPage';
+import UserPage from '../pages/user/UserPage';
 
 // Rutas de Perfil (Ficticias)
 // import UserProfilePage from '../pages/profile/UserProfilePage';
@@ -25,7 +26,11 @@ export function HomeLayout() {
         <Route path="/" element={<HomePage />} />
         {/* Otras rutas de contenido principal irían aquí, por ejemplo: */}
         {/* <Route path="/about" element={<AboutPage />} /> */}
-        <Route path="*" element={<h1>404 | Contenido Principal no encontrado</h1>} />
+        <Route path="*" element={
+          <div className='not-found-container'>
+            <h1>404 | Contenido Principal no encontrado</h1>
+          </div>
+        } />
       </Routes>
     </div>
   );
@@ -43,9 +48,19 @@ export function AdminRoutes() {
         {/* Usamos path relativo (sin el /admin) */}
         <Route path="group-implement" element={<GroupImplementPage />} />
         <Route path="implement/status/:status" element={<ImplementPage />} />
+        <Route path="requests" element={<GroupImplementPage />} />
+        <Route path="users" element={<UserPage />} />
         {/* Ruta índice o redirección del /admin */}
-        <Route index element={<GroupImplementPage />} /> 
-        <Route path="*" element={<h1>404 | Página Admin no encontrada</h1>} />
+        <Route index element={
+          <div className='not-found-container'>
+            <h1>404 | Página Solicitudes no encontrada</h1> 
+          </div>
+        } /> 
+        <Route path="*" element={
+          <div className='not-found-container'>
+            <h1>404 | Página Admin no encontrada</h1> 
+          </div>
+        }/>
       </Routes>
     </div>
   );

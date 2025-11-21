@@ -4,8 +4,8 @@ let socket
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Iniciar el socket
-export const initialSocket = (user) => {
-  
+
+export const initialSocket = (user) => {     
   socket = io(`${apiUrl}:4000`, {query: {token: sessionStorage.getItem('token')}})
   if(socket && user) 
     socket.emit('joinAsAdmin', user)

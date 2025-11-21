@@ -27,7 +27,6 @@ const RequestPage = () => {
     // 3. Parsear el JSON. Usamos try/catch si el JSON puede estar malformado.
     try {
       const data = JSON.parse(dataJson);
-      console.log(data.user)
       // 4. Devolver la propiedad, si existe
       return data.user.id || null;
     } catch (e) {
@@ -108,7 +107,7 @@ const RequestPage = () => {
           <RequestAdminModalContainer
             implementId={form.implement_id}
             userId={form.user_id}
-            onClick={handleResponseToClient}
+            // onClick={handleResponseToClient}
           />
       }
 

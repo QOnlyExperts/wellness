@@ -1,6 +1,7 @@
 // domain/entities/InfoPersonEntity.ts
 import { ValidationError } from "../../shared/errors/DomainErrors";
 import { ProgramEntity } from "./ProgramEntity";
+import { UserEntity } from "./UserEntity";
 
 export class InfoPersonEntity {
   public readonly id: number | null;
@@ -10,6 +11,7 @@ export class InfoPersonEntity {
   public last_name2?: string | null;
   public identification: string;
   public program_id: number;
+  public login?: UserEntity;
   public program?: ProgramEntity;
 
 
@@ -21,6 +23,7 @@ export class InfoPersonEntity {
     last_name2?: string | null;
     identification: string;
     program_id: number;
+    login?: UserEntity;
     program?: ProgramEntity;
   }) {
     this.id = props.id;
@@ -30,6 +33,7 @@ export class InfoPersonEntity {
     this.last_name2 = props.last_name2 ?? null;
     this.identification = props.identification;
     this.program_id = props.program_id;
+    this.login = props.login;
     this.program = props.program;
   }
 
@@ -42,6 +46,7 @@ export class InfoPersonEntity {
     last_name2?: string | null;
     identification: string;
     program_id: number;
+    login?: UserEntity;
     program?: ProgramEntity;
   }): InfoPersonEntity {
     // --- Validaciones de dominio ---
@@ -73,6 +78,7 @@ export class InfoPersonEntity {
       last_name2: props.last_name2?.trim() ?? null,
       identification: props.identification.trim(),
       program_id: props.program_id,
+      login: props.login,
       program: props.program
     });
   }

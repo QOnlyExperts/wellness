@@ -9,7 +9,8 @@ import {
   resolveGetImplementByIdGroup,
   resolveGetImplementByStatus,
   resolveUpdateImplement,
-  resolveUpdateManyImplement
+  resolveUpdateManyImplement,
+  resolveGetImplementById
 } from "../../composition/compositionRoot";
 import { ImplementInputDto } from "../../application/dtos/implements/ImplementInputDto";
 import { GetImplements } from "../../application/use-cases/implements/GetImplements";
@@ -23,11 +24,13 @@ import { UpdateImplement } from "../../application/use-cases/implements/UpdateIm
 import { UpdateMultipleImplements } from "../../application/use-cases/implements/UpdateMultipleImplements";
 import { ImplementUpdateDto } from "../../application/dtos/implements/ImplementUpdateDto";
 import { statusSchema } from "../../application/schemas/statusSchema";
+import { GetImplementById } from "../../application/use-cases/implements/GetImplementById";
 
 export class ImplementController {
   // Declara una propiedad para el caso de uso
   private createImplementUseCase: CreateImplement;
   private getImplementsUseCase: GetImplements;
+  private getImplementByIdUseCase: GetImplementById;
   private getImplementByIdGroup: GetImplementByIdGroup;
   private getImplementByStatus: GetImplementByStatus;
   private updateImplement: UpdateImplement;
@@ -38,6 +41,7 @@ export class ImplementController {
     // Aquí ocurre la "inyección" real, pero la lógica de creación está centralizada
     this.createImplementUseCase = resolveCreateImplementUseCase();
     this.getImplementsUseCase = resolveGetImplementsUseCase();
+    this.getImplementByIdUseCase = resolveGetImplementById();
     this.getImplementByIdGroup = resolveGetImplementByIdGroup();
     this.getImplementByStatus = resolveGetImplementByStatus();
     this.updateImplement = resolveUpdateImplement();
@@ -156,6 +160,38 @@ export class ImplementController {
         data: implementsList
       });
     } catch (error) {
+      next(error);
+    }
+  }
+
+    public async getImplementById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try{
+      const result = idSchema.safeParse({id: req.params.id});
+      
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.id?.errors.map(e => ({
+            path: "id",
+            message: e
+          })),
+        });
+      }
+
+      // Ahora TypeScript sabe que result.success === true
+      const id = result.data.id; // número seguro
+      const implement = await this.getImplementByIdUseCase.execute(id);
+      
+      return res.status(200).json({
+        success: true,
+        message: "Implementos obtenido exitosamente",
+        data: implement
+      });
+
+    }catch (error){
       next(error);
     }
   }

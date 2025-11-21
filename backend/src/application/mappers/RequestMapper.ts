@@ -20,6 +20,7 @@ export class RequestMapper {
       created_at: request.created_at,
       finished_at: request.finished_at,
       limited_at: request.limited_at,
+      duration_hours: request.duration_hours,
       info_person_id: request.info_person_id,
       implement_id: request.implement_id,
       
@@ -47,8 +48,8 @@ export class RequestMapper {
       : undefined;
 
     // InfoPerson (si viene cargada)
-    const infoPerson: InfoPersonEntity | undefined = data.Info_person
-      ? InfoPersonMapper.toDomain(data.Info_person)
+    const infoPerson: InfoPersonEntity | undefined = data.InfoPerson
+      ? InfoPersonMapper.toDomain(data.InfoPerson)
       : undefined;
 
     return new RequestEntity({
@@ -60,7 +61,8 @@ export class RequestMapper {
       created_at: data.created_at ? new Date(data.created_at) : new Date(),
       finished_at: data.finished_at ? new Date(data.finished_at) : null,
       limited_at: data.limited_at ? new Date(data.limited_at) : new Date(), // Usar new Date() como valor por defecto es poco seguro, considera null o requerir el campo.
-      
+      duration_hours: data.duration_hours,
+
       info_person_id: data.info_person_id,
       implement_id: data.implement_id,
       

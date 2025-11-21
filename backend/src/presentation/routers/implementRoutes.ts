@@ -20,6 +20,8 @@ router.get('/implements',[
   
 ], implementController.getAll.bind(implementController));
 
+router.get('/implement/:id', implementController.getImplementById.bind(implementController));
+
 router.patch("/implements/batch",[
 
 ], implementController.updateMany.bind(implementController));

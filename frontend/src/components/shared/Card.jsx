@@ -20,6 +20,7 @@ const Card = React.memo(
     onClose,
     expanded = false,
     children,
+    className = ""
   }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -38,7 +39,7 @@ const Card = React.memo(
     return (
       // Aquí el motion.div rota cuando expanded es true
       <motion.div
-        className={`card card-${type || "default"}`}
+        className={`card ${className} card-${type || "default"}`}
         onClick={!expanded ? onClick : undefined}
         initial={{ rotateY: 0 }}
         animate={{ rotateY: expanded ? 180 : 0 }}

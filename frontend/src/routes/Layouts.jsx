@@ -8,6 +8,7 @@ import HomePage from '../pages/HomePage';
 import GroupImplementPage from '../pages/group-implement/GroupImplementPage';
 import ImplementPage from '../pages/implements/ImplementPage';
 import UserPage from '../pages/user/UserPage';
+import RequestPage from '../pages/requests/RequestPage';
 
 // Rutas de Perfil (Ficticias)
 // import UserProfilePage from '../pages/profile/UserProfilePage';
@@ -48,7 +49,7 @@ export function AdminRoutes() {
         {/* Usamos path relativo (sin el /admin) */}
         <Route path="group-implement" element={<GroupImplementPage />} />
         <Route path="implement/status/:status" element={<ImplementPage />} />
-        <Route path="requests" element={<GroupImplementPage />} />
+        <Route path="requests" element={<RequestPage />} />
         <Route path="users" element={<UserPage />} />
         {/* Ruta índice o redirección del /admin */}
         <Route index element={

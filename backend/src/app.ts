@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createServer, Server as HttpServer } from 'http';
-import { configSocket } from './application/services/socketService';
+import { SocketAdapter } from './infrastructure/adapters/SocketAdapter';
 import config from './config';
 
 
@@ -63,6 +63,7 @@ app.use('/', (req: Request, res: Response) => {
 const httpServer: HttpServer = createServer(app);
 
 // Configurar socket
-configSocket(httpServer);
+const socket = new SocketAdapter();
+socket.config(httpServer);
 
 export default httpServer;

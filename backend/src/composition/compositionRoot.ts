@@ -92,6 +92,7 @@ import { GetRequestByIdUseCase } from '../application/use-cases/request/GetReque
 import { GetRequestByIdInfoPersonUseCase } from '../application/use-cases/request/GetRequestByIdInfoPersonUseCase';
 import { UpdateRequestUseCase } from '../application/use-cases/request/UpdateRequestUseCase';
 import { SequelizeRequestRepository } from '../infrastructure/repositories/SequelizeRequestRepository';
+import { GetImplementById } from '../application/use-cases/implements/GetImplementById';
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies: Record<symbol, any> = {
@@ -232,6 +233,10 @@ export function resolveGetImplementsUseCase(): GetImplements {
     return new GetImplements(implementRepository);
 }
 
+export function resolveGetImplementById(): GetImplementById {
+    const implementRepository = Dependencies[IImplementRepositoryToken] as IImplementRepository;
+    return new GetImplementById(implementRepository);
+}
 
 export function resolveGetImplementByIdGroup(): GetImplementByIdGroup {
     const groupImplementRepository = Dependencies[IGroupImplementRepositoryToken] as IGroupImplementRepository;

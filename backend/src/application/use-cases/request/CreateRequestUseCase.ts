@@ -24,6 +24,7 @@ export class CreateRequestUseCase {
       created_at: new Date(),
       finished_at: new Date(),
       limited_at: input.limited_at,
+      duration_hours: 0,
       info_person_id: input.info_person_id,
       implement_id: input.implement_id,
     });

@@ -17,6 +17,7 @@ export class GetUserByIdUseCase {
       throw new ValidationError("ID inválido.");
     }
 
+    console.log(id);
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new DomainError("Usuario no encontrado");

@@ -9,6 +9,7 @@ export class RequestEntity {
   public created_at: Date;
   public finished_at: Date | null;
   public limited_at: Date;
+  public duration_hours: number;
 
   public info_person_id: number;
   public implement_id: number;
@@ -22,6 +23,8 @@ export class RequestEntity {
     created_at: Date;
     finished_at: Date | null;
     limited_at: Date;
+    duration_hours: number;
+
     info_person_id: number;
     implement_id: number;
 
@@ -33,6 +36,7 @@ export class RequestEntity {
     this.created_at = props.created_at;
     this.finished_at = props.finished_at;
     this.limited_at = props.limited_at
+    this.duration_hours = props.duration_hours;
     this.info_person_id = props.info_person_id;
     this.implement_id = props.implement_id;
     this.info_person = props.info_person;
@@ -44,6 +48,8 @@ export class RequestEntity {
     created_at: Date;
     finished_at: Date | null;
     limited_at: Date;
+    duration_hours: number;
+
     info_person_id: number;
     implement_id: number;
   }): RequestEntity {
@@ -53,6 +59,7 @@ export class RequestEntity {
       created_at: props.created_at,
       finished_at: props.finished_at,
       limited_at: props.limited_at,
+      duration_hours: props.duration_hours,
       info_person_id: props.info_person_id,
       implement_id: props.implement_id
     });
@@ -62,7 +69,4 @@ export class RequestEntity {
     // Ejemplo de lógica de negocio en la entidad
     return this.status !== RequestStatus.FINISHED;
   }
-
-  
-
 }

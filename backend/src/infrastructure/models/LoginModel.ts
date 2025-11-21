@@ -49,7 +49,7 @@ LoginModel.init(
     updated_at: { type: DataTypes.DATE, allowNull: true },
     last_login: { type: DataTypes.DATE, allowNull: true },
     info_person_id: { type: DataTypes.INTEGER, allowNull: false },
-    rol_id: { type: DataTypes.INTEGER, allowNull: false },
+    rol_id: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 2 }, // 2 es Estudiante por defecto
   },
   {
     sequelize,

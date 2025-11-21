@@ -1,7 +1,7 @@
 
 import { RequestEntity } from "../../domain/entities/RequestEntity";
 import { IRequestRepository } from "../../domain/interfaces/IRequestRepository";
-import { ImplementModel, InfoPersonModel, RequestModel } from "../models/indexModel";
+import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/indexModel";
 import { RequestMapper } from "../../application/mappers/RequestMapper";
 
 export class SequelizeRequestRepository implements IRequestRepository {
@@ -10,13 +10,26 @@ export class SequelizeRequestRepository implements IRequestRepository {
       include: [
         {
           model: InfoPersonModel,
+          include: [
+            {
+              model: LoginModel
+            }
+          ]
         },
         {
           model: ImplementModel,
+          include:[
+            {
+              model: ImgModel
+            },
+            {
+              model: GroupImplementModel
+            }
+          ]
         },
       ],
     });
-    console.log(JSON.stringify(requests));
+    
     return requests.map((request) => RequestMapper.toDomain(request.toJSON()));
   }
 
@@ -31,8 +44,24 @@ export class SequelizeRequestRepository implements IRequestRepository {
   // Busca las solicitudes por ID de persona
   async findByInfoPersonId(infoPersonId: number): Promise<RequestEntity[]> {
     const requests = await RequestModel.findAll({
-      where: { info_person_id: infoPersonId },
+      where: { 
+        info_person_id: infoPersonId 
+      },
+      include: [
+        {
+          model: ImplementModel,
+          include:[
+            {
+              model: ImgModel
+            },
+            {
+              model: GroupImplementModel
+            }
+          ]
+        },
+      ]
     });
+
     return requests.map((request) => RequestMapper.toDomain(request.toJSON()));
   }
 
@@ -41,12 +70,31 @@ export class SequelizeRequestRepository implements IRequestRepository {
   async findByStatusByInfoPersonId(infoPersonId: number): Promise<RequestEntity | null> {
     const request = await RequestModel.findOne({
       where: { 
+        // 1. Filtro por Persona
         info_person_id: infoPersonId, 
-        status: 'borrowed' 
+        
+        // 2. Filtro de Estado de la SOLICITUD
+        // La solicitud debe estar ACEPTADA.
+        status: 'accepted' 
       },
-      include:[
+      include: [
         {
-          model: ImplementModel
+          // 3. Filtro de Estado del IMPLEMENTO
+          // El implemento debe estar PRESTADO.
+          where: { 
+            status: 'borrowed' 
+          },
+          // 4. Aseguramos un INNER JOIN (es decir, el implemento DEBE cumplir la condición)
+          required: true,
+          model: ImplementModel,
+          include: [
+            {
+              model: ImgModel
+            },
+            {
+              model: GroupImplementModel
+            }
+          ]
         }
       ]
     });
@@ -67,16 +115,34 @@ export class SequelizeRequestRepository implements IRequestRepository {
 
   // Debería actualizar status, created_at, finished_at
   async updateStatus(
-    id: number,
-    requestEntity: Partial<RequestEntity>
+      id: number,
+      requestEntity: Partial<RequestEntity>
   ): Promise<RequestEntity> {
+      // 1. Convertir la entidad de dominio parcial a un objeto de persistencia.
+      const requestData = RequestMapper.toPersistence(requestEntity);
 
-    const requestData = RequestMapper.toPersistence(requestEntity);
-    await RequestModel.update(requestData, {
-      where: { id: id },
-    });
+      // 2. Ejecutar la actualización en la base de datos.
+      const [affectedCount] = await RequestModel.update(requestData, {
+          where: { id: id },
+      });
 
-    return RequestMapper.toDomain(requestData.toJSON());
+      // Opcional: Manejar el caso donde el ID no existe
+      if (affectedCount === 0) {
+          // Podrías lanzar un error si la solicitud no se encuentra
+          throw new Error(`Request with ID ${id} not found.`); 
+      }
+
+      // 3. RECUPERAR la entidad recién actualizada de la base de datos.
+      const updatedModel = await RequestModel.findByPk(id);
+
+      if (!updatedModel) {
+          // Esto solo debería pasar si la actualización fue correcta y luego se borró (muy improbable)
+          throw new Error(`Request with ID ${id} disappeared after update.`);
+      }
+
+      // 4. Convertir el modelo de Sequelize (que tiene los datos actualizados, incluyendo updated_at) 
+      // a la entidad de dominio y devolverla.
+      return RequestMapper.toDomain(updatedModel.toJSON());
   }
 
   async delete(id: number): Promise<void> {

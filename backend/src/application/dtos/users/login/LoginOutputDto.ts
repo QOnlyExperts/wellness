@@ -4,6 +4,7 @@ export interface LoginOutputDto {
     name: string; 
     email: string,
     rol: number;
+    info_person_id: number | null;
   };
   token: string;
 }

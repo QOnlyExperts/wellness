@@ -68,6 +68,14 @@
   box-sizing: border-box;
 }
 
+.view-wrapper-auto {
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
 /* Cada vista ocupa el 100% del modal */
 .view {
   position: absolute;

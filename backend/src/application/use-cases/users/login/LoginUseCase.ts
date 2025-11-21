@@ -43,6 +43,7 @@ export class LoginUseCase {
         id: user.id!,
         name: user.info_person?.name1 || '',
         email: user.email,
+        info_person_id: user.info_person_id,
         rol: user.rol_id,
       },
       token: token,

@@ -18,12 +18,9 @@ import { GetUserByIdUseCase } from "../../application/use-cases/users/GetUserByI
 interface ClientData {
   implement_id: number;
   user_id: number;
-  status: string; // REQUESTED, ACCEPTED, REFUSED, FINISHED
 }
 
 interface ResponseData {
-  implement_id: number;
-  user_id: number;
   request_id: number;
   status: string; // REQUESTED, ACCEPTED, REFUSED, FINISHED
   clientId: string; // Id que se encuentra en el socket al hacer la solicitud
@@ -104,7 +101,7 @@ export class SocketAdapter {
     
     const ADMIN = 1;
     const STUDENT = 2;
-    const user = socket.data.user;
+    // const user = socket.data.user;
     const ioInstance = SocketAdapter.io!; // Aseguramos que la instancia existe
 
     // --- Suscripciones a Eventos de Entrada (Input Events) ---
@@ -112,14 +109,17 @@ export class SocketAdapter {
     // 1. Unirse a la Sala de Administradores
     socket.on("joinAsAdmin", async (data: { id: number }) => {
       // Consultamos el id
+      console.log(data.id);
       const result = await this.getUserByIdUseCase.execute(data.id);
+      console.log(result);
+
       // Validamos el rol
       if (result.rol_id && result.rol_id === ADMIN) {
         // Guardamos en la sala establecida
         this.admins.add(socket.id);
 
         socket.join("adminRoom");
-        console.log(`Admin ${user._id} joined adminRoom`);
+        // console.log(`Admin ${user._id} joined adminRoom`);
       }
     });
 
@@ -130,7 +130,7 @@ export class SocketAdapter {
         this.students.add(socket.id);
 
         socket.join("clientRoom");
-        console.log(`Client ${user._id} joined clientRoom`);
+        // console.log(`Client ${user._id} joined clientRoom`);
       }
     });
 
@@ -158,7 +158,7 @@ export class SocketAdapter {
   }
 
   /**
-   * 💡 SRP: Lógica para manejar la solicitud de instrumento de un cliente a un administrador.
+   * Lógica para manejar la solicitud de instrumento de un cliente a un administrador.
    */
   private async handleInstrumentRequest(
     socket: Socket,
@@ -166,12 +166,14 @@ export class SocketAdapter {
     ioInstance: Server
   ): Promise<void> {
 
-    ioInstance
-      .to(socket.id)
-      .emit("adminResponseToClient", { 
-        success: true,
-        message: "Solicitud recibida correctamente" 
-      });
+    // Manda mensaje de recibido al cliente en especifico
+    // ioInstance
+    //   .to(socket.id)
+    //   .emit("adminResponseToClient", { 
+    //     success: true,
+    //     status: "requested",
+    //     message: "Solicitud recibida, espere aprobación" 
+    //   });
 
     // Envío a la sala de Administradores (Multicast)
     // La información de data debe ser cargada por endpoints desde el frontend de administrador
@@ -205,10 +207,10 @@ export class SocketAdapter {
   ): Promise<void> {
 
     // Notificación a la Sala de Clientes para refrescar (Broadcast)
-    ioInstance.to("clientRoom").emit("refreshClientRoom", { requ: true });
+    ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
 
     // Notificación individual al cliente (1:1)
-    ioInstance.to(socket.id).emit("adminResponseToClient", { requ: true });
+    ioInstance.to(socket.id).emit("adminResponseToClient", { success: true });
   }
 
   /**

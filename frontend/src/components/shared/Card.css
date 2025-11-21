@@ -1,5 +1,3 @@
-
-
 .implements-list {
   display: flex;
   flex-wrap: nowrap;
@@ -166,4 +164,59 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+}
+
+/* ================================================= */
+/* === ESTILOS AÑADIDOS PARA EL HOVER Y EL NOMBRE === */
+/* ================================================= */
+
+/* 1. Estilo para el Overlay de Solicitud */
+.card-overlay-style {
+    /* Define un contexto de posición para el pseudo-elemento */
+    position: relative;
+}
+
+/* Estilo del overlay (inicialmente oculto) */
+.card-overlay-style .card-front::after {
+    content: "SOLICITAR";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Define el gradient y la opacidad inicial */
+    background: linear-gradient(
+        45deg, 
+        rgba(0, 184, 184, 0.9), /* Color de tu sidebar */
+        rgba(0, 140, 140, 0.8)
+    );
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Opacidad 0 por defecto */
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10; /* Asegura que esté por encima de la imagen y contenido */
+    border-radius: 12px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Mostrar el overlay al hacer hover en la card */
+.card-overlay-style:hover .card-front::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 2. Estilo específico para el Nombre */
+.card-name {
+    /* Ejemplo de estilo para diferenciar el nombre */
+    font-size: 1.1rem; 
+    font-weight: 800; /* Extra bold */
+    color: #008c8c; /* Color de acento */
+    margin: 5px 0; /* Espaciado extra */
+    text-transform: capitalize;
 }

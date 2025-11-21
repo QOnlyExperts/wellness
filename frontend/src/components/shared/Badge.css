@@ -60,3 +60,25 @@
   background-color: #BDBDBD; /* Gray */
   cursor: not-allowed;
 }
+
+
+/* Success color */
+.badge-accepted {
+  background-color: #4CAF50; /* Green */
+}
+/* Error color */
+.badge-refused {
+  background-color: #F44336; /* Red */
+}
+
+/* Info color */
+.badge-requested {
+  background-color: #00B5C8; /* Blue */
+}
+
+/* Disabled color */
+.badge-finished {
+  background-color: #BDBDBD; /* Gray */
+  cursor: not-allowed;
+}
+

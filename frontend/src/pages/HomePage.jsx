@@ -7,9 +7,12 @@ import Card from "../components/shared/Card";
 import ImplementService from "../services/ImplementService";
 import AlertContainer from "../containers/shared/AlertContainer";
 import Head from "../components/shared/Head";
+import InputField from "../components/shared/InputField";
 import HorizontalScroll from "../components/shared/HorizontalScroll";
 import Button from "../components/shared/Button";
 import ProgressBar from "../components/shared/ProgressBar";
+
+import CountdownTimer from "../components/shared/CountDownTimer";
 
 import "./HomePage.css";
 import Modal from "../components/shared/Modal";
@@ -24,14 +27,45 @@ import ImplementUsedList from "../containers/home/ImplementUsedList";
 import CheckIcon from "../components/icons/CheckIcon";
 import { ASSET_STATUS_FILTERS } from "../constants/assetStatuses";
 import InfoIcon from "../components/icons/InfoIcon";
+import RequestModalContainer from "../containers/request/RequestModalContainer";
+import RequestListByIdPersonContainer from "../containers/request/RequestListByIdPersonContainer";
+import { translateStatus } from "../utils/formatStatus";
+import RequestService from "../services/RequestService";
+
 
 const HomePage = () => {
+
+  const [infoPersonId, setInfoPersonId] = useState(() => {
+    // 1. Obtener el ítem (puede ser null)
+    const dataJson = sessionStorage.getItem("data");
+
+    // 2. Si no hay datos, retorna null o un valor por defecto (ej. 0 o -1)
+    if (!dataJson) {
+      return null;
+    }
+
+    // 3. Parsear el JSON. Usamos try/catch si el JSON puede estar malformado.
+    try {
+      const data = JSON.parse(dataJson);
+      // 4. Devolver la propiedad, si existe
+      return data.user.info_person_id || null;
+    } catch (e) {
+      // En caso de que el JSON no sea válido
+      console.error("Error parsing data from session storage:", e);
+      return null;
+    }
+  });
+
   const [isOpenModal, setIsModalOpen] = useState(false);
+
+  const [isOpenModalRequest, setIsModalOpenRequest] = useState(false);
+  const [implementId, setImplementId] = useState(null);
+
   const { showLoader, hideLoader } = useLoader();
   const [groupImplementsList, setGroupImplementList] = useState([]);
   const [groupImplementId, setGroupImplementId] = useState(null);
   const [implementList, setImplementList] = useState([]);
-  const [implementListBorrowed, setImplementListBorrowed] = useState([]);
+  const [requestActive, setRequestActive] = useState(null);
   const [implementListByIdGroup, setImplementListByIdGroup] = useState([]);
   
   const [expandedCardId, setExpandedCardId] = useState(null);
@@ -45,26 +79,65 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
+    
+
+
     const fetch = async () => {
       showLoader();
       // const response = await GroupImplementService.getGroupImplements();
-      const response = await ImplementService.getImplements();
+      const response = await RequestService.getStatusWhitIdInfoPerson(infoPersonId);
+      const implement = await ImplementService.getImplements();
       const groupResponse = await  GroupImplementService.getGroupImplements();
-      if (!groupResponse.success || !response.success) {
+      if (!groupResponse.success || !implement.success) {
         window.showAlert(
-          response?.message || "Error al obtener los implementos",
+          response.error.message || "Error al obtener los implementos",
           "Error"
         );
         return;
       }
-
-      setImplementListBorrowed(response.data);
+      
+      setRequestActive(response.data);
       setGroupImplementList(groupResponse.data);
+      setImplementList(implement.data)
       hideLoader();
     };
 
     fetch();
   }, []);
+
+  const handleRequestModalImplement = (implementId) => {
+
+    if(requestActive){
+      window.showAlert(
+        `Solicitud bloqueada: En estos momentos tiene un implemento en uso. Liberalo para usar mas implementos`,
+        "error"
+      );
+      // Detiene la ejecución de la función, sin retornar nada.
+      return;
+    }
+    // 1. Usar .find() para obtener el OBJETO, no un array filtrado.
+    const implement = implementList.find(
+      (imp) => imp.id === implementId
+    );
+
+    // 2. Definir los estados que bloquean la solicitud (NO DISPONIBLE)
+    const occupiedStatuses = ["borrowed", "retired", "maintenance"];
+
+    // 3. Validar si el implemento existe y si su estado está en la lista de estados ocupados
+    if (implement && occupiedStatuses.includes(implement.status)) {
+      window.showAlert(
+        `Solicitud bloqueada: El implemento está en estado: ${translateStatus(implement.status)}`,
+        "warning"
+      );
+      // Detiene la ejecución de la función, sin retornar nada.
+      return;
+    }
+
+    // 4. Si el implemento está disponible o no se encontró un estado de bloqueo,
+    // se procede a abrir el modal.
+    setImplementId(implementId);
+    setIsModalOpenRequest(true);
+  };
 
   const handleImplement = async (groupId) => {
     if (!implementListByIdGroup[groupId]) {
@@ -88,11 +161,16 @@ const HomePage = () => {
 
   return (
     <div className="div-principal-home">
+      {isOpenModalRequest && (
+        <RequestModalContainer
+          implementId={implementId}
+          onClose={() => setIsModalOpenRequest(false)}
+        />
+      )}
 
       {
         /* Modal de información */
         isOpenModal && (
-
           <Modal
             title="Información sobre Estados de implementos"
             isOpen={isOpenModal}
@@ -105,28 +183,38 @@ const HomePage = () => {
                 alignItems: "start",
                 justifyContent: "center",
                 textAlign: "justify",
-                gap: "20px",  
+                gap: "20px",
               }}
             >
               <h4>Indicadores de color</h4>
               <p>
-                  Los indicadores de estados se muestran así para{" "}
-                  <strong>identificar rápidamente</strong> la situación actual de cada
-                  <strong>implemento</strong>. Esta codificación de colores permite a los usuarios{" "}
-                  <strong>conocer inmediatamente</strong> si un implemento está <strong>Disponible</strong> (verde),{" "}
-                  <strong>Prestado</strong> (rojo), en <strong>Reparación</strong>{" "}
-                  (amarillo/naranja) o <strong>Retirado</strong> (gris), garantizando una{" "}
-                  <strong>visualización rápida del estado</strong> y facilitando la labor de filtrado.
+                Los indicadores de estados se muestran así para{" "}
+                <strong>identificar rápidamente</strong> la situación actual de
+                cada
+                <strong>implemento</strong>. Esta codificación de colores
+                permite a los usuarios <strong>conocer inmediatamente</strong>{" "}
+                si un implemento está <strong>Disponible</strong> (verde),{" "}
+                <strong>Prestado</strong> (rojo), en <strong>Reparación</strong>{" "}
+                (amarillo/naranja) o <strong>Retirado</strong> (gris),
+                garantizando una{" "}
+                <strong>visualización rápida del estado</strong> y facilitando
+                la labor de filtrado.
               </p>
 
               <h4>Significado de los Bordes de Color</h4>
               <p>
-                  El borde de color que rodea el ícono de cada implemento (como se ve en las cartas de implementos)
-                  es un <strong>indicador visual rápido</strong> del estado, reforzando la información de los indicadores.
-                  Esto permite identificar de un vistazo si un implemento está <strong>disponible</strong> (verde)
-                  o si está <strong>en posesión de otro usuario</strong> (rojo).
+                El borde de color que rodea el ícono de cada implemento (como se
+                ve en las cartas de implementos) es un{" "}
+                <strong>indicador visual rápido</strong> del estado, reforzando
+                la información de los indicadores. Esto permite identificar de
+                un vistazo si un implemento está <strong>disponible</strong>{" "}
+                (verde) o si está <strong>en posesión de otro usuario</strong>{" "}
+                (rojo).
               </p>
-              <Button className="btn-icon" onClick={() => setIsModalOpen(false)}>
+              <Button
+                className="btn-icon"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cerrar
               </Button>
             </div>
@@ -141,14 +229,14 @@ const HomePage = () => {
       <div className="div-badge-container">
         <div className="div-badge-content">
           {renderFiltroOpciones()}
-          <Button 
-            onClick={() => setIsModalOpen(true)}
-            className="btn-icon"
-          >
+          <Button onClick={() => setIsModalOpen(true)} className="btn-icon">
             <InfoIcon size={20} color="#555555" />
           </Button>
         </div>
       </div>
+
+      <AlertContainer />
+
       <HorizontalScroll>
         {groupImplementsList.length > 0 ? (
           groupImplementsList.map((imp) =>
@@ -206,9 +294,13 @@ const HomePage = () => {
                           transition={{ duration: 0.4 }}
                         >
                           <Card
+                            className="card-overlay-style"
                             type={child.status}
                             cod={child.cod}
                             title={child.cod}
+                            onClick={() =>
+                              handleRequestModalImplement(child.id)
+                            }
                             images={
                               child.imgs?.length
                                 ? child.imgs.map(
@@ -242,27 +334,34 @@ const HomePage = () => {
 
       <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
 
+
       <div className="div-home-implements-not-used">
-        {implementListBorrowed.length > 0 ? (
-          implementListBorrowed.map(
-            (imp, i) =>
-              imp.status === "borrowed" && (
-                <Card
-                  key={i}
-                  onClick={() => handleImplement(imp.id)}
-                  type={imp.status}
-                  images={
-                    imp.imgs && imp.imgs.length > 0
-                      ? imp.imgs.map(
-                          (img) => `http://localhost:4000/${img.description}`
-                        )
-                      : [NotFoundImage]
-                  }
-                  title={imp.groupImplement.name}
-                  // description={formImplement.status}
-                />
-              )
-          )
+        {requestActive ? (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          }}>
+            <Card
+              onClick={() => console.log(imp.id)}
+              type={requestActive.implement.status}
+              images={
+                requestActive.implement.imgs && requestActive.implement.imgs.length > 0
+                  ? requestActive.implement.imgs.map(
+                      (img) => `http://localhost:4000/${img.description}`
+                    )
+                  : [NotFoundImage]
+              }
+              title={requestActive.implement.groupImplement.name}
+              // description={formImplement.status}
+            />
+
+            <CountdownTimer 
+              createdAt={requestActive.created_at} 
+              limitedAt={requestActive.limited_at} 
+              thresholdHours={12} // Se vuelve crítico si quedan menos de 12 horas
+            />
+          </div>
         ) : (
           <div>
             {/* <h3>No hay implementos en uso</h3> */}
@@ -291,7 +390,7 @@ const HomePage = () => {
             display: "flex",
             flexDirection: "column",
             width: "100%",
-            height: "30vh",
+            // height: "30vh",
             padding: "1px",
             borderRadius: "10px",
             boxSizing: "border-box",
@@ -299,7 +398,7 @@ const HomePage = () => {
             backgroundColor: "#ffffff",
           }}
         >
-          <ImplementUsedList />
+          <RequestListByIdPersonContainer infoPersonId={infoPersonId} />
         </div>
       </div>
       {/* <Modal>

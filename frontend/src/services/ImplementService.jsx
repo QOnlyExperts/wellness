@@ -27,6 +27,9 @@ const ImplementService = {
   getImplements: () => {
     return service('/implements');
   },
+  getImplementById: (id) => {
+    return service(`/implement/${id}`);
+  },
   getImplementsByIdGroup: (id) => {
     return service(`/implements/group-implement/${id}`);
   },

@@ -13,6 +13,7 @@ export interface RequestAttributes {
   created_at: Date;
   finished_at: Date | null;
   limited_at: Date;
+  duration_hours: number;
   info_person_id: number;
   implement_id: number;
 }
@@ -37,6 +38,7 @@ export class RequestModel
   public created_at!: Date;
   public finished_at!: Date | null;
   public limited_at!: Date;
+  public duration_hours!: number;
   public info_person_id!: number;
   public implement_id!: number;
   
@@ -63,6 +65,7 @@ RequestModel.init(
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     finished_at: { type: DataTypes.DATE, allowNull: true },
     limited_at: { type: DataTypes.DATE, allowNull: false },
+    duration_hours: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0},
     info_person_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

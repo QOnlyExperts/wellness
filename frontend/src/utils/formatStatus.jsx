@@ -24,6 +24,15 @@ export const translateStatus = (value) => {
         return "Inactivo";
       case "active":
         return "Activo";
+        
+      case "requested":
+        return "Solicitado";
+      case "accepted":
+        return "Aceptado";
+      case "refused":
+        return "Rechazado"
+      case "finished":
+        return "Finalizado";
 
 
       // Condiciones de implementos

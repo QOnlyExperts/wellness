@@ -59,7 +59,7 @@ export class RegisterUserUseCase {
           password: hashedPassword,
           salt: salt,
           info_person_id: info.id!, // id garantizado tras persistencia
-          rol_id: 1,
+          rol_id: 2,
         },
         t
       );

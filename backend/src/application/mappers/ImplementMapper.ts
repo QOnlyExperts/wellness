@@ -2,10 +2,11 @@ import { GroupImplementEntity } from '../../domain/entities/GroupImplementEntity
 import { ImgEntity } from '../../domain/entities/ImgEntity';
 import { ImplementEntity } from '../../domain/entities/ImplementEntity';
 import { ImplementOutputDto } from '../dtos/implements/ImplementOutputDto';
+import { GroupImplementMapper } from './GroupImplementMapper';
 
 export class ImplementMapper {
   // Mapea la Entidad (objeto rico en lógica) a un DTO (objeto plano para transporte)
-  public static toOutputDto(implement: ImplementEntity): ImplementOutputDto {
+  public static toOutputDto(implement: ImplementEntity): any {
     return {
       id: implement.id,
       cod: implement.cod, // Mantener el nombre si es necesario o cambiarlo
@@ -18,13 +19,9 @@ export class ImplementMapper {
         mime_type: img.mime_type,
         description: img.description
       })),
-      groupImplement: {
-        id: implement.groupImplement?.id ?? null,
-        prefix: implement.groupImplement?.prefix ?? "",
-        name: implement.groupImplement?.name ?? "",
-        max_hours: implement.groupImplement?.max_hours ?? 0,
-        time_limit: implement.groupImplement?.time_limit ?? 0
-      }
+      groupImplement: implement.groupImplement
+        ? GroupImplementMapper.toOutputDto(implement.groupImplement)
+        : null,
     };
   }
 

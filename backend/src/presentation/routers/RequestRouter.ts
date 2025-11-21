@@ -17,6 +17,20 @@ router.post('/request', [
 
 router.get('/requests', requestController.getAll.bind(requestController));
 
+router.get('/requests/info-person/status/:id', requestController.getStatusWhitIdInfoPerson.bind(requestController));
+
+
+router.get('/requests/info-person/:id', requestController.getByIdInfoPerson.bind(requestController));
+
+
+router.patch('/request/:id', [
+  // validator.validateSchema(RegisterUserInputDtoSchema
+  ], requestController.update.bind(requestController))
+
+
 router.get('/request/:id', requestController.getById.bind(requestController));
+
+
+
 
 export { router as requestRouter };

@@ -32,7 +32,13 @@ export class SequelizeImplementRepository implements IImplementRepository {
   }
 
   async findById(id: number): Promise<ImplementEntity | null> {
-    const implement = await ImplementModel.findByPk(id);
+    const implement = await ImplementModel.findByPk(id, {
+      include: [
+        {
+          model: ImgModel
+        }
+      ]
+    });
     if (!implement) {
       return null;
     }

@@ -15,17 +15,7 @@ import moment from "moment"; // Importar moment para formatear fechas
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // --- Componente Principal Adaptado ---
-const RequestListContainer = ({ refresh: refreshFlag }) => {
-  const { requestList, loading, error, refresh } = useRequest();
-  // Simulamos el uso de useLoader, aunque no se use showLoader/hideLoader directamente
-  const { showLoader, hideLoader } = useLoader();
-
-  // No se necesita el estado 'openDropdownId' ni sus efectos, ya que no hay acciones.
-
-  useEffect(() => {
-    if (refreshFlag) refresh();
-  }, [refreshFlag, refresh]);
-
+const RequestListContainer = ({ requestList, loading, error }) => {
   // --- Definición de Columnas y Estilos (Adaptado a las nuevas columnas) ---
 
   // Columnas solicitadas:

@@ -5,12 +5,19 @@ let socket
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Iniciar el socket
-export const initialSocket = (user) => {
-    console.log(user);
-  socket = io(`${apiUrl}:4000`, {query: {token: sessionStorage.getItem('token')}})
-  if(socket && user) 
-    socket.emit('joinAsClient', user)
-    return socket
+export const initialSocket = (userId) => {
+  socket = io(`${apiUrl}:4000`, {  
+    auth: {
+      userId: userId
+    },
+    query: { 
+      token: sessionStorage.getItem('token')
+    }
+  });
+
+  if(socket && userId) 
+    socket.emit('joinAsClient', {id: userId})
+    return socket;
   // if(socket && user) socket.emit('roomRequest', user)
 }
 // Desconectar socket
@@ -22,16 +29,17 @@ export const disconnectSocket = () => {
 }
 
 // Envío de respuestas
-export const sendRequestInstrumentToAdmin = (request) => {
+export const sendRequestInstrumentToAdmin = (data) => {
   if (socket) {
-    socket.emit('requestInstrumentToAdmin', request);
+    console.log(data)
+    socket.emit('requestInstrumentToAdmin', data);
   }
 }
 
 // Envío de respuestas
-export const deleteInstrumentInUse = (request) => {
+export const deleteInstrumentInUse = (data) => {
   if (socket) {
-    socket.emit('deleteInstrumentInUse', request);
+    socket.emit('deleteInstrumentInUse', data);
   }
 }
 
@@ -39,8 +47,8 @@ export const deleteInstrumentInUse = (request) => {
 export const listenToAdminResponse = (cb) => {
   if (!socket) return true;
   // Nos aseguramos de que solo escuchemos el evento una vez
-  socket.on('adminResponseToClient', (request) => {
-    cb(null, request);
+  socket.on('adminResponseToClient', (data) => {
+    cb(null, data);
   });
 }
 
@@ -48,7 +56,16 @@ export const listenToAdminResponse = (cb) => {
 export const refreshClientRoom = (cb) => {
   if (!socket) return true;
   // Escuchar el evento solo una vez
-  socket.on('refreshClientRoom', (request) => {
-    cb(null, request);
+  socket.on('refreshClientRoom', (data) => {
+    cb(null, data);
+  });
+}
+
+// Refrescar la sala del cliente
+export const requestFailed = (cb) => {
+  if (!socket) return true;
+  // Escuchar el evento solo una vez
+  socket.on('requestFailed', (data) => {
+    cb(null, data);
   });
 }

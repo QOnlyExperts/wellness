@@ -13,14 +13,7 @@ import Head from "../../components/shared/Head";
 
 import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
 
-const RequestStatsContainer = ({ refresh: refreshFlag }) => {
-  // Obtener las estadísticas y el estado del hook useRequest
-  const { stats, loading, error, refresh } = useRequest();
-
-  useEffect(() => {
-    // Actualiza las estadísticas cada vez que cambie el flag
-    if (refreshFlag) refresh(); // La dependencia 'refresh' debe incluirse si ESLint está activo
-  }, [refreshFlag, refresh]);
+const RequestStatsContainer = ({ stats, loading, error }) => {
 
   if (loading) return <p>Cargando estadísticas de solicitudes...</p>;
   if (error) return <p>Error al cargar estadísticas de solicitudes</p>;

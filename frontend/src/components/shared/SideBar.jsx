@@ -7,7 +7,7 @@ import Home from '../../assets/home.svg';
 import Dashboard from '../../assets/dashboard.svg';
 import Group from '../../assets/groupImplements.svg';
 
-import Logo from '../../assets/img/wellness-logo.png'
+import Logo from '../../assets/img/wellness-sfn.png'
 import HomeIcon from '../icons/HomeIcon';
 import DashboardIcon from '../icons/DashboardIcon';
 import GamingIcon from '../icons/GAmingIcon';

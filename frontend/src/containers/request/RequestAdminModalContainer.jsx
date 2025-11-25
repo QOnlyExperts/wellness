@@ -15,15 +15,18 @@ import {
 
 import ImplementService from "../../services/ImplementService";
 import UserService from "../../services/UserService";
+import InputField from "../../components/shared/InputField";
+import Badge from "../../components/shared/Badge";
+import DateTimeSelector from "../../components/shared/DateTimeSelector";
 
 
 
 
-const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onRefresh}) => {
+const RequestAdminModalContainer = ({ implementId, userId, onAccepted, onRefused, onRefresh}) => {
   const [implement, setImplement] = useState({});
   const [user, setUser] = useState({});
-
-  const [message, setMessage] = useState(null);
+  
+  const [isLoading, setIsLoading] = useState(false);
 
   const [form, setForm] = useState({
     limited_at: "",
@@ -33,10 +36,12 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
 
   useEffect(() => {
 
-
     const fetch = async () => {
 
-      if ((implementId && !isNaN(Number(implementId)) || userId && !isNaN(Number(userId)))) {
+      
+      // Ejecuta las llamadas al servicio solo si (Implemento ID es válido y no es NaN) Y (Usuario ID es válido y no es NaN).
+      if ((implementId && !isNaN(Number(implementId))) && (userId && !isNaN(Number(userId)))) {
+        setIsLoading(true);
         
         const response = await ImplementService.getImplementById(implementId);
         const responseUser = await UserService.getUserById(userId);
@@ -52,12 +57,19 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
         setImplement(response.data);
         setUser(responseUser.data);
       
+        setIsLoading(false);
       }
     };
     fetch();
 
   }, []);
 
+  const handleFormChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 	// Id instrument, guarda el estado de la solicitud y lo envia al usuario
   // {
   //   implement_id: number;
@@ -67,13 +79,26 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
   //   clientId: string;
   // }
 
-
+  if (isLoading) {
+    return (
+      <Modal>
+        <Loader />
+        <p>Cargando datos de la solicitud</p>
+      </Modal>
+    );
+  }
 
   return (
     <Modal title="Información de solicitud">
       {/* <div className="view-wrapper-auto">
-        {view === "first" && (
-          <div key="first" className={`slide-${direction}`}> */}
+        {view === "first" && ( */}
+        <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "10px"
+            }}
+          >
             <Card
               type={implement.status}
               cod={implement.cod}
@@ -87,6 +112,64 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
               }
               // onClick={}
             />
+          
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "240px",
+              gap: "10px",
+            }}
+          >
+            <InputField 
+              disabled={true}
+              type="text"
+              label="Nombres"
+              value={`${user.info_person?.name1 || ''} ${user.info_person?.name2 || ''}`}
+            />
+            
+            <InputField 
+              disabled={true}
+              type="text"
+              label="Apellidos"
+              value={`${user.info_person?.last_name1 || ''} ${user.info_person?.last_name2 || ''}`}
+            />
+            <InputField 
+              disabled={true}
+              type="text"
+              label="Identificación"
+              value={`${user.info_person?.identification || ''}`}
+            />
+            <InputField 
+              disabled={true}
+              type="text"
+              label="Correo institucional"
+              value={`${user?.email || ''}`}
+            />
+            <InputField 
+              disabled={true}
+              type="text"
+              label="Programa"
+              value={`${user.info_person?.program?.name || ''}`}
+            />
+
+            {/* <Badge value={user?.is_verified && "is_verified"} /> */}
+          </div>
+        </div>
+        
+            
+            <DateTimeSelector 
+              type="time"
+              value={form.limited_at || ""}
+              onChange={(e) => {
+                console.log(e)
+                setForm({
+                  ...form,
+                  limited_at: e
+                });
+              }}
+            />
             <div
               style={{
                 display: "flex",
@@ -96,21 +179,17 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
               }}
             >
               <Button
-                className="btn-icon"
-                text="Cancelar"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Cerramos el modal
-                  onClose();
-                }}
+                className="btn-secondary"
+                text="Rechazar"
+                onClick={onRefused}
               />
               <Button
-                className="btn-icon"
+                className="btn-primary"
                 text="Aceptar"
-                onClick={onClick}
+                onClick={onAccepted}
               />
-            {/* </div>
-          </div>
+            </div>
+        {/*   </div>
         )} */}
 {/* 
         {view === "second" && (
@@ -141,7 +220,6 @@ const RequestAdminModalContainer = ({ implementId, userId, onClick, onClose, onR
             }
           </div>
         )} */}
-      </div>
     </Modal>
   );
 };

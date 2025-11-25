@@ -25,6 +25,7 @@
 .modal-content {
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: auto;
   max-height: 600px;
   max-width: 600px;
@@ -70,11 +71,23 @@
 
 .view-wrapper-auto {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: auto;
-  height: auto;
-  padding: 10px;
-  overflow: hidden;
+  /* ❌ ELIMINAR O COMENTAR: height: 420px; */
+  /* ✅ ELIMINAR: overflow: hidden; (o mantenerlo si es solo para transición) */
+  /* padding: 10px; */
   box-sizing: border-box;
+  /* Deberías también quitar el `justify-content` y `align-items` si quieres 
+     que crezca con el contenido y no centrarlo verticalmente. */
+}
+/* Sobreescribe los estilos de .view solo cuando es hijo de .view-wrapper-auto */
+.view-wrapper-auto .view {
+  position: relative; /* Cambia a relative para que no ignore el flujo */
+  inset: unset;     /* Desactiva la expansión forzada */
+  height: auto;     /* Asegura que no tenga altura fija */
 }
 /* Cada vista ocupa el 100% del modal */
 .view {

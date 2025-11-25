@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLoader } from "../context/LoaderContext";
 
@@ -32,9 +32,17 @@ import RequestListByIdPersonContainer from "../containers/request/RequestListByI
 import { translateStatus } from "../utils/formatStatus";
 import RequestService from "../services/RequestService";
 
+import {
+  initialSocket,
+  listenToAdminResponse,
+  sendRequestInstrumentToAdmin,
+  disconnectSocket,
+  refreshClientRoom,
+  requestFailed,
+  deleteInstrumentInUse,
+} from "../services/socket/StudentSocket";
 
 const HomePage = () => {
-
   const [infoPersonId, setInfoPersonId] = useState(() => {
     // 1. Obtener el ítem (puede ser null)
     const dataJson = sessionStorage.getItem("data");
@@ -56,9 +64,38 @@ const HomePage = () => {
     }
   });
 
+  const [userId, setUserId] = useState(() => {
+    // 1. Obtener el ítem (puede ser null)
+    const dataJson = sessionStorage.getItem("data");
+
+    // 2. Si no hay datos, retorna null o un valor por defecto (ej. 0 o -1)
+    if (!dataJson) {
+      return null;
+    }
+
+    // 3. Parsear el JSON. Usamos try/catch si el JSON puede estar malformado.
+    try {
+      const data = JSON.parse(dataJson);
+      // 4. Devolver la propiedad, si existe
+      return data.user.id || null;
+    } catch (e) {
+      // En caso de que el JSON no sea válido
+      console.error("Error parsing data from session storage:", e);
+      return null;
+    }
+  });
+
+  const [status, setStatus] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [onRequest, setOnRequest] = useState(false);
+
+  const [refresh, setRefresh] = useState(false);
+
   const [isOpenModal, setIsModalOpen] = useState(false);
 
   const [isOpenModalRequest, setIsModalOpenRequest] = useState(false);
+  const [message, setMessage] = useState(null);
   const [implementId, setImplementId] = useState(null);
 
   const { showLoader, hideLoader } = useLoader();
@@ -67,7 +104,7 @@ const HomePage = () => {
   const [implementList, setImplementList] = useState([]);
   const [requestActive, setRequestActive] = useState(null);
   const [implementListByIdGroup, setImplementListByIdGroup] = useState([]);
-  
+
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
 
@@ -76,38 +113,180 @@ const HomePage = () => {
     { mes: "Feb", horas: 26 },
     { mes: "Mar", horas: 30 },
     { mes: "Abr", horas: 10 },
+    { mes: "May", horas: 10 },
+    { mes: "Jun", horas: 10 },
+    { mes: "Jul", horas: 10 },
+    { mes: "Ago", horas: 10 },
+    { mes: "Sep", horas: 10 },
+    { mes: "Oct", horas: 10 },
+    { mes: "Nov", horas: 10 },
+    { mes: "Dic", horas: 10 },
   ];
 
+  // Referencia para guardar el ID del temporizador
+  const timeoutRef = useRef(null);
+
+  const fetch = async () => {
+    showLoader();
+    // const response = await GroupImplementService.getGroupImplements();
+    const response = await RequestService.getStatusWhitIdInfoPerson(
+      infoPersonId
+    );
+    const implement = await ImplementService.getImplements();
+    const groupResponse = await GroupImplementService.getGroupImplements();
+    if (!groupResponse.success || !implement.success) {
+      window.showAlert(
+        response.error.message || "Error al obtener los implementos",
+        "Error"
+      );
+      return;
+    }
+
+    setRequestActive(response.data);
+    setGroupImplementList(groupResponse.data);
+    setImplementList(implement.data);
+    hideLoader();
+  };
+
+  // Función para cancelar cualquier timeout existente
+  const clearTimeoutIfRunning = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  // Define la lógica de inicio del timer (puede ser llamada desde handleInstrumentRequest)
+  const startTimeoutLogic = useCallback(() => {
+    clearTimeoutIfRunning(); // Limpia cualquier timer viejo
+
+    timeoutRef.current = setTimeout(() => {
+      // --- LÓGICA DE TIEMPO EXPIRADO ---
+      setMessage("Expiró el tiempo de espera de la solicitud");
+      setIsLoading(false);
+
+      setTimeout(() => {
+        setMessage(null);
+        setOnRequest(false);
+      }, 5000);
+    }, 60000); // 1 minuto
+  }, [setIsLoading, setMessage, setOnRequest]); // Dependencias del callback
+
+  // Inicia el socket y escucha el canal
   useEffect(() => {
-    
+    const user = userId;
+    if (!user) {
+      return;
+    }
+    // Iniciamos el socket
+    initialSocket(user);
+    // setUser(user)
+    // setSocketIo(socket)
 
-
-    const fetch = async () => {
-      showLoader();
-      // const response = await GroupImplementService.getGroupImplements();
-      const response = await RequestService.getStatusWhitIdInfoPerson(infoPersonId);
-      const implement = await ImplementService.getImplements();
-      const groupResponse = await  GroupImplementService.getGroupImplements();
-      if (!groupResponse.success || !implement.success) {
-        window.showAlert(
-          response.error.message || "Error al obtener los implementos",
-          "Error"
-        );
+    // Escucha las respuestas del administrador
+    // Recibe:
+    // {
+    //   implement_id: number;
+    //   user_id: number;
+    //   request_id: number;
+    //   status: string;
+    //   clientId: string;
+    // }
+    // --- Lógica de Respuesta del Administrador ---
+    listenToAdminResponse((err, data) => {
+      if (err) {
+        clearTimeoutIfRunning();
         return;
       }
-      
-      setRequestActive(response.data);
-      setGroupImplementList(groupResponse.data);
-      setImplementList(implement.data)
-      hideLoader();
-    };
+
+      if(data.message){
+        setMessage(data.message);
+      }
+
+      if (data.status) {
+        // Si llega la respuesta final, CANCELAMOS el timer de expiración
+        clearTimeoutIfRunning();
+
+        setIsLoading(false);
+        setOnRequest(true);
+        setStatus(data.status); // Guardamos el estado de la solicitud
+        setMessage(`Solicitud ${translateStatus(data.status)}`);
+
+        // Timer para limpiar el mensaje después de 5 segundos
+        setTimeout(() => {
+          setMessage(null);
+          setOnRequest(false);
+        }, 5000);
+      }
+    });
+
+    // Para refrescar el estado de los instrumentos en caso de que alguno pase su estado a uso
+    refreshClientRoom((err, data) => {
+      if (err) {
+        return;
+      }
+      // Se realiza correctamente si success es true
+      if (data.success) {
+        // Refrescamos la vista
+        fetch();
+      }
+    });
+
+    requestFailed((err, data) => {
+      if (err) {
+        return;
+      }
+      // Se realiza correctamente si success es true
+      if (!data.success) {
+        // Refrescamos la vista
+
+        setIsLoading(false);
+        setOnRequest(true);
+        setMessage(data.message);
+
+        // Timer para limpiar el mensaje después de 5 segundos
+        setTimeout(() => {
+          setMessage(null);
+          setOnRequest(false);
+        }, 5000);
+      }
+    });
 
     fetch();
-  }, []);
+
+    return () => {
+      // Limpieza: Cierra el socket y cualquier temporizador pendiente
+      clearTimeoutIfRunning();
+      disconnectSocket();
+    };
+  }, [userId, startTimeoutLogic]); // Dependencias: incluye startTimeoutLogic
+
+  const handleInstrumentRequest = (e) => {
+    e.preventDefault();
+
+    sendRequestInstrumentToAdmin({
+      implement_id: implementId,
+      user_id: userId,
+    });
+    setIsLoading(true);
+
+    // DISPARAR EL TIMEOUT AQUÍ
+    startTimeoutLogic();
+  };
+
+  // Id instrument, Realiza la solicitud
+  const handleDeleteInstrumentInUse = (id) => {
+    deleteInstrumentInUse({ idInstrument: id, user: user });
+    setIsLoading(true);
+  };
 
   const handleRequestModalImplement = (implementId) => {
 
-    if(requestActive){
+    if(!implementId){
+      return;
+    }
+
+    if (requestActive) {
       window.showAlert(
         `Solicitud bloqueada: En estos momentos tiene un implemento en uso. Liberalo para usar mas implementos`,
         "error"
@@ -116,9 +295,7 @@ const HomePage = () => {
       return;
     }
     // 1. Usar .find() para obtener el OBJETO, no un array filtrado.
-    const implement = implementList.find(
-      (imp) => imp.id === implementId
-    );
+    const implement = implementList.find((imp) => imp.id === implementId);
 
     // 2. Definir los estados que bloquean la solicitud (NO DISPONIBLE)
     const occupiedStatuses = ["borrowed", "retired", "maintenance"];
@@ -126,7 +303,9 @@ const HomePage = () => {
     // 3. Validar si el implemento existe y si su estado está en la lista de estados ocupados
     if (implement && occupiedStatuses.includes(implement.status)) {
       window.showAlert(
-        `Solicitud bloqueada: El implemento está en estado: ${translateStatus(implement.status)}`,
+        `Solicitud bloqueada: El implemento está en estado: ${translateStatus(
+          implement.status
+        )}`,
         "warning"
       );
       // Detiene la ejecución de la función, sin retornar nada.
@@ -164,7 +343,13 @@ const HomePage = () => {
       {isOpenModalRequest && (
         <RequestModalContainer
           implementId={implementId}
+          userId={userId}
+          onClick={handleInstrumentRequest}
           onClose={() => setIsModalOpenRequest(false)}
+          message={message}
+          status={status}
+          isLoading={isLoading}
+          onRequest={onRequest}
         />
       )}
 
@@ -334,19 +519,21 @@ const HomePage = () => {
 
       <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
 
-
       <div className="div-home-implements-not-used">
         {requestActive ? (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px'
-          }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
             <Card
               onClick={() => console.log(imp.id)}
               type={requestActive.implement.status}
               images={
-                requestActive.implement.imgs && requestActive.implement.imgs.length > 0
+                requestActive.implement.imgs &&
+                requestActive.implement.imgs.length > 0
                   ? requestActive.implement.imgs.map(
                       (img) => `http://localhost:4000/${img.description}`
                     )
@@ -356,9 +543,9 @@ const HomePage = () => {
               // description={formImplement.status}
             />
 
-            <CountdownTimer 
-              createdAt={requestActive.created_at} 
-              limitedAt={requestActive.limited_at} 
+            <CountdownTimer
+              createdAt={requestActive.created_at}
+              limitedAt={requestActive.limited_at}
               thresholdHours={12} // Se vuelve crítico si quedan menos de 12 horas
             />
           </div>

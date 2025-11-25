@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import { InfoPersonEntity } from "../../domain/entities/InfoPersonEntity";
 import { IInfoPersonRepository } from "../../domain/interfaces/IInfoPersonRepository";
-import { InfoPersonModel } from "../models/indexModel";
+import { InfoPersonModel, LoginModel } from "../models/indexModel";
 import { InfoPersonMapper } from "../../application/mappers/InfoPersonMapper";
 
 export class SequelizeInfoPersonRepository implements IInfoPersonRepository {
@@ -24,6 +24,21 @@ export class SequelizeInfoPersonRepository implements IInfoPersonRepository {
     }
 
     return InfoPersonMapper.toDomain(info?.toJSON());
+  }
+
+  async findByIdUser(id: number): Promise<InfoPersonEntity | null> {
+    const info = await InfoPersonModel.findOne({
+      include: [
+        {
+          model: LoginModel,
+          where: { id }
+        }
+      ]
+    });
+
+    if (!info) return null;
+
+    return InfoPersonMapper.toDomain(info.toJSON());
   }
 
   async findById(id: number): Promise<InfoPersonEntity | null> {

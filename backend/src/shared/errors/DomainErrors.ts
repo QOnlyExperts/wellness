@@ -19,7 +19,13 @@ export class ValidationError extends AppError {
 }
 
 export class DomainError extends AppError {
-  constructor(message: string = "Error interno del dominio") {
+  constructor(message: string) {
     super(message, 500, "DomainError");
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message: string) {
+    super(message, 500, "ConflictError");
   }
 }

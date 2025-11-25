@@ -34,7 +34,7 @@ export class LoginUseCase {
     }
 
     // 3. Generar el token de autenticación
-    this.jwtService.setExpiresIn("2h");
+    this.jwtService.setExpiresIn("6h");
     const token = this.jwtService.sign({userId: user.id});
 
     // 4. Retornar el resultado del Caso de Uso

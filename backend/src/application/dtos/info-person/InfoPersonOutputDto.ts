@@ -1,6 +1,6 @@
 
 export interface InfoPersonOutputDto {
-  id: number | null;
+  id: number;
   full_name: string;
   identification: string;
   program_id: number;

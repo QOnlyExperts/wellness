@@ -182,44 +182,44 @@ export class RequestController {
     }
   }
 
-  public async update(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | void> {
-    try {
-      const updates = req.body;
+  // public async update(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<Response | void> {
+  //   try {
+  //     const updates = req.body;
 
-      const result = idSchema.safeParse({ id: req.params.id });
+  //     const result = idSchema.safeParse({ id: req.params.id });
 
-      if (!result.success) {
-        const formattedError = z.treeifyError(result.error);
+  //     if (!result.success) {
+  //       const formattedError = z.treeifyError(result.error);
 
-        // Error de validación
-        return res.status(400).json({
-          success: false,
-          message: "Parámetro inválido",
-          errors: formattedError.properties?.id?.errors.map((e) => ({
-            path: "id",
-            message: e,
-          })),
-        });
-      }
+  //       // Error de validación
+  //       return res.status(400).json({
+  //         success: false,
+  //         message: "Parámetro inválido",
+  //         errors: formattedError.properties?.id?.errors.map((e) => ({
+  //           path: "id",
+  //           message: e,
+  //         })),
+  //       });
+  //     }
 
-      const id = result.data.id; // número seguro
-      // Ejecutar el caso de uso sin necesidad de DTO de entrada
-      const implementsList = await this.requestUpdateUseCase.execute(
-        id,
-        updates
-      );
-      // Devuelve la respuesta al cliente
-      return res.status(200).json({
-        success: true,
-        message: "Implemento actualizado correctamente",
-        data: implementsList,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+  //     const id = result.data.id; // número seguro
+  //     // Ejecutar el caso de uso sin necesidad de DTO de entrada
+  //     const implementsList = await this.requestUpdateUseCase.execute(
+  //       id,
+  //       updates
+  //     );
+  //     // Devuelve la respuesta al cliente
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Implemento actualizado correctamente",
+  //       data: implementsList,
+  //     });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }

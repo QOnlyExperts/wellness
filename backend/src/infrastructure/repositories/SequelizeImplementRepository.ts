@@ -3,6 +3,7 @@ import { ImplementEntity } from "../../domain/entities/ImplementEntity";
 import { GroupImplementModel, ImgModel, ImplementModel } from "../models/indexModel";
 import e from "express";
 import { ImplementMapper } from "../../application/mappers/ImplementMapper";
+import { Transaction } from "sequelize";
 
 export class SequelizeImplementRepository implements IImplementRepository {
 
@@ -36,6 +37,14 @@ export class SequelizeImplementRepository implements IImplementRepository {
       include: [
         {
           model: ImgModel
+        },{
+          model: GroupImplementModel,
+          attributes: [
+            'id',
+            'name',
+            'max_hours',
+            'time_limit'
+          ]
         }
       ]
     });
@@ -132,6 +141,15 @@ export class SequelizeImplementRepository implements IImplementRepository {
           ]
       }]
     });
+
+    return ImplementMapper.toDomain(updated!.toJSON());
+  }
+
+  async updatePartialData(id: number, data: Partial<ImplementEntity>, t: Transaction): Promise<ImplementEntity> {
+    const persistenceData = ImplementMapper.toPersistence(data);
+    await ImplementModel.update(persistenceData, { where: { id }, transaction: t });
+    
+    const updated = await ImplementModel.findByPk(id, {});
 
     return ImplementMapper.toDomain(updated!.toJSON());
   }

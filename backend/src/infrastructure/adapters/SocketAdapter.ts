@@ -2,223 +2,193 @@
 
 import { Server, Socket } from "socket.io";
 
-import { 
+import {
   resolveJwtTokenService,
   resolveGetUserByIdUseCase,
-  resolveCreateRequestUseCase, 
-  resolveGetRequestUseCase 
+  resolveRegisterRequestUseCase
 } from "../../composition/compositionRoot";
 
 import { JwtService } from "../../application/services/JwtService";
-import { CreateRequestUseCase } from "../../application/use-cases/request/CreateRequestUseCase";
-import { GetRequestUseCase } from "../../application/use-cases/request/GetRequestUseCase";
 import { GetUserByIdUseCase } from "../../application/use-cases/users/GetUserByIdUseCase";
+import { RegisterRequestUseCase } from "../../application/use-cases/request/register/RegisterRequestUseCase";
 
-// Definición de tipos para la estructura de datos que esperamos
+import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors/DomainErrors";
+
 interface ClientData {
   implement_id: number;
   user_id: number;
 }
 
 interface ResponseData {
+  implement_id: number;
   request_id: number;
-  status: string; // REQUESTED, ACCEPTED, REFUSED, FINISHED
-  clientId: string; // Id que se encuentra en el socket al hacer la solicitud
+  status: string;
+  user_id: number; // ¡Ahora se usa el user_id para obtener el socket actual!
 }
 
 /**
- * Clase adaptadora (Controlador de Transporte) para Socket.io.
- * Es un Adaptador de Infraestructura que gestiona la comunicación bidireccional,
- * delegando la lógica de negocio al IRequestManagementPort (DIP).
+ * Adaptador de comunicación para Socket.io con salas admin/cliente
+ * + Mapa persistente user_id → socket.id
  */
 export class SocketAdapter {
-  // 💡 Singleton Pattern: Almacena la única instancia del servidor IO
   private static io: Server | null = null;
 
   private jwtService: JwtService;
   private getUserByIdUseCase: GetUserByIdUseCase;
-  private createRequestUseCase: CreateRequestUseCase;
+  private registerRequestUseCase: RegisterRequestUseCase;
 
-  // Almacena los ID de sockets de administradores para fines de limpieza/manejo de estado
   private admins: Set<string>;
   private students: Set<string>;
 
-  // Constructor que inyecta la dependencia (DIP)
+  // NUEVO: relación persistente entre user_id y su socket.id actual
+  private userSockets: Map<number, string>;
+
   constructor() {
     this.jwtService = resolveJwtTokenService();
     this.getUserByIdUseCase = resolveGetUserByIdUseCase();
-    this.createRequestUseCase = resolveCreateRequestUseCase();
+    this.registerRequestUseCase = resolveRegisterRequestUseCase();
 
-    // Inicializa el conjunto de administradores
-    this.admins = new Set<string>();
-    this.students = new Set<string>();
+    this.admins = new Set();
+    this.students = new Set();
+    this.userSockets = new Map();
   }
 
-  /**
-   * 💡 SRP: Configura e inicializa el servidor Socket.io.
-   */
   public config(server: any): Server {
     SocketAdapter.io = new Server(server, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-      },
+      cors: { origin: "*", methods: ["GET", "POST"] },
     });
 
-    // 1. Aplicar Middlewares de autenticación
     this.applyMiddleware(SocketAdapter.io);
 
-    // 2. Configurar el Manejo de Conexiones
-    SocketAdapter.io.on("connection", (socket: Socket) =>
+    SocketAdapter.io.on("connection", (socket) =>
       this.handleConnection(socket)
     );
 
     return SocketAdapter.io;
   }
 
-
-  /**
-   * 💡 Método para aplicar middlewares de conexión (ej. Autenticación)
-   */
   private applyMiddleware(ioInstance: Server): void {
-    
     ioInstance.use(async (socket, next) => {
-      try{
+      try {
         const token = socket.handshake.query.token as string;
         await this.jwtService.verify(token);
-
-        return next();
-      }catch(e){
-        return next(new Error("Authentication error"));
+        next();
+      } catch {
+        next(new Error("Authentication error"));
       }
     });
   }
 
-  /**
-   * 💡 SRP: Maneja el ciclo de vida de una conexión individual y sus suscripciones a eventos.
-   */
   private handleConnection(socket: Socket): void {
-    
     const ADMIN = 1;
     const STUDENT = 2;
-    // const user = socket.data.user;
-    const ioInstance = SocketAdapter.io!; // Aseguramos que la instancia existe
+    const ioInstance = SocketAdapter.io!;
 
-    // --- Suscripciones a Eventos de Entrada (Input Events) ---
+    socket.on("joinAsAdmin", async ({ id }) => {
+      const user = await this.getUserByIdUseCase.execute(id);
 
-    // 1. Unirse a la Sala de Administradores
-    socket.on("joinAsAdmin", async (data: { id: number }) => {
-      // Consultamos el id
-      console.log(data.id);
-      const result = await this.getUserByIdUseCase.execute(data.id);
-      console.log(result);
-
-      // Validamos el rol
-      if (result.rol_id && result.rol_id === ADMIN) {
-        // Guardamos en la sala establecida
+      if (user.rol_id === ADMIN) {
         this.admins.add(socket.id);
-
+        this.userSockets.set(id, socket.id); // persistir socket actual
         socket.join("adminRoom");
-        // console.log(`Admin ${user._id} joined adminRoom`);
       }
     });
 
-    // 2. Unirse a la Sala de Clientes
-    socket.on("joinAsClient", async (data: { id: number }) => {
-      const result = await this.getUserByIdUseCase.execute(data.id);
-      if (result.rol_id && result.rol_id === STUDENT) {
+    socket.on("joinAsClient", async ({ id }) => {
+      const user = await this.getUserByIdUseCase.execute(id);
+
+      if (user.rol_id === STUDENT) {
         this.students.add(socket.id);
-
+        this.userSockets.set(id, socket.id); // persistir socket actual
         socket.join("clientRoom");
-        // console.log(`Client ${user._id} joined clientRoom`);
       }
     });
 
-    // 3. Solicitar Instrumento (Petición del Cliente)
-    socket.on("requestInstrumentToAdmin", (data: ClientData) =>
+    socket.on("requestInstrumentToAdmin", (data) =>
       this.handleInstrumentRequest(socket, data, ioInstance)
     );
 
-    // 4. Respuesta del Administrador (Petición del Administrador)
-    socket.on("responseToClient", (data: ResponseData) =>
+    socket.on("responseToClient", (data) =>
       this.handleAdminResponse(data, ioInstance)
     );
 
-    // 5. Borrar Instrumento en Uso (Petición del Cliente/Admin)
-    socket.on("deleteInstrumentInUse", (data: ClientData) =>
+    socket.on("deleteInstrumentInUse", (data) =>
       this.handleDeleteInstrumentInUseRequest(socket, data, ioInstance)
     );
 
-    // --- Evento de Limpieza ---
     socket.on("disconnect", () => {
-      if (this.admins.has(socket.id)) {
-        this.admins.delete(socket.id);
-      }
+      [...this.userSockets.entries()].forEach(([uid, sid]) => {
+        if (sid === socket.id) this.userSockets.delete(uid);
+      });
     });
   }
 
-  /**
-   * Lógica para manejar la solicitud de instrumento de un cliente a un administrador.
-   */
   private async handleInstrumentRequest(
     socket: Socket,
     data: ClientData,
     ioInstance: Server
   ): Promise<void> {
 
-    // Manda mensaje de recibido al cliente en especifico
-    // ioInstance
-    //   .to(socket.id)
-    //   .emit("adminResponseToClient", { 
-    //     success: true,
-    //     status: "requested",
-    //     message: "Solicitud recibida, espere aprobación" 
-    //   });
+    ioInstance.to(socket.id).emit("adminResponseToClient", {
+      message: "Solicitud recibida, espere aprobación",
+    });
 
-    // Envío a la sala de Administradores (Multicast)
-    // La información de data debe ser cargada por endpoints desde el frontend de administrador
-    ioInstance.to("adminRoom").emit("adminRequestFromClient", data);
+    try {
+      const newRequest = await this.registerRequestUseCase.execute({
+        implement_id: data.implement_id,
+        user_id: data.user_id,
+      });
+
+      const requestDataToAdmin = {
+        ...data,
+        request_id: newRequest.request_id,
+        user_id: data.user_id,
+      };
+
+      ioInstance.to("adminRoom").emit("adminRequestFromClient", requestDataToAdmin);
+      ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+
+    } catch (e) {
+      console.log(e);
+      let message = "Error desconocido.";
+      if (e instanceof ConflictError) message = e.message;
+      if (e instanceof ValidationError) message = e.message;
+      if(e instanceof NotFoundError) message = e.message
+
+      ioInstance.to(socket.id).emit("requestFailed", {
+        success: false,
+        message,
+      });
+    }
   }
 
-  /**
-   * 💡 SRP: Lógica para manejar la respuesta del administrador al estudiante individual.
-   */
   private async handleAdminResponse(
     data: ResponseData,
     ioInstance: Server
   ): Promise<void> {
+    const socketId = this.userSockets.get(data.user_id);
 
-    // Notificación a la Sala de Clientes para refrescar (Broadcast)
-    ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
+    if (data.status === "accepted") {
+      ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
+    }
 
-    // Notificación individual al cliente original (1:1)
-    ioInstance.to(data.clientId).emit("adminResponseToClient", data);
+    if (socketId) {
+      ioInstance.to(socketId).emit("adminResponseToClient", data);
+    }
   }
 
-  /**
-   * 💡 SRP: Lógica para solicitar la liberación de un instrumento en uso y mostrarlo a todos los estudiantes.
-   */
-
-  // Mientras se eliminar desde el usuario sin solicitar al administrador
   private async handleDeleteInstrumentInUseRequest(
     socket: Socket,
     data: ClientData,
     ioInstance: Server
   ): Promise<void> {
-
-    // Notificación a la Sala de Clientes para refrescar (Broadcast)
     ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
-
-    // Notificación individual al cliente (1:1)
     ioInstance.to(socket.id).emit("adminResponseToClient", { success: true });
   }
 
-  /**
-   * 💡 Función estática para obtener la instancia de IO desde fuera del Adaptador.
-   */
   public static getSocket(): Server {
     if (!SocketAdapter.io) {
-      throw new Error("Socket.io not configured. Call config() first.");
+      throw new Error("Socket.io not configured.");
     }
     return SocketAdapter.io;
   }

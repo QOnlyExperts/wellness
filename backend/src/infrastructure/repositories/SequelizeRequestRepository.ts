@@ -3,6 +3,7 @@ import { RequestEntity } from "../../domain/entities/RequestEntity";
 import { IRequestRepository } from "../../domain/interfaces/IRequestRepository";
 import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/indexModel";
 import { RequestMapper } from "../../application/mappers/RequestMapper";
+import { Transaction } from "sequelize";
 
 export class SequelizeRequestRepository implements IRequestRepository {
   async findAll(): Promise<RequestEntity[]> {
@@ -40,6 +41,20 @@ export class SequelizeRequestRepository implements IRequestRepository {
     }
     return RequestMapper.toDomain(request.toJSON());
   }
+
+  async findPendingRequest(infoPersonId: number): Promise<RequestEntity | null> {
+    const request = await RequestModel.findOne({
+      where: {
+        info_person_id: infoPersonId,
+        status: "requested"
+      }
+    });
+
+    if (!request) return null;
+
+    return RequestMapper.toDomain(request.toJSON());
+  }
+
 
   // Busca las solicitudes por ID de persona
   async findByInfoPersonId(infoPersonId: number): Promise<RequestEntity[]> {
@@ -116,7 +131,8 @@ export class SequelizeRequestRepository implements IRequestRepository {
   // Debería actualizar status, created_at, finished_at
   async updateStatus(
       id: number,
-      requestEntity: Partial<RequestEntity>
+      requestEntity: Partial<RequestEntity>,
+      t: Transaction
   ): Promise<RequestEntity> {
       // 1. Convertir la entidad de dominio parcial a un objeto de persistencia.
       const requestData = RequestMapper.toPersistence(requestEntity);
@@ -124,6 +140,7 @@ export class SequelizeRequestRepository implements IRequestRepository {
       // 2. Ejecutar la actualización en la base de datos.
       const [affectedCount] = await RequestModel.update(requestData, {
           where: { id: id },
+          transaction: t
       });
 
       // Opcional: Manejar el caso donde el ID no existe

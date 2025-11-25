@@ -14,6 +14,9 @@ export class RequestMapper {
    * Incluye la información expandida de InfoPerson e Implement.
    */
   public static toOutputDto(request: RequestEntity): any {
+
+    if(!request) return null;
+
     return {
       id: request.id,
       status: request.status,

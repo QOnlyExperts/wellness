@@ -8,7 +8,10 @@ import { UserEntity } from "../../domain/entities/UserEntity";
 
 export class InfoPersonMapper {
   // Entidad → DTO plano
-  public static toOutputDto(infoPerson: InfoPersonEntity): any {
+  public static toOutputDto(infoPerson: InfoPersonEntity | null): any {
+
+    if(!infoPerson) return null;
+
     return {
       id: infoPerson.id,
       name1: infoPerson.name1,

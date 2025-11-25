@@ -36,7 +36,7 @@ export class CreateInfoPersonUseCase {
     });
 
     const createdInfo = await this.userInfoPersonRepository.save(info, t);
-    if (!createdInfo) {
+    if (!createdInfo || !createdInfo.id) {
       throw new DomainError("No se pudo persistir la información personal en la base de datos.");
     }
     

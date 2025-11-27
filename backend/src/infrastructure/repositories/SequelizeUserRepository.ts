@@ -64,6 +64,30 @@ export class SequelizeUserRepository implements IUserRepository {
     return UserMapper.toDomain(user?.toJSON());
   }
 
+  async findByIdInfoPerson(id: number): Promise<UserEntity | null> {
+    const user = await LoginModel.findOne({
+      where: {
+        info_person_id: id
+      },
+      attributes: [
+        'id',
+        'email',
+        'is_verified',
+        'is_active',
+        'created_at',
+        'updated_at',
+        'last_login',
+        'info_person_id',
+        'rol_id'
+      ],
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return UserMapper.toDomain(user?.toJSON());
+  }
 
   async findById(id: number): Promise<UserEntity | null> {
     const user = await LoginModel.findByPk(id, {

@@ -7,7 +7,8 @@ import { RegisterUserUseCase } from "../../application/use-cases/users/register/
 import { 
   resolveGetUserByIdUseCase, 
   resolveRegisterUserUseCase,
-  resolveGetUsersUseCase
+  resolveGetUsersUseCase,
+  resolveGetUserByIdInfoPerson
 } from "../../composition/compositionRoot";
 
 import { RegisterUserInputDto } from "../../application/dtos/users/register/RegisterUserInputDto";
@@ -16,16 +17,19 @@ import { idSchema } from '../../application/schemas/IdSchema';
 
 import z, { success } from "zod";
 import { GetUsersUseCase } from '../../application/use-cases/users/GetUsersUSeCase';
+import { GetUserByIdInfoPersonUseCase } from '../../application/use-cases/users/GetUserByIdInfoPersonUseCase';
 
 
 export class UserController {
   private registerUserUseCase: RegisterUserUseCase;
   private getUserByIdUseCase: GetUserByIdUseCase;
+  private getUserByIdInfoPersonUseCase: GetUserByIdInfoPersonUseCase;
   private getUsersUseCase: GetUsersUseCase;
 
   constructor() {
     this.registerUserUseCase = resolveRegisterUserUseCase();
     this.getUserByIdUseCase = resolveGetUserByIdUseCase();
+    this.getUserByIdInfoPersonUseCase = resolveGetUserByIdInfoPerson();
     this.getUsersUseCase = resolveGetUsersUseCase();
   }
 
@@ -76,6 +80,40 @@ export class UserController {
       const id = result.data.id; // número seguro
       
       const user = await this.getUserByIdUseCase.execute(id);
+      return res.status(200).json({
+        success: true,
+        message: "Usuario obtenido correctamente",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+    public async getUserIdByIdInfoPerson(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const result = idSchema.safeParse({ id: req.params.id });
+
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.id?.errors.map((e) => ({
+            path: "id",
+            message: e,
+          })),
+        });
+      }
+
+      const id = result.data.id; // número seguro
+      
+      const user = await this.getUserByIdInfoPersonUseCase.execute(id);
       return res.status(200).json({
         success: true,
         message: "Usuario obtenido correctamente",

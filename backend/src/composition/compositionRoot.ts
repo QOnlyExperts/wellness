@@ -20,6 +20,7 @@ import {
     IImplementRepositoryToken, 
     IImplementGetByIdUseCaseToken,
     IImplementCounterPortToken, 
+    IImplementUpdateStatusUseCaseToken,
     IImgRepositoryToken, 
     ImgServiceToken, 
     IGroupImplementRepositoryToken, 
@@ -35,7 +36,8 @@ import {
     IEmailServiceToken, 
     IInfoPersonCreatorToken, 
     IJwtServiceToken, 
-    IRequestCreatorToken
+    IRequestCreatorToken,
+    IRequestUpdateUseCaseToken
 } from './injectionTokens';
 
 import { IImplementRepository } from '../domain/interfaces/IImplementRepository';
@@ -110,7 +112,6 @@ import { GetRequestUseCase } from '../application/use-cases/request/GetRequestUs
 import { GetRequestByStatusByIdInfoPersonUseCase } from '../application/use-cases/request/GetRequestByStatusByIdInfoPersonUseCase';
 import { GetRequestByIdUseCase } from '../application/use-cases/request/GetRequestByIdUseCase';
 import { GetRequestByIdInfoPersonUseCase } from '../application/use-cases/request/GetRequestByIdInfoPersonUseCase';
-import { UpdateRequestUseCase } from '../application/use-cases/request/UpdateRequestUseCase';
 import { SequelizeRequestRepository } from '../infrastructure/repositories/SequelizeRequestRepository';
 import { GetImplementById } from '../application/use-cases/implements/GetImplementById';
 import { GetInfoPersonByIdUserUseCase } from '../application/use-cases/info-person/GetInfoPersonByIdUserUseCase';
@@ -119,6 +120,13 @@ import { IRequestCreator } from '../domain/interfaces/IRequestCreator';
 import { IInfoPersonGetByIdUserUseCase } from '../domain/interfaces/IInfoPersonGetByIdUserUseCase';
 import { IImplementGetByIdUseCase } from '../domain/interfaces/IImplementGetByIdUseCase';
 import { IInfoPersonRepository } from '../domain/interfaces/IInfoPersonRepository';
+import { UpdateImplementStatus } from '../application/use-cases/implements/UpdateImplementStatus';
+import { UpdateRequestStatusUseCase } from '../application/use-cases/request/UpdateRequestStatusUseCase';
+import { resolve } from 'path';
+import { IRequestUpdateUseCase } from '../domain/interfaces/IRequestUpdateUseCase';
+import { IImplementUpdateStatusUseCase } from '../domain/interfaces/IImplementUpdateStatusUseCase';
+import { UpdateRequestUseCase } from '../application/use-cases/request/register/UpdateRequestUseCase';
+import { GetUserByIdInfoPersonUseCase } from '../application/use-cases/users/GetUserByIdInfoPersonUseCase';
 
 // EL MAPEO CENTRALIZADO (Inversión Genérica)
 export const Dependencies: Record<symbol, any> = {
@@ -156,11 +164,21 @@ Dependencies[IInfoPersonGetByIdUserUseCaseToken] = new GetInfoPersonByIdUserUseC
 
 Dependencies[IImplementGetByIdUseCaseToken] = new GetImplementById(
     Dependencies[IImplementRepositoryToken]
-)
+);
+
+Dependencies[IImplementUpdateStatusUseCaseToken] = new UpdateImplementStatus(
+    Dependencies[IImplementRepositoryToken]
+);
 
 Dependencies[IRequestCreatorToken] = new CreateRequestUseCase(
     Dependencies[IRequestRepositoryToken],
 );
+
+Dependencies[IRequestUpdateUseCaseToken] = new UpdateRequestStatusUseCase(
+    Dependencies[IRequestRepositoryToken]
+);
+
+
 
 
 
@@ -209,9 +227,26 @@ export function resolveRegisterUserUseCase(): RegisterUserUseCase {
     );
 }
 
+export function resolveUpdateRequestUseCase(): UpdateRequestUseCase {
+    const requestUpdateUseCase = Dependencies[IRequestUpdateUseCaseToken] as IRequestUpdateUseCase;
+    const implementUpdateStatusUseCase = Dependencies[IImplementUpdateStatusUseCaseToken] as IImplementUpdateStatusUseCase;
+
+    return new UpdateRequestUseCase(
+        requestUpdateUseCase,
+        implementUpdateStatusUseCase
+    );
+
+    
+}
+
 export function resolveGetUserByIdUseCase(): GetUserByIdUseCase {
     const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
     return new GetUserByIdUseCase(userRepository);
+}
+
+export function resolveGetUserByIdInfoPerson(): GetUserByIdInfoPersonUseCase {
+    const userRepository = Dependencies[IUserRepositoryToken] as IUserRepository;
+    return new GetUserByIdInfoPersonUseCase(userRepository);
 }
 
 export function resolveGetUsersUseCase(): GetUsersUseCase {
@@ -263,10 +298,6 @@ export function resolveGetRequestByStatusByIdInfoPersonUseCase(): GetRequestBySt
     return new GetRequestByStatusByIdInfoPersonUseCase(requestRepository);
 }
 
-export function resolveUpdateRequestUseCase(): UpdateRequestUseCase {
-    const requestRepository = Dependencies[IRequestRepositoryToken] as IRequestRepository;
-    return new UpdateRequestUseCase(requestRepository);
-}
 // FIN SOLICITUDES ------------
 
 // --- RESOLVERS ---

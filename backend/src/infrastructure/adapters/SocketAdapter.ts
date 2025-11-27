@@ -5,7 +5,8 @@ import { Server, Socket } from "socket.io";
 import {
   resolveJwtTokenService,
   resolveGetUserByIdUseCase,
-  resolveRegisterRequestUseCase
+  resolveRegisterRequestUseCase,
+  resolveUpdateRequestUseCase
 } from "../../composition/compositionRoot";
 
 import { JwtService } from "../../application/services/JwtService";
@@ -13,6 +14,9 @@ import { GetUserByIdUseCase } from "../../application/use-cases/users/GetUserByI
 import { RegisterRequestUseCase } from "../../application/use-cases/request/register/RegisterRequestUseCase";
 
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors/DomainErrors";
+import { UpdateRequestUseCase } from "../../application/use-cases/request/register/UpdateRequestUseCase";
+import { RequestStatus } from "../../domain/enums/RequestStatus";
+import { ImplementStatus } from "../../domain/enums/ImplementStatus";
 
 interface ClientData {
   implement_id: number;
@@ -20,10 +24,12 @@ interface ClientData {
 }
 
 interface ResponseData {
-  implement_id: number;
   request_id: number;
-  status: string;
+  status: RequestStatus;
+  limited_at: Date;
   user_id: number; // ¡Ahora se usa el user_id para obtener el socket actual!
+  implement_id: number;
+  // implement_status: ImplementStatus;
 }
 
 /**
@@ -36,6 +42,8 @@ export class SocketAdapter {
   private jwtService: JwtService;
   private getUserByIdUseCase: GetUserByIdUseCase;
   private registerRequestUseCase: RegisterRequestUseCase;
+  private updateRequestUseCase: UpdateRequestUseCase;
+
 
   private admins: Set<string>;
   private students: Set<string>;
@@ -47,6 +55,8 @@ export class SocketAdapter {
     this.jwtService = resolveJwtTokenService();
     this.getUserByIdUseCase = resolveGetUserByIdUseCase();
     this.registerRequestUseCase = resolveRegisterRequestUseCase();
+    this.updateRequestUseCase = resolveUpdateRequestUseCase();
+
 
     this.admins = new Set();
     this.students = new Set();
@@ -168,12 +178,41 @@ export class SocketAdapter {
   ): Promise<void> {
     const socketId = this.userSockets.get(data.user_id);
 
-    if (data.status === "accepted") {
-      ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
-    }
 
-    if (socketId) {
-      ioInstance.to(socketId).emit("adminResponseToClient", data);
+    console.log(`Datos backend ${data}`);
+
+    try {
+      const request = await this.updateRequestUseCase.execute({
+        request_id: data.request_id,
+        status: data.status,
+        limited_at: data.limited_at,
+        implement_id: data.implement_id,
+        implement_status: ImplementStatus.BORROWED
+      });
+
+      console.log(request.request_id)
+      if (request && data.status === "accepted") {
+        ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
+        ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+      }
+
+
+      if (socketId) {
+        ioInstance.to(socketId).emit("adminResponseToClient", {
+          status: data.status
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      let message = "Error desconocido.";
+      if (e instanceof ConflictError) message = e.message;
+      if (e instanceof ValidationError) message = e.message;
+      if(e instanceof NotFoundError) message = e.message
+
+      // ioInstance.to(socketId).emit("requestFailed", {
+      //   success: false,
+      //   message,
+      // });
     }
   }
 

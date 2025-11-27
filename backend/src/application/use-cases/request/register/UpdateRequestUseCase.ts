@@ -1,4 +1,4 @@
-import { IImplementUpdateUseCase } from "../../../../domain/interfaces/IImplementUpdateUseCase";
+import { IImplementUpdateStatusUseCase } from "../../../../domain/interfaces/IImplementUpdateStatusUseCase";
 import { IRequestUpdateUseCase } from "../../../../domain/interfaces/IRequestUpdateUseCase";
 import db from "../../../../infrastructure/database/db";
 import { UpdateRequestInputDto } from "../../../dtos/requests/register/UpdateRequestInputDto";
@@ -8,7 +8,7 @@ import { UpdateRequestOutputDto } from "../../../dtos/requests/register/UpdateRe
 export class UpdateRequestUseCase {
   constructor(
     private readonly requestUpdateUseCase: IRequestUpdateUseCase,
-    private readonly implementUpdateStatusUseCase: IImplementUpdateUseCase
+    private readonly implementUpdateStatusUseCase: IImplementUpdateStatusUseCase
   ){}
 
   async execute(input: UpdateRequestInputDto): Promise<UpdateRequestOutputDto>{
@@ -16,6 +16,7 @@ export class UpdateRequestUseCase {
     const t = await db.transaction();
 
     try{
+      console.log(input)
 
       // Actualizamos el estado del implemento
       await this.implementUpdateStatusUseCase.execute(
@@ -36,13 +37,14 @@ export class UpdateRequestUseCase {
       );
       
       await t.commit();
+
       return {
         request_id: request.request_id
       }
 
     }catch(e) {
       await t.rollback();
+      throw e;
     }
-
   }
 }

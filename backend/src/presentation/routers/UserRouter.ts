@@ -18,6 +18,9 @@ router.post('/user', [
 
 router.get('/users', userController.getAll.bind(userController));
 
+
+router.get('/user/info-person/:id', userController.getUserIdByIdInfoPerson.bind(userController));
+
 router.get('/user/:id', userController.getById.bind(userController));
 
 export { router as userRouter };

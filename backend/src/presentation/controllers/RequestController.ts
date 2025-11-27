@@ -12,14 +12,14 @@ import {
   resolveGetRequestByIdUseCase,
   resolveGetRequestByIdInfoPersonUseCase,
   resolveGetRequestByStatusByIdInfoPersonUseCase,
-  resolveUpdateRequestUseCase,
+  // resolveUpdateRequestUseCase,
 } from "../../composition/compositionRoot";
 
 import { RequestInputDto } from "../../application/dtos/requests/RequestInputDto";
 
 import { idSchema } from "../../application/schemas/IdSchema";
 import { z } from "zod";
-import { UpdateRequestUseCase } from "../../application/use-cases/request/UpdateRequestUseCase";
+// import { UpdateRequestUseCase } from "../../application/use-cases/request/UpdateRequestStatusUseCase";
 
 export class RequestController {
   private createRequestUseCase: CreateRequestUseCase;
@@ -27,7 +27,7 @@ export class RequestController {
   private getRequestByIdUseCase: GetRequestByIdUseCase;
   private getRequestByIdInfoPersonUseCase: GetRequestByIdInfoPersonUseCase;
   private getRequestByStatusByIdInfoPersonUseCase: GetRequestByStatusByIdInfoPersonUseCase;
-  private requestUpdateUseCase: UpdateRequestUseCase;
+  // private requestUpdateUseCase: UpdateRequestUseCase;
 
   constructor() {
     this.createRequestUseCase = resolveCreateRequestUseCase();
@@ -37,7 +37,7 @@ export class RequestController {
       resolveGetRequestByIdInfoPersonUseCase();
     this.getRequestByStatusByIdInfoPersonUseCase =
       resolveGetRequestByStatusByIdInfoPersonUseCase();
-    this.requestUpdateUseCase = resolveUpdateRequestUseCase();
+    // this.requestUpdateUseCase = resolveUpdateRequestUseCase();
   }
 
   public async create(

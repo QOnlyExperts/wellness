@@ -12,12 +12,16 @@ export const IRoleRepositoryToken = Symbol.for('IRoleRepository');
 export const IUserRepositoryToken = Symbol.for('IUserRepository');
 export const IInfoPersonRepositoryToken = Symbol.for('IInfoPersonRepository');
 
-export const IRequestRepositoryToken = Symbol.for('IRequestRepository');
 export const IUserCreatorToken = Symbol.for('IUserCreator');
+
 export const IInfoPersonCreatorToken = Symbol.for('IInfoPersonCreator');
 export const IInfoPersonGetByIdUserUseCaseToken = Symbol.for('IInfoPersonGetByIdUserUseCase');
+
+export const IRequestRepositoryToken = Symbol.for('IRequestRepository');
 export const IRequestCreatorToken = Symbol.for('IRequestCreator');
+export const IRequestUpdateUseCaseToken = Symbol.for('IRequestUpdateUseCase');
 export const IImplementCreatorToken = Symbol.for('IImplementCreator');
+export const IImplementUpdateStatusUseCaseToken = Symbol.for('IImplementUpdateStatusUseCase');
 
 export const IHashServiceToken = Symbol.for('IHashService');
 export const IEmailServiceToken = Symbol.for('IEmailService');

@@ -60,6 +60,11 @@ export class ImplementEntity {
     });
   }
 
+  public getStatus(): ImplementStatus {
+    return this.status;
+  }
+
+
   // Lógica de Dominio: (Métodos que aplican reglas)
   public canBeDeactivated(): boolean {
     // Ejemplo de lógica de negocio en la entidad

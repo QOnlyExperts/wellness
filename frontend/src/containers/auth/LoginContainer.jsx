@@ -418,7 +418,7 @@ const LoginContainer = ({ onRegister }) => {
                 id="email"
                 name="email"
                 label="Correo"
-                type="text"
+                type="email"
                 value={form.email}
                 onChange={handleInputChange}
                 errors={errors}

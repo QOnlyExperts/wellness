@@ -30,6 +30,7 @@ export const disconnectSocket = () => {
 
 export const sendResponseToClient = (response) => {
   if(socket){
+    console.log(response);
     socket.emit('responseToClient', response)
   }
 }

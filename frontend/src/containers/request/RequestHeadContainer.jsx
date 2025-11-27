@@ -30,7 +30,7 @@ const RequestHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
       subTitle="Gestión y control de solicitudes"
     >
 
-      <div style={{ display: "flex", alignItems: 'center', gap: "1rem" }}>
+      <div className="head-filters">
         {/* Input de búsqueda reutilizable */}
         {
           selected !== "" &&

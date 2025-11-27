@@ -62,28 +62,42 @@ const generateAvailableMinutes = (selectedHour24, baseTimes) => {
 };
 
 const formatISO = (datePart, hour24, minute) => {
+  // Le decimos a la cadena ISO que esta hora fue seleccionada en la zona UTC-05
   return `${datePart}T${String(hour24).padStart(2, "0")}:${String(
     minute
-  ).padStart(2, "0")}`;
+  ).padStart(2, "0")}:00-05:00`; // <-- ¡CLAVE!
 };
 
 const formatIsoToReadable = (isoString) => {
   if (!isoString) return "";
 
+  // 1. Crea el objeto Date con el instante UTC almacenado en la DB
   const date = new Date(isoString);
 
-  const dd = String(date.getDate()).padStart(2, "0");
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const yyyy = date.getFullYear();
+  // 2. APLICA EL OFFSET MANUAL DE -5 HORAS (Colombia)
+  // Restamos 5 horas en milisegundos (5 * 60 minutos * 60 segundos * 1000 ms)
+  const FIVE_HOURS_MS = 5 * 60 * 60 * 1000;
+  
+  // Creamos un nuevo objeto Date que ya está en la hora de Bogotá
+  const dateInBogotaTime = new Date(date.getTime() - FIVE_HOURS_MS); 
 
-  let hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  // 3. Usamos los métodos 'getUTC...' para extraer los componentes
+  //    Esto es crucial para que no aplique otra conversión local.
 
+  const dd = String(dateInBogotaTime.getUTCDate()).padStart(2, "0");
+  const mm = String(dateInBogotaTime.getUTCMonth() + 1).padStart(2, "0");
+  const yyyy = dateInBogotaTime.getUTCFullYear();
+
+  let hours = dateInBogotaTime.getUTCHours();
+  const minutes = String(dateInBogotaTime.getUTCMinutes()).padStart(2, "0");
+
+  // 4. Cálculo manual de AM/PM
   const ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12; // Convierte 0 → 12
+  hours = hours % 12 || 12; // Convierte 0 → 12 o 12 → 12
 
   const hh = String(hours).padStart(2, "0");
 
+  // Resultado: 26/11/2025, 11:59 PM
   return `${dd}/${mm}/${yyyy}, ${hh}:${minutes} ${ampm}`;
 };
 // ----------------------------------------------------

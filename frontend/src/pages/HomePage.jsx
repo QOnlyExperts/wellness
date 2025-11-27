@@ -42,6 +42,35 @@ import {
   deleteInstrumentInUse,
 } from "../services/socket/StudentSocket";
 
+// Función auxiliar para calcular el umbral automáticamente
+const calculateThresholdHours = (createdAt, limitedAt) => {
+  if (!createdAt || !limitedAt) {
+    return 12; // Valor por defecto si faltan las fechas
+  }
+
+  // Convertir las fechas a objetos Date. Asumimos que son strings ISO o timestamps.
+  const createdDate = new Date(createdAt);
+  const limitedDate = new Date(limitedAt);
+
+  // Calcular la duración total en milisegundos
+  const totalDurationMs = limitedDate.getTime() - createdDate.getTime();
+
+  // Convertir la duración total a horas
+  const totalDurationHours = totalDurationMs / (1000 * 60 * 60);
+
+  // Usar un porcentaje (ej. 15%) de la duración total para el umbral
+  const THRESHOLD_PERCENTAGE = 0.15;
+
+  // Calcular el umbral automático. Aseguramos que sea al menos 1 hora para evitar 0 o valores negativos.
+  const automaticThreshold = Math.max(
+    1,
+    totalDurationHours * THRESHOLD_PERCENTAGE
+  );
+
+  // Limitar el resultado a un máximo de 24 horas si el período es muy largo, para mantener la sensación de urgencia.
+  return Math.min(automaticThreshold, 24);
+};
+
 const HomePage = () => {
   const [infoPersonId, setInfoPersonId] = useState(() => {
     // 1. Obtener el ítem (puede ser null)
@@ -186,11 +215,11 @@ const HomePage = () => {
     // Escucha las respuestas del administrador
     // Recibe:
     // {
-    //   implement_id: number;
-    //   user_id: number;
-    //   request_id: number;
-    //   status: string;
-    //   clientId: string;
+    // 	 implement_id: number;
+    // 	 user_id: number;
+    // 	 request_id: number;
+    // 	 status: string;
+    // 	 clientId: string;
     // }
     // --- Lógica de Respuesta del Administrador ---
     listenToAdminResponse((err, data) => {
@@ -199,7 +228,7 @@ const HomePage = () => {
         return;
       }
 
-      if(data.message){
+      if (data.message) {
         setMessage(data.message);
       }
 
@@ -281,8 +310,7 @@ const HomePage = () => {
   };
 
   const handleRequestModalImplement = (implementId) => {
-
-    if(!implementId){
+    if (!implementId) {
       return;
     }
 
@@ -337,6 +365,16 @@ const HomePage = () => {
       <Badge key={status.value} value={status.value} />
     ));
   };
+
+  // ************************************************
+  // Calcular el thresholdHours automáticamente aquí
+  // ************************************************
+  const automaticThreshold = requestActive
+    ? calculateThresholdHours(
+        requestActive.created_at,
+        requestActive.limited_at
+      )
+    : 12; // Valor por defecto si no hay solicitud activa
 
   return (
     <div className="div-principal-home">
@@ -529,7 +567,7 @@ const HomePage = () => {
             }}
           >
             <Card
-              onClick={() => console.log(imp.id)}
+              onClick={() => console.log(requestActive.implement.id)}
               type={requestActive.implement.status}
               images={
                 requestActive.implement.imgs &&
@@ -546,7 +584,8 @@ const HomePage = () => {
             <CountdownTimer
               createdAt={requestActive.created_at}
               limitedAt={requestActive.limited_at}
-              thresholdHours={12} // Se vuelve crítico si quedan menos de 12 horas
+              // Usamos la variable calculada aquí
+              thresholdHours={automaticThreshold} 
             />
           </div>
         ) : (
@@ -588,20 +627,6 @@ const HomePage = () => {
           <RequestListByIdPersonContainer infoPersonId={infoPersonId} />
         </div>
       </div>
-      {/* <Modal>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '20px'
-          }}
-        >
-          Solicitud realizada con éxito
-          <CheckIcon color="#17c700ff" size={50} />
-        </div>
-      </Modal> */}
     </div>
   );
 };

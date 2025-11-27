@@ -30,7 +30,7 @@ const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
       subTitle="Gestión y control de implementos registrados"
     >
 
-      <div style={{ display: "flex", alignItems: 'center', gap: "1rem" }}>
+      <div className="head-filters">
         {/* Input de búsqueda reutilizable */}
         {
           selected !== "" &&

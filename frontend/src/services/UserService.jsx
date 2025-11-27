@@ -17,6 +17,9 @@ const UserService = {
   getUsers: () => {
     return service('/users');
   },
+  getUserIdByIdInfoPerson: (id) => {
+    return service(`/user/info-person/${id}`);
+  },
   getUserById: (id) => {
     return service(`/user/${id}`);
   },

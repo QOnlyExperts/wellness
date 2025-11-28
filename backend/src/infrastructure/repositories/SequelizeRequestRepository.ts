@@ -3,7 +3,7 @@ import { RequestEntity } from "../../domain/entities/RequestEntity";
 import { IRequestRepository } from "../../domain/interfaces/IRequestRepository";
 import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/indexModel";
 import { RequestMapper } from "../../application/mappers/RequestMapper";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 
 export class SequelizeRequestRepository implements IRequestRepository {
   async findAll(): Promise<RequestEntity[]> {
@@ -60,8 +60,11 @@ export class SequelizeRequestRepository implements IRequestRepository {
   async findByInfoPersonId(infoPersonId: number): Promise<RequestEntity[]> {
     const requests = await RequestModel.findAll({
       where: { 
-        info_person_id: infoPersonId 
-      },
+          info_person_id: infoPersonId, // Primer filtro (AND)
+          status: {                     // Segundo filtro (status)
+            [Op.in]: ['accepted', 'finished'] // Operador IN con un Array de valores
+          }
+        },
       include: [
         {
           model: ImplementModel,

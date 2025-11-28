@@ -27,9 +27,9 @@ export class CreateRequestUseCase {
     const request = RequestEntity.create({
       id: null,
       status: RequestStatus.REQUESTED, // Solicitado
-      created_at: new Date(),
+      created_at: new Date().toISOString(),
       finished_at: null,
-      limited_at: new Date(),
+      limited_at: new Date().toISOString(),
       duration_hours: 0,
       info_person_id: input.info_person_id,
       implement_id: input.implement_id,

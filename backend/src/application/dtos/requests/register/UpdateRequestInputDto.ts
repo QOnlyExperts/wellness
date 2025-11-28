@@ -5,7 +5,7 @@ import { RequestStatus } from "../../../../domain/enums/RequestStatus";
 export interface UpdateRequestInputDto{
   request_id: number;
   status: RequestStatus,
-  limited_at: Date,
+  limited_at: string | null,
   implement_id: number;
   implement_status: ImplementStatus
 }

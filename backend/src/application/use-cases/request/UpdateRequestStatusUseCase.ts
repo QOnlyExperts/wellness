@@ -54,10 +54,10 @@ export class UpdateRequestStatusUseCase {
       }
     }
     // Asumiendo que 'input.limited_at_string' viene del frontend con el sufijo '-05:00'
-    const limitedAtValue = input.limited_at 
-      ? new Date(input.limited_at) 
+    const limitedAtValue = input.limited_at
+      ? new Date(input.limited_at).toISOString()
       : null;
-
+      
     // Aplicar actualización parcial en BD
     const partialData: Partial<RequestEntity> = {
       status: existing.getStatus(), 

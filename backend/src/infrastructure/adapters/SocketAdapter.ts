@@ -26,7 +26,7 @@ interface ClientData {
 interface ResponseData {
   request_id: number;
   status: RequestStatus;
-  limited_at: Date;
+  limited_at: string;
   user_id: number; // ¡Ahora se usa el user_id para obtener el socket actual!
   implement_id: number;
   // implement_status: ImplementStatus;

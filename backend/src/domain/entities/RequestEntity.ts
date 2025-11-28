@@ -6,9 +6,9 @@ import { InfoPersonEntity } from "./InfoPersonEntity";
 export class RequestEntity {
   public readonly id: number | null;
   public status: RequestStatus;
-  public created_at: Date;
-  public finished_at: Date | null;
-  public limited_at: Date | null;
+  public created_at: string;
+  public finished_at: string | null;
+  public limited_at: string | null;
   public duration_hours: number;
 
   public info_person_id: number;
@@ -20,9 +20,9 @@ export class RequestEntity {
   constructor(props: {
     id: number | null;
     status: RequestStatus;
-    created_at: Date;
-    finished_at: Date | null;
-    limited_at: Date | null;
+    created_at: string;
+    finished_at: string | null;
+    limited_at: string | null;
     duration_hours: number;
 
     info_person_id: number;
@@ -45,9 +45,9 @@ export class RequestEntity {
   static create(props: {
     id: number | null;
     status: RequestStatus;
-    created_at: Date;
-    finished_at: Date | null;
-    limited_at: Date | null;
+    created_at: string;
+    finished_at: string | null;
+    limited_at: string | null;
     duration_hours: number;
 
     info_person_id: number;
@@ -87,7 +87,7 @@ export class RequestEntity {
     // Ejecución de la Transición
     this.status = RequestStatus.ACCEPTED;
     this.implement_id = implementId;
-    // Opcional: Asignar this.acceptedAt = new Date();
+    // Opcional: Asignar this.acceptedAt = new string();
   }
 
   /**
@@ -103,7 +103,7 @@ export class RequestEntity {
 
     // Ejecución de la Transición
     this.status = RequestStatus.REFUSED;
-    // Opcional: Asignar this.refusedAt = new Date();
+    // Opcional: Asignar this.refusedAt = new string();
   }
 
   /**
@@ -119,6 +119,6 @@ export class RequestEntity {
 
     // Ejecución de la Transición
     this.status = RequestStatus.FINISHED;
-    // Opcional: Asignar this.finishedAt = new Date();
+    // Opcional: Asignar this.finishedAt = new string();
   }
 }

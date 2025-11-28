@@ -22,7 +22,7 @@ export class UpdateRequestStatusUseCase {
       throw new ValidationError("ID inválido.");
     }
 
-    if(!input || !id || !input.status || !input.limited_at){
+    if(!input || !id || !input.status){
       throw new ValidationError("Los campos obligatorios están incompletos.");
     }
 
@@ -54,11 +54,14 @@ export class UpdateRequestStatusUseCase {
       }
     }
     // Asumiendo que 'input.limited_at_string' viene del frontend con el sufijo '-05:00'
-    const selectedDate = new Date(input.limited_at);
+    const limitedAtValue = input.limited_at 
+      ? new Date(input.limited_at) 
+      : null;
+
     // Aplicar actualización parcial en BD
     const partialData: Partial<RequestEntity> = {
-      status: existing.getStatus(), // Tomar el status de la entidad (ya validado)
-      limited_at: selectedDate,
+      status: existing.getStatus(), 
+      limited_at: limitedAtValue, // Asignará null si input.limited_at era null, undefined, o vacío
       implement_id: input.implement_id,
     };
 

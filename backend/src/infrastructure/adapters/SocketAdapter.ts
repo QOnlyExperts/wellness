@@ -190,7 +190,11 @@ export class SocketAdapter {
         implement_status: ImplementStatus.BORROWED
       });
 
-      console.log(request.request_id)
+      // console.log(request.request_id)
+      if (request && data.status === "refused") {
+        ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+      }
+
       if (request && data.status === "accepted") {
         ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
         ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });

@@ -64,7 +64,7 @@ RequestModel.init(
     },
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     finished_at: { type: DataTypes.DATE, allowNull: true },
-    limited_at: { type: DataTypes.DATE, allowNull: false },
+    limited_at: { type: DataTypes.DATE, allowNull: true },
     duration_hours: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0},
     info_person_id: {
       type: DataTypes.INTEGER,

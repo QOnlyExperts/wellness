@@ -63,7 +63,7 @@ export class RequestMapper {
       
       created_at: data.created_at ? new Date(data.created_at) : new Date(),
       finished_at: data.finished_at ? new Date(data.finished_at) : null,
-      limited_at: data.limited_at ? new Date(data.limited_at) : new Date(), // Usar new Date() como valor por defecto es poco seguro, considera null o requerir el campo.
+      limited_at: data.limited_at ? new Date(data.limited_at) : null, // Usar new Date() como valor por defecto es poco seguro, considera null o requerir el campo.
       duration_hours: data.duration_hours,
 
       info_person_id: data.info_person_id,

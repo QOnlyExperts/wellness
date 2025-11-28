@@ -105,7 +105,7 @@ const RequestPage = () => {
         }
       });
     }
-  }, [requestList]);
+  }, [requestList, loading]);
 
   // --- 2. Lógica del Socket y Escucha (Autocarga en Tiempo Real) ---
   useEffect(() => {

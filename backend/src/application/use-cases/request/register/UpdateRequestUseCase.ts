@@ -1,3 +1,4 @@
+import { RequestStatus } from "../../../../domain/enums/RequestStatus";
 import { IImplementUpdateStatusUseCase } from "../../../../domain/interfaces/IImplementUpdateStatusUseCase";
 import { IRequestUpdateUseCase } from "../../../../domain/interfaces/IRequestUpdateUseCase";
 import db from "../../../../infrastructure/database/db";
@@ -18,13 +19,15 @@ export class UpdateRequestUseCase {
     try{
       console.log(input)
 
-      // Actualizamos el estado del implemento
-      await this.implementUpdateStatusUseCase.execute(
-        input.implement_id, {
-          status: input.implement_status
-        },
-        t
-      );
+      if(input.status === RequestStatus.ACCEPTED){
+        // Actualizamos el estado del implemento
+        await this.implementUpdateStatusUseCase.execute(
+          input.implement_id, {
+            status: input.implement_status
+          },
+          t
+        );
+      }
 
       // Actualizamos la solicitud y asociamos el implemento con la solicitud
       const request = await this.requestUpdateUseCase.execute(

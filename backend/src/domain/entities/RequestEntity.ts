@@ -8,7 +8,7 @@ export class RequestEntity {
   public status: RequestStatus;
   public created_at: Date;
   public finished_at: Date | null;
-  public limited_at: Date;
+  public limited_at: Date | null;
   public duration_hours: number;
 
   public info_person_id: number;
@@ -22,7 +22,7 @@ export class RequestEntity {
     status: RequestStatus;
     created_at: Date;
     finished_at: Date | null;
-    limited_at: Date;
+    limited_at: Date | null;
     duration_hours: number;
 
     info_person_id: number;
@@ -47,7 +47,7 @@ export class RequestEntity {
     status: RequestStatus;
     created_at: Date;
     finished_at: Date | null;
-    limited_at: Date;
+    limited_at: Date | null;
     duration_hours: number;
 
     info_person_id: number;

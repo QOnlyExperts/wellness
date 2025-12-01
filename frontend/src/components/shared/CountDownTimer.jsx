@@ -48,7 +48,7 @@ const CountdownTimer = ({ limitedAt, createdAt, thresholdHours = 24 }) => {
 
     if (timeLeft <= 0) {
         statusClass = "timer-expired";
-        statusText = "¡TIEMPO EXPIRADO!";
+        statusText = "¡tiempo expirado!";
     } else if (timeLeft < thresholdHours * 60 * 60 * 1000) {
         // Si queda menos del umbral de horas
         statusClass = "timer-critical";
@@ -71,7 +71,7 @@ const CountdownTimer = ({ limitedAt, createdAt, thresholdHours = 24 }) => {
 
     // 3. Formateo de la hora límite para visualización:
     // Ahora que limitDate ya está en UTC, simplemente formateamos la hora UTC.
-    const displayLimit = limitDate.utc().format("DD/MM HH:mm [UTC]");
+    const displayLimit = limitDate.format("DD/MM/YYYY hh:mm a");
 
     return (
         <div className={`countdown-container ${statusClass}`}>

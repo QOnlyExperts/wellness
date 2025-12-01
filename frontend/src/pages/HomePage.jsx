@@ -36,11 +36,13 @@ import {
   initialSocket,
   listenToAdminResponse,
   sendRequestInstrumentToAdmin,
+  sendFinishRequestInstrumentToAdmin,
   disconnectSocket,
   refreshClientRoom,
   requestFailed,
   deleteInstrumentInUse,
 } from "../services/socket/StudentSocket";
+import { STATUS_FINISHED, STATUS_REQUESTED } from "../constants/requestsStatuses";
 
 // Función auxiliar para calcular el umbral automáticamente
 const calculateThresholdHours = (createdAt, limitedAt) => {
@@ -123,7 +125,15 @@ const HomePage = () => {
 
   const [isOpenModal, setIsModalOpen] = useState(false);
 
+
+  const [typeRequest, setTypeRequest] = useState(null);
   const [isOpenModalRequest, setIsModalOpenRequest] = useState(false);
+  const [formRequest, setFormRequest] = useState({
+    implement_id: 0,
+    user_id: 0,
+    request_id: 0
+  });
+
   const [message, setMessage] = useState(null);
   const [implementId, setImplementId] = useState(null);
 
@@ -290,11 +300,23 @@ const HomePage = () => {
     };
   }, [userId, startTimeoutLogic]); // Dependencias: incluye startTimeoutLogic
 
-  const handleInstrumentRequest = (e) => {
-    e.preventDefault();
+
+  const clearFormRequest = () => {
+    setFormRequest({
+      implement_id: 0,
+      user_id: 0,
+      request_id: 0
+    });
+    setTypeRequest(null);
+  }
+
+  const handleInstrumentRequest = () => {
+    if(!formRequest.implement_id || formRequest.implement_id === 0){
+      return;
+    }
 
     sendRequestInstrumentToAdmin({
-      implement_id: implementId,
+      implement_id: formRequest.implement_id,
       user_id: userId,
     });
     setIsLoading(true);
@@ -304,17 +326,48 @@ const HomePage = () => {
   };
 
   // Id instrument, Realiza la solicitud
-  const handleDeleteInstrumentInUse = (id) => {
-    deleteInstrumentInUse({ idInstrument: id, user: user });
+  const handleInstrumentFinishRequest = () => {
+    
+    if (
+      formRequest.implement_id === 0 ||
+      formRequest.request_id === 0
+    ) {
+      
+      return
+    }
+
+    sendFinishRequestInstrumentToAdmin({
+      implement_id: formRequest.implement_id,
+      user_id: userId,
+      request_id: formRequest.request_id,
+      status: typeRequest // debería ser finished
+    });
+
+
     setIsLoading(true);
   };
 
-  const handleRequestModalImplement = (implementId) => {
+  const handleRequest = () => {
+    // Verificamos que los datos necesitados ya se encuentren
+
+    if(typeRequest === STATUS_REQUESTED){
+      handleInstrumentRequest();
+    }
+
+    if(typeRequest === STATUS_FINISHED){
+      handleInstrumentFinishRequest();
+    }
+    clearFormRequest();
+
+  }
+
+  const handleRequestModalImplement = (type, implementId, requestId) => {
     if (!implementId) {
+      console.log("Falta el id de implemento")
       return;
     }
 
-    if (requestActive) {
+    if (requestActive && type === STATUS_REQUESTED) {
       window.showAlert(
         `Solicitud bloqueada: En estos momentos tiene un implemento en uso. Liberalo para usar mas implementos`,
         "error"
@@ -322,26 +375,35 @@ const HomePage = () => {
       // Detiene la ejecución de la función, sin retornar nada.
       return;
     }
-    // 1. Usar .find() para obtener el OBJETO, no un array filtrado.
-    const implement = implementList.find((imp) => imp.id === implementId);
+    
+    if(type === STATUS_REQUESTED){
+      // 1. Usar .find() para obtener el OBJETO, no un array filtrado.
+      const implement = implementList.find((imp) => imp.id === implementId);
+      
+      // 2. Definir los estados que bloquean la solicitud (NO DISPONIBLE)
+      const occupiedStatuses = ["borrowed", "retired", "maintenance"];
 
-    // 2. Definir los estados que bloquean la solicitud (NO DISPONIBLE)
-    const occupiedStatuses = ["borrowed", "retired", "maintenance"];
-
-    // 3. Validar si el implemento existe y si su estado está en la lista de estados ocupados
-    if (implement && occupiedStatuses.includes(implement.status)) {
-      window.showAlert(
-        `Solicitud bloqueada: El implemento está en estado: ${translateStatus(
-          implement.status
-        )}`,
-        "warning"
-      );
-      // Detiene la ejecución de la función, sin retornar nada.
-      return;
+      // 3. Validar si el implemento existe y si su estado está en la lista de estados ocupados
+      if (implement && occupiedStatuses.includes(implement.status)) {
+        window.showAlert(
+          `Solicitud bloqueada: El implemento está en estado: ${translateStatus(
+            implement.status
+          )}`,
+          "warning"
+        );
+        // Detiene la ejecución de la función, sin retornar nada.
+        return;
+      }
     }
-
     // 4. Si el implemento está disponible o no se encontró un estado de bloqueo,
     // se procede a abrir el modal.
+    setFormRequest({
+      implement_id: implementId,
+      user_id: userId,
+      request_id: requestId
+    });
+
+    setTypeRequest(type);
     setImplementId(implementId);
     setIsModalOpenRequest(true);
   };
@@ -366,23 +428,22 @@ const HomePage = () => {
     ));
   };
 
-  // ************************************************
   // Calcular el thresholdHours automáticamente aquí
-  // ************************************************
   const automaticThreshold = requestActive
     ? calculateThresholdHours(
         requestActive.created_at,
         requestActive.limited_at
       )
-    : 12; // Valor por defecto si no hay solicitud activa
+    : 24; // Valor por defecto si no hay solicitud activa
 
   return (
     <div className="div-principal-home">
       {isOpenModalRequest && (
         <RequestModalContainer
+          typeRequest={typeRequest}
           implementId={implementId}
           userId={userId}
-          onClick={handleInstrumentRequest}
+          onClick={handleRequest}
           onClose={() => setIsModalOpenRequest(false)}
           message={message}
           status={status}
@@ -522,7 +583,7 @@ const HomePage = () => {
                             cod={child.cod}
                             title={child.cod}
                             onClick={() =>
-                              handleRequestModalImplement(child.id)
+                              handleRequestModalImplement("requested", child.id, 0)
                             }
                             images={
                               child.imgs?.length
@@ -563,11 +624,12 @@ const HomePage = () => {
             style={{
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
               gap: "10px",
             }}
           >
             <Card
-              onClick={() => console.log(requestActive.implement.id)}
+              onClick={() => handleRequestModalImplement("finished", requestActive.implement.id, requestActive.id)}
               type={requestActive.implement.status}
               images={
                 requestActive.implement.imgs &&

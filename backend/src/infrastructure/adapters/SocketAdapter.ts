@@ -23,6 +23,13 @@ interface ClientData {
   user_id: number;
 }
 
+interface ClientDataFinish {
+  implement_id: number;
+  user_id: number;
+  request_id: number;
+  status: string;
+}
+
 interface ResponseData {
   request_id: number;
   status: RequestStatus;
@@ -118,6 +125,10 @@ export class SocketAdapter {
       this.handleInstrumentRequest(socket, data, ioInstance)
     );
 
+    socket.on("finishRequestInstrumentToAdmin", (data) =>
+      this.handleInstrumentFinishRequest(socket, data, ioInstance)
+    );
+
     socket.on("responseToClient", (data) =>
       this.handleAdminResponse(data, ioInstance)
     );
@@ -172,6 +183,34 @@ export class SocketAdapter {
     }
   }
 
+  private async handleInstrumentFinishRequest(
+    socket: Socket,
+    data: ClientDataFinish,
+    ioInstance: Server
+  ): Promise<void> {
+
+    ioInstance.to(socket.id).emit("adminResponseToClient", {
+      message: "Solicitud recibida, espere aprobación",
+    });
+
+    try {
+
+      ioInstance.to("adminRoom").emit("adminRequestFromClient", data);
+
+    } catch (e) {
+      console.log(e);
+      let message = "Error desconocido.";
+      if (e instanceof ConflictError) message = e.message;
+      if (e instanceof ValidationError) message = e.message;
+      if(e instanceof NotFoundError) message = e.message
+
+      ioInstance.to(socket.id).emit("requestFailed", {
+        success: false,
+        message,
+      });
+    }
+  }
+
   private async handleAdminResponse(
     data: ResponseData,
     ioInstance: Server
@@ -182,24 +221,31 @@ export class SocketAdapter {
     console.log(`Datos backend ${data}`);
 
     try {
+
+      const implement_status =
+        data.status === "accepted"
+          ? ImplementStatus.BORROWED
+          : ImplementStatus.AVAILABLE;
+
       const request = await this.updateRequestUseCase.execute({
         request_id: data.request_id,
         status: data.status,
         limited_at: data.limited_at,
         implement_id: data.implement_id,
-        implement_status: ImplementStatus.BORROWED
+        implement_status: implement_status
       });
 
       // console.log(request.request_id)
-      if (request && data.status === "refused") {
-        ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
-      }
+      if (request) {
+        if (data.status === "refused") {
+          ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+        }
 
-      if (request && data.status === "accepted") {
-        ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
-        ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+        if (["accepted", "finished"].includes(data.status)) {
+          ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
+          ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
+        }
       }
-
 
       if (socketId) {
         ioInstance.to(socketId).emit("adminResponseToClient", {
@@ -207,7 +253,7 @@ export class SocketAdapter {
         });
       }
     } catch (e) {
-      console.log(e);
+      
       let message = "Error desconocido.";
       if (e instanceof ConflictError) message = e.message;
       if (e instanceof ValidationError) message = e.message;

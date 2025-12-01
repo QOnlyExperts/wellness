@@ -121,17 +121,17 @@ const RequestListByIdPersonContainer = ({
 
       case "created_at":
         return request.created_at
-          ? moment(request.created_at).format("DD/MM/YYYY HH:mm")
+          ? moment(request.created_at).format("DD/MM/YYYY hh:mm a")
           : "-";
 
       case "finished_at":
         return request.finished_at
-          ? moment(request.finished_at).format("DD/MM/YYYY HH:mm")
+          ? moment(request.finished_at).format("DD/MM/YYYY hh:mm a")
           : "-";
 
       case "limited_at":
         return request.limited_at
-          ? moment(request.limited_at).format("DD/MM/YYYY HH:mm")
+          ? moment(request.limited_at).format("DD/MM/YYYY hh:mm a")
           : "-";
 
       case "duration_hours":

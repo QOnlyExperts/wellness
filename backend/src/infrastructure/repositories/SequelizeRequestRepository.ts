@@ -3,11 +3,24 @@ import { RequestEntity } from "../../domain/entities/RequestEntity";
 import { IRequestRepository } from "../../domain/interfaces/IRequestRepository";
 import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/indexModel";
 import { RequestMapper } from "../../application/mappers/RequestMapper";
-import { Op, Transaction } from "sequelize";
+import { literal, Op, Transaction } from "sequelize";
 
 export class SequelizeRequestRepository implements IRequestRepository {
   async findAll(): Promise<RequestEntity[]> {
     const requests = await RequestModel.findAll({
+      // Implementación del Ordenamiento
+      order: [
+        [
+          literal(`
+            CASE 
+              WHEN "Request"."status" = 'requested' THEN 1
+              ELSE 0
+            END
+          `),
+          'DESC'
+        ],
+        ['created_at', 'DESC'] // La fecha más reciente primero
+      ],
       include: [
         {
           model: InfoPersonModel,

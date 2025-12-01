@@ -2,6 +2,7 @@
 import React from "react";
 
 import "./ReusableTable.css"; // Importar estilos opcionales
+import HorizontalScroll from "./HorizontalScroll";
 
 // Componente ReusableTable que recibe columnas, datos y estilos de columna como props
 const ReusableTable = ({ columns, columnsHead, data, columnStyles }) => {
@@ -22,8 +23,9 @@ const ReusableTable = ({ columns, columnsHead, data, columnStyles }) => {
     const actionsColIndex = columns.length - 1;
 
     return (
-        <>
-            <div className="table-wrapper">
+        
+      
+            <HorizontalScroll className="table-wrapper">
                 {/* 1. Las etiquetas <table> y <thead> deben estar pegadas a sus hijos para evitar nodos de texto. */}
                 <table>
                     <thead>
@@ -66,10 +68,8 @@ const ReusableTable = ({ columns, columnsHead, data, columnStyles }) => {
                         ))}
                     </tbody>
                 </table>
-            </div>
-            {/* Se asume que <h4>2 - 2</h4> es contenido válido */}
-            <h4>2 - 2</h4>
-        </>
+             </HorizontalScroll>
+        
     );
 };
 

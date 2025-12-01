@@ -10,9 +10,9 @@ import { RequestStatus } from "../../domain/enums/RequestStatus"; // Importació
 export interface RequestAttributes {
   id: number;
   status: RequestStatus; // Usamos el enum de tu dominio
-  created_at: Date;
-  finished_at: Date | null;
-  limited_at: Date;
+  created_at: string;
+  finished_at: string | null;
+  limited_at?: string | null;  // <-- OPCIONAL Y PERMITIR NULL
   duration_hours: number;
   info_person_id: number;
   implement_id: number;
@@ -35,9 +35,9 @@ export class RequestModel
 {
   public id!: number;
   public status!: RequestStatus;
-  public created_at!: Date;
-  public finished_at!: Date | null;
-  public limited_at!: Date;
+  public created_at!: string;
+  public finished_at!: string | null;
+  public limited_at?: string | null;  // <-- OPCIONAL Y PERMITIR NULLlimited_at!: string;
   public duration_hours!: number;
   public info_person_id!: number;
   public implement_id!: number;

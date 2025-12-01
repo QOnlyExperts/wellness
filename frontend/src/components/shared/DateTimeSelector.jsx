@@ -62,11 +62,11 @@ const generateAvailableMinutes = (selectedHour24, baseTimes) => {
 };
 
 const formatISO = (datePart, hour24, minute) => {
-  // Le decimos a la cadena ISO que esta hora fue seleccionada en la zona UTC-05
   return `${datePart}T${String(hour24).padStart(2, "0")}:${String(
     minute
-  ).padStart(2, "0")}:00-05:00`; // <-- ¡CLAVE!
+  ).padStart(2, "0")}:00-05:00`;
 };
+
 
 const formatIsoToReadable = (isoString) => {
   if (!isoString) return "";

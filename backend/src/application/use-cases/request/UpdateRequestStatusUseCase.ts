@@ -22,7 +22,7 @@ export class UpdateRequestStatusUseCase {
       throw new ValidationError("ID inválido.");
     }
 
-    if(!input || !id || !input.status){
+    if(!input || !id || !input.status || !input.implement_id){
       throw new ValidationError("Los campos obligatorios están incompletos.");
     }
 
@@ -41,7 +41,7 @@ export class UpdateRequestStatusUseCase {
       if (input.status === RequestStatus.ACCEPTED) {
         // Si el usuario quiere ACEPTAR, llama al método de la entidad.
         // Si ya estaba aceptada o es inválido, existing.accept() lanzará el error.
-        existing.accept(id);
+        existing.accept(input.implement_id);
       }
 
       // Puedes añadir lógica para otros estados:
@@ -53,17 +53,24 @@ export class UpdateRequestStatusUseCase {
         existing.finish();
       }
     }
-    // Asumiendo que 'input.limited_at_string' viene del frontend con el sufijo '-05:00'
-    const limitedAtValue = input.limited_at
-      ? new Date(input.limited_at).toISOString()
-      : null;
-      
+
     // Aplicar actualización parcial en BD
     const partialData: Partial<RequestEntity> = {
-      status: existing.getStatus(), 
-      limited_at: limitedAtValue, // Asignará null si input.limited_at era null, undefined, o vacío
-      implement_id: input.implement_id,
+      status: existing.status,
+      finished_at: existing.finished_at,
+      duration_hours: existing.duration_hours,
     };
+
+    // Solo añadir limited_at si vino desde el frontend
+    if (input.limited_at !== undefined && input.limited_at !== null) {
+      // Solo si realmente viene una fecha
+      partialData.limited_at = new Date(input.limited_at).toISOString();
+    }
+
+    // Solo añadir implement_id si fue enviado
+    if (input.implement_id !== undefined) {
+      partialData.implement_id = input.implement_id;
+    }
 
     const updated = await this.requestRepository.updateStatus(
       id,

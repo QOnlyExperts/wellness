@@ -1,5 +1,7 @@
 /* --- Estilos Generales del Contador (Sin cambios) --- */
 .countdown-container {
+    /* display: flex; */
+    width: 100%;
     padding: 10px 15px;
     border-radius: 8px;
     text-align: center;

@@ -6,9 +6,12 @@ import { InfoPersonEntity } from "./InfoPersonEntity";
 export class RequestEntity {
   public readonly id: number | null;
   public status: RequestStatus;
+
+  // Se almacenan como string (ISO), pero se consumen como Date
   public created_at: string;
   public finished_at: string | null;
   public limited_at: string | null;
+
   public duration_hours: number;
 
   public info_person_id: number;
@@ -24,10 +27,8 @@ export class RequestEntity {
     finished_at: string | null;
     limited_at: string | null;
     duration_hours: number;
-
     info_person_id: number;
     implement_id: number;
-
     info_person?: InfoPersonEntity;
     implement?: ImplementEntity;
   }) {
@@ -42,6 +43,7 @@ export class RequestEntity {
     this.info_person = props.info_person;
     this.implement = props.implement;
   }
+
   static create(props: {
     id: number | null;
     status: RequestStatus;
@@ -49,76 +51,98 @@ export class RequestEntity {
     finished_at: string | null;
     limited_at: string | null;
     duration_hours: number;
-
     info_person_id: number;
     implement_id: number;
   }): RequestEntity {
-    return new RequestEntity({
-      id: props.id,
-      status: props.status,
-      created_at: props.created_at,
-      finished_at: props.finished_at,
-      limited_at: props.limited_at,
-      duration_hours: props.duration_hours,
-      info_person_id: props.info_person_id,
-      implement_id: props.implement_id,
-    });
+    return new RequestEntity(props);
   }
 
   public getStatus(): RequestStatus {
     return this.status;
   }
 
+  /**
+   * Calcula la duración entre created_at y limited_at.
+   * Retorna { horas, minutos } o null si falta información.
+   */
+  getDuration() {
+    if (!this.created_at || !this.limited_at) return null;
+
+    const created = new Date(this.created_at);
+    const limit = new Date(this.limited_at);
+
+    if (isNaN(created.getTime()) || isNaN(limit.getTime())) return null;
+
+    const diffMs = limit.getTime() - created.getTime();
+    if (diffMs < 0) return { horas: 0, minutos: 0 };
+
+    const totalHoras = diffMs / (1000 * 60 * 60);
+
+    const horas = Math.floor(totalHoras);
+    const minutos = Math.round((totalHoras % 1) * 60);
+
+    return { horas, minutos };
+  }
+
+  /**
+   * Transición: REQUESTED -> ACCEPTED
+   */
   public accept(implementId: number): void {
-    // Validación de Guarda (Guard Clause)
     if (this.status !== RequestStatus.REQUESTED) {
       throw new ValidationError(
-        `No se puede aceptar. La solicitud ya se encuentra en estado: ${this.status}.`
+        `No se puede aceptar. La solicitud está en estado: ${this.status}.`
       );
     }
 
-    // Validación de datos contextuales
     if (!implementId) {
       throw new ValidationError(
-        "El ID de implementación es obligatorio para aceptar la solicitud."
+        "El ID del implemento es obligatorio para aceptar la solicitud."
       );
     }
 
-    // Ejecución de la Transición
     this.status = RequestStatus.ACCEPTED;
     this.implement_id = implementId;
-    // Opcional: Asignar this.acceptedAt = new string();
   }
 
   /**
    * Transición: REQUESTED -> REFUSED
    */
   public refuse(): void {
-    // Validación de Guarda
     if (this.status !== RequestStatus.REQUESTED) {
       throw new ValidationError(
-        `No se puede rechazar. La solicitud ya se encuentra en estado: ${this.status}.`
+        `No se puede rechazar. Estado actual: ${this.status}.`
       );
     }
 
-    // Ejecución de la Transición
     this.status = RequestStatus.REFUSED;
-    // Opcional: Asignar this.refusedAt = new string();
   }
 
   /**
    * Transición: ACCEPTED -> FINISHED
    */
   public finish(): void {
-    // Validación de Guarda
     if (this.status !== RequestStatus.ACCEPTED) {
       throw new ValidationError(
         `Solo se puede finalizar una solicitud aceptada. Estado actual: ${this.status}.`
       );
     }
 
-    // Ejecución de la Transición
+    // Fecha segura para MySQL
+    const now = new Date();
+    this.finished_at = now.toISOString().slice(0, 19).replace('T', ' ');
+
     this.status = RequestStatus.FINISHED;
-    // Opcional: Asignar this.finishedAt = new string();
+
+    // Calculo de horas
+    const fechaInicio = new Date(this.created_at);
+    const fechaFin = new Date(this.finished_at);
+
+    const diffMs = fechaFin.getTime() - fechaInicio.getTime();
+    const totalHoras = diffMs / (1000 * 60 * 60);
+
+    if (totalHoras < 1) this.duration_hours = 0;
+    else if (totalHoras < 2) this.duration_hours = 1;
+    else this.duration_hours = 2;
   }
+
 }

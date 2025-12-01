@@ -36,6 +36,13 @@ export const sendRequestInstrumentToAdmin = (data) => {
   }
 }
 
+export const sendFinishRequestInstrumentToAdmin = (data) => {
+  if (socket) {
+    console.log(data)
+    socket.emit('finishRequestInstrumentToAdmin', data);
+  }
+}
+
 // Envío de respuestas
 export const deleteInstrumentInUse = (data) => {
   if (socket) {

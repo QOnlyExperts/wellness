@@ -8,10 +8,12 @@ import Button from "../../components/shared/Button";
 import NotFoundImage from "../../assets/img/NoImg.svg";
 import CancelIcon from "../../components/icons/CancelIcon";
 import CheckIcon from "../../components/icons/CheckIcon";
+import { STATUS_FINISHED } from "../../constants/requestsStatuses";
 
 
 
 const RequestModalContainer = ({
+  typeRequest,
   implementId,
   status,
   onClick,
@@ -74,6 +76,11 @@ const RequestModalContainer = ({
         {view === "first" && (
           // ... (Contenido de Card y Botones)
           <div key="first" className={`view slide-${direction}`}>
+            {
+              typeRequest === STATUS_FINISHED && 
+                <h5>Recuerda estar en el area de bienestar para que tu solicitud pueda ser aprobada</h5>
+            }
+            
             <Card
               type={implement.status}
               cod={implement.cod}

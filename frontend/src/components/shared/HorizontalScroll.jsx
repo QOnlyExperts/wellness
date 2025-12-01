@@ -4,7 +4,7 @@ import Button from "./Button";
 import ArrowLeftIcon from "../icons/ArrowLeftIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 
-const HorizontalScroll = ({ children, scrollAmount = 300 }) => {
+const HorizontalScroll = ({ children, scrollAmount = 300, className }) => {
   const scrollRef = useRef(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
@@ -44,7 +44,7 @@ const HorizontalScroll = ({ children, scrollAmount = 300 }) => {
   };
 
   return (
-    <div className="scroll-wrapper">
+    <div className={`scroll-wrapper ${className}`}>
       {showLeft && (
         <Button className="scroll-btn left" onClick={scrollLeft}>
           <ArrowLeftIcon color="#000000" />

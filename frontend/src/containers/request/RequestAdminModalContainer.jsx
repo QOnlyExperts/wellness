@@ -17,8 +17,10 @@ const RequestAdminModalContainer = ({
   onAccepted, // Recibe la función handleResponseToClient del padre
   onRefused,
   form, // Objeto del estado del formulario (contiene limited_at)
+  finished,
   onFormChange, // Función para actualizar el estado del formulario en el padre
   onClose, // Handler para cerrar/saltar el modal
+  onFinish
 }) => {
   const [implement, setImplement] = useState({});
   const [user, setUser] = useState({});
@@ -141,35 +143,48 @@ const RequestAdminModalContainer = ({
           />
         </div>
       </div>
+      {
+        finished? 
+          <Button className="btn-secondary" text="Finalizar" onClick={onFinish} />
+        :
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%"
+          }}>
+            <DateTimeSelector
+              type="time"
+              value={form.limited_at || ""}
+              onChange={(e) => {
+                // Llama al handler que está en el componente padre
+                onFormChange({ name: "limited_at", value: e });
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+                marginTop: "20px",
+              }}
+            >
+              <Button className="btn-secondary" text="Rechazar" onClick={onRefused} />
+              <Button
+                className="btn-primary"
+                text="Aceptar"
+                // Deshabilita el botón si no se ha seleccionado el tiempo límite
+                disabled={!canAccept}
+                // *************************************************************
+                // CRÍTICO: Aquí es donde se pasa form.limited_at al padre (onAccepted)
+                // *************************************************************
+                onClick={() => onAccepted(form.limited_at)}
+              />
+            </div>
+          </div>
+
+
+      }
       {/* DateTimeSelector ahora usa los props form y onFormChange */}
-      <DateTimeSelector
-        type="time"
-        value={form.limited_at || ""}
-        onChange={(e) => {
-          // Llama al handler que está en el componente padre
-          onFormChange({ name: "limited_at", value: e });
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          marginTop: "20px",
-        }}
-      >
-        <Button className="btn-secondary" text="Rechazar" onClick={onRefused} />
-        <Button
-          className="btn-primary"
-          text="Aceptar"
-          // Deshabilita el botón si no se ha seleccionado el tiempo límite
-          disabled={!canAccept}
-          // *************************************************************
-          // CRÍTICO: Aquí es donde se pasa form.limited_at al padre (onAccepted)
-          // *************************************************************
-          onClick={() => onAccepted(form.limited_at)}
-        />
-      </div>
     </Modal>
   );
 };

@@ -16,7 +16,7 @@ import {
 // Importación simulada (asegúrate de que este servicio existe en tu proyecto)
 import RequestService from "../../services/RequestService"; 
 
-import { ASSET_STATUS_REQUEST_FILTERS } from "../../constants/requestsStatuses";
+import { ASSET_STATUS_REQUEST_FILTERS, STATUS_ACCEPTED, STATUS_FINISHED } from "../../constants/requestsStatuses";
 import RequestAdminModalContainer from "../../containers/request/RequestAdminModalContainer";
 import UserService from "../../services/UserService";
 import { useUserId } from "../../hooks/useUserId";
@@ -57,6 +57,8 @@ const RequestPage = () => {
 
   // ESTADO CLAVE: Contiene solo las solicitudes que requieren atención (estado 'requested')
   const [requestPending, setRequestPending] = useState([]);
+  
+  const [requestFinished, setRequestFinished]= useState(null);
 
   const getUserIdByInfoPerson = async (infoPersonId) => {
     try {
@@ -75,37 +77,42 @@ const RequestPage = () => {
 
   // --- 1. Inicialización de requestPending con solicitudes REQUESTED (Autocarga Inicial) ---
   useEffect(() => {
-    // 1. Ejecutar solo si la lista cargó, no está vacía, y aún no hemos inicializado requestPending
-    if (requestList && requestList.length > 0) {
-      const initialPendingPromises = requestList
-        .filter(
-          (req) => req.status === "requested" || req.status === "REQUESTED"
-        )
-        .map(async (req) => {
-          const mappedUserId = await getUserIdByInfoPerson(req.info_person_id);
 
-          return {
-            implement_id: req.implement_id,
-            user_id: mappedUserId,
-            request_id: req.id,
-            // clientId: req.clientId || null,
-          };
+    // 1. Ejecutar solo si la lista cargó, no está vacía, y aún no hemos inicializado requestPending
+      if (requestList && requestList.length > 0) {
+        const initialPendingPromises = requestList
+          .filter(
+            (req) => req.status === "requested" || req.status === "REQUESTED"
+          )
+          .map(async (req) => {
+            const mappedUserId = await getUserIdByInfoPerson(req.info_person_id);
+
+            return {
+              implement_id: req.implement_id,
+              user_id: mappedUserId,
+              request_id: req.id,
+              // clientId: req.clientId || null,
+            };
+          });
+
+        // Esperamos a que todas las consultas de ID de usuario terminen
+        Promise.all(initialPendingPromises).then((results) => {
+          const validResults = results.filter((r) => r.user_id);
+
+          // 2. Establecer la cola de pendientes
+          setRequestPending(validResults);
+
+          // 3. Abrir el modal si encontramos solicitudes pendientes
+          if (validResults.length > 0) {
+            setIsOpenModal(true);
+          }
         });
 
-      // Esperamos a que todas las consultas de ID de usuario terminen
-      Promise.all(initialPendingPromises).then((results) => {
-        const validResults = results.filter((r) => r.user_id);
+        // De lo contrario si no hay solicitudes pendientes 
+        // Verificamos si hay una solicitud activa. (Verificar si se debe ver primero)
+      }
 
-        // 2. Establecer la cola de pendientes
-        setRequestPending(validResults);
-
-        // 3. Abrir el modal si encontramos solicitudes pendientes
-        if (validResults.length > 0) {
-          setIsOpenModal(true);
-        }
-      });
-    }
-  }, [requestList, loading]);
+  }, [requestList, requestFinished, loading]);
 
   // --- 2. Lógica del Socket y Escucha (Autocarga en Tiempo Real) ---
   useEffect(() => {
@@ -121,13 +128,25 @@ const RequestPage = () => {
         return;
       }
 
-      const { implement_id, user_id, request_id} = data;
+      const { implement_id, user_id, request_id, status} = data;
 
-      // Añadir el nuevo objeto AL ARRAY DE PENDIENTES
-      setRequestPending((prevRequests) => [
-        ...prevRequests,
-        { implement_id, user_id, request_id },
-      ]);
+      // Si tiene estatus es finished
+      if(status === STATUS_FINISHED){
+        console.log(data)
+        setRequestFinished({
+          implement_id,
+          user_id,
+          request_id,
+          status
+        })
+        
+      }else{
+        // Añadir el nuevo objeto AL ARRAY DE PENDIENTES
+        setRequestPending((prevRequests) => [
+          ...prevRequests,
+          { implement_id, user_id, request_id },
+        ]);
+      }
 
       setIsOpenModal(true); // Abrir el modal si no lo estaba
     });
@@ -138,6 +157,7 @@ const RequestPage = () => {
       }
       if (data.success) {
         refresh();
+        console.log("Refrescado");
       }
     });
 
@@ -155,7 +175,7 @@ const RequestPage = () => {
     // La solicitud que se va a procesar es la PRIMERA en el array requestPending
     const currentRequest = requestPending[0];
 
-    if (!currentRequest) {
+    if (!currentRequest && !requestFinished) {
       setIsOpenModal(false);
       return;
     }
@@ -170,7 +190,7 @@ const RequestPage = () => {
     }
 
     // Si se ACEPTA, se exige el tiempo límite
-    if (status === "accepted" && !limitedAt) {
+    if (status === STATUS_ACCEPTED && !limitedAt) {
       window.showAlert(
         "Debe especificar el tiempo límite para aceptar la solicitud.",
         "warning"
@@ -178,10 +198,11 @@ const RequestPage = () => {
       return;
     }
 
-    console.log(currentRequest);
-    const { implement_id, request_id, user_id} = currentRequest;
-
     // Validación de datos de la solicitud
+    const { implement_id, request_id, user_id } = requestFinished
+      ? requestFinished
+      : currentRequest;
+
     if (request_id === 0 || user_id === 0 || implement_id === 0) {
       window.showAlert(
         "Error interno: Datos de solicitud incompletos.",
@@ -192,44 +213,27 @@ const RequestPage = () => {
 
     // Usamos un try-catch para manejar errores de la API
     try {
-      // **********************************************
-      // CRÍTICO: ACTUALIZAR EL ESTADO EN LA BASE DE DATOS (DB)
-      // **********************************************
-      // const response = await RequestService.updateRequest({
-      //   request_id: request_id,
-      //   status: status.toUpperCase(), // Tu backend espera mayúsculas
-      //   limited_at: limitedAt, // Será null si es 'refused'
-      //   implement_id: implement_id,
-      // });
-
-      // if (!response.success) {
-      //   throw new Error(response.error.message || "Fallo la actualización de la solicitud en la DB.");
-      // }
-      
-      // **********************************************
-      // RESPUESTA AL CLIENTE POR SOCKET (Solo si DB es exitoso)
-      // **********************************************
-      sendResponseToClient({
+      const payload = {
         request_id: request_id,
-        status: status, 
-        limited_at: limitedAt, // Enviamos el tiempo límite al cliente
+        status: status,
         implement_id: implement_id,
         user_id: user_id,
-      });
+      };
 
-      // console.log({
-      //   request_id: request_id,
-      //   status: status, 
-      //   limited_at: limitedAt, // Enviamos el tiempo límite al cliente
-      //   implement_id: implement_id,
-      //   user_id: user_id,
-      //   clientId: clientId, // Importante para que el socketAdapter encuentre al cliente
-      // })
-      // **********************************************
-      // ACTUALIZACIÓN DE LA UI (Remover de la Cola)
-      // **********************************************
+      // Si el estado requiere límite, lo agregamos
+      if (status === STATUS_ACCEPTED && limitedAt) {
+        payload.limited_at = limitedAt;
+      }
+
+      sendResponseToClient(payload);
+
       setRequestPending((prevRequests) => prevRequests.slice(1));
-      setCurrentForm({ limited_at: '' }); // Resetear el formulario
+      setCurrentForm({ limited_at: "" }); // Resetear el formulario
+      setIsOpenModal(false);
+
+      if (requestFinished) {
+        setRequestFinished(null);
+      }
 
       refresh();
     } catch (error) {
@@ -262,26 +266,34 @@ const RequestPage = () => {
   return (
     <div className="div-principal">
       {/* Muestra el modal SOLO si está abierto Y hay elementos pendientes */}
-      {
-        isOpenModal && requestPending.length > 0 && (
-          <RequestAdminModalContainer
-            // Siempre pasa los datos del PRIMER elemento en la cola [0]
-            implementId={requestPending[0].implement_id}
-            userId={requestPending[0].user_id}
-            form={currentForm}
-            onFormChange={handleModalFormChange}
-            onAccepted={(limitedAt) =>
-              handleResponseToClient("accepted", limitedAt)
-            }
-            onRefused={() => handleResponseToClient("refused")}
-            // Al cerrar el modal manualmente, saltamos la solicitud y vamos a la siguiente
-            onClose={() => {
+      {isOpenModal && (
+        (() => {
+          // Corrección agregada: obtener el ítem actual de forma segura
+          const currentItem = requestFinished || requestPending[0];
+
+          // Si no hay item, no renderizamos el modal para evitar errores
+          if (!currentItem) return null;
+
+          return (
+            <RequestAdminModalContainer
+              implementId={currentItem.implement_id}
+              userId={currentItem.user_id}
+              form={currentForm}
+              finished={requestFinished}
+              onFinish={() => handleResponseToClient("finished")}
+              onFormChange={handleModalFormChange}
+              onAccepted={(limitedAt) =>
+                handleResponseToClient("accepted", limitedAt)
+              }
+              onRefused={() => handleResponseToClient("refused")}
+              onClose={() => {
                 setRequestPending((prev) => prev.slice(1));
-                setCurrentForm({ limited_at: '' }); // Resetear al saltar
-            }} 
-          />
-        )
-      }
+                setCurrentForm({ limited_at: "" });
+              }}
+            />
+          );
+        })()
+      )}
 
       <RequestHeadContainer />
       <RequestStatsContainer stats={stats} loading={loading} error={error} />

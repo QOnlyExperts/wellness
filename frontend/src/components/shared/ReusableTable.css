@@ -18,6 +18,7 @@
   box-shadow: var(--box-shadow);
 }
 
+
 .table-wrapper table {
   width: 100%;
   /* padding: 10px 10px 10px 10px; */
@@ -74,6 +75,9 @@
 }
 
 @media (max-width: 768px) {
+  .table-wrapper{
+    padding: 10px 10px 10px 0px;
+  }
 
   .table-wrapper table thead th:nth-child(1),
   .table-wrapper table tbody td:nth-child(1) {

@@ -18,8 +18,9 @@ export class UpdateRequestUseCase {
 
     try{
       console.log(input)
+      const validStatuses = ["accepted", "finished"];
 
-      if(input.status === RequestStatus.ACCEPTED){
+      if (validStatuses.includes(input.status)) {
         // Actualizamos el estado del implemento
         await this.implementUpdateStatusUseCase.execute(
           input.implement_id, {

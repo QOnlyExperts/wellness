@@ -42,7 +42,12 @@ import {
   requestFailed,
   deleteInstrumentInUse,
 } from "../services/socket/StudentSocket";
-import { STATUS_FINISHED, STATUS_REQUESTED } from "../constants/requestsStatuses";
+import {
+  STATUS_FINISHED,
+  STATUS_REQUESTED,
+} from "../constants/requestsStatuses";
+import { useRequestByIdPerson } from "../hooks/useRequestByIdPerson";
+import HoursByMonthChart from "../components/shared/HoursByMonthChart";
 
 // Función auxiliar para calcular el umbral automáticamente
 const calculateThresholdHours = (createdAt, limitedAt) => {
@@ -118,20 +123,19 @@ const HomePage = () => {
 
   const [status, setStatus] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
   const [onRequest, setOnRequest] = useState(false);
 
   const [refresh, setRefresh] = useState(false);
 
   const [isOpenModal, setIsModalOpen] = useState(false);
 
-
   const [typeRequest, setTypeRequest] = useState(null);
   const [isOpenModalRequest, setIsModalOpenRequest] = useState(false);
   const [formRequest, setFormRequest] = useState({
     implement_id: 0,
     user_id: 0,
-    request_id: 0
+    request_id: 0,
   });
 
   const [message, setMessage] = useState(null);
@@ -146,6 +150,10 @@ const HomePage = () => {
 
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
+
+  const { requestList, hours, loading, error } = useRequestByIdPerson({
+    infoPersonId,
+  });
 
   const horasPorMes = [
     { mes: "Ene", horas: 10 },
@@ -202,14 +210,14 @@ const HomePage = () => {
     timeoutRef.current = setTimeout(() => {
       // --- LÓGICA DE TIEMPO EXPIRADO ---
       setMessage("Expiró el tiempo de espera de la solicitud");
-      setIsLoading(false);
+      setIsLoadingModal(false);
 
       setTimeout(() => {
         setMessage(null);
         setOnRequest(false);
       }, 5000);
     }, 60000); // 1 minuto
-  }, [setIsLoading, setMessage, setOnRequest]); // Dependencias del callback
+  }, [setIsLoadingModal, setMessage, setOnRequest]); // Dependencias del callback
 
   // Inicia el socket y escucha el canal
   useEffect(() => {
@@ -246,7 +254,7 @@ const HomePage = () => {
         // Si llega la respuesta final, CANCELAMOS el timer de expiración
         clearTimeoutIfRunning();
 
-        setIsLoading(false);
+        setIsLoadingModal(false);
         setOnRequest(true);
         setStatus(data.status); // Guardamos el estado de la solicitud
         setMessage(`Solicitud ${translateStatus(data.status)}`);
@@ -279,7 +287,7 @@ const HomePage = () => {
       if (!data.success) {
         // Refrescamos la vista
 
-        setIsLoading(false);
+        setIsLoadingModal(false);
         setOnRequest(true);
         setMessage(data.message);
 
@@ -300,18 +308,17 @@ const HomePage = () => {
     };
   }, [userId, startTimeoutLogic]); // Dependencias: incluye startTimeoutLogic
 
-
   const clearFormRequest = () => {
     setFormRequest({
       implement_id: 0,
       user_id: 0,
-      request_id: 0
+      request_id: 0,
     });
     setTypeRequest(null);
-  }
+  };
 
   const handleInstrumentRequest = () => {
-    if(!formRequest.implement_id || formRequest.implement_id === 0){
+    if (!formRequest.implement_id || formRequest.implement_id === 0) {
       return;
     }
 
@@ -319,7 +326,7 @@ const HomePage = () => {
       implement_id: formRequest.implement_id,
       user_id: userId,
     });
-    setIsLoading(true);
+    setIsLoadingModal(true);
 
     // DISPARAR EL TIMEOUT AQUÍ
     startTimeoutLogic();
@@ -327,43 +334,36 @@ const HomePage = () => {
 
   // Id instrument, Realiza la solicitud
   const handleInstrumentFinishRequest = () => {
-    
-    if (
-      formRequest.implement_id === 0 ||
-      formRequest.request_id === 0
-    ) {
-      
-      return
+    if (formRequest.implement_id === 0 || formRequest.request_id === 0) {
+      return;
     }
 
     sendFinishRequestInstrumentToAdmin({
       implement_id: formRequest.implement_id,
       user_id: userId,
       request_id: formRequest.request_id,
-      status: typeRequest // debería ser finished
+      status: typeRequest, // debería ser finished
     });
 
-
-    setIsLoading(true);
+    setIsLoadingModal(true);
   };
 
   const handleRequest = () => {
     // Verificamos que los datos necesitados ya se encuentren
 
-    if(typeRequest === STATUS_REQUESTED){
+    if (typeRequest === STATUS_REQUESTED) {
       handleInstrumentRequest();
     }
 
-    if(typeRequest === STATUS_FINISHED){
+    if (typeRequest === STATUS_FINISHED) {
       handleInstrumentFinishRequest();
     }
     clearFormRequest();
-
-  }
+  };
 
   const handleRequestModalImplement = (type, implementId, requestId) => {
     if (!implementId) {
-      console.log("Falta el id de implemento")
+      console.log("Falta el id de implemento");
       return;
     }
 
@@ -375,11 +375,11 @@ const HomePage = () => {
       // Detiene la ejecución de la función, sin retornar nada.
       return;
     }
-    
-    if(type === STATUS_REQUESTED){
+
+    if (type === STATUS_REQUESTED) {
       // 1. Usar .find() para obtener el OBJETO, no un array filtrado.
       const implement = implementList.find((imp) => imp.id === implementId);
-      
+
       // 2. Definir los estados que bloquean la solicitud (NO DISPONIBLE)
       const occupiedStatuses = ["borrowed", "retired", "maintenance"];
 
@@ -400,7 +400,7 @@ const HomePage = () => {
     setFormRequest({
       implement_id: implementId,
       user_id: userId,
-      request_id: requestId
+      request_id: requestId,
     });
 
     setTypeRequest(type);
@@ -447,13 +447,12 @@ const HomePage = () => {
           onClose={() => setIsModalOpenRequest(false)}
           message={message}
           status={status}
-          isLoading={isLoading}
+          isLoading={isLoadingModal}
           onRequest={onRequest}
         />
       )}
 
-      {
-        /* Modal de información */
+      {/* {
         isOpenModal && (
           <Modal
             title="Información sobre Estados de implementos"
@@ -504,20 +503,20 @@ const HomePage = () => {
             </div>
           </Modal>
         )
-      }
+      } */}
 
       <Head
         title="Grupos de implementos"
         subTitle="Toca para seleccionar y ver implementos"
       />
-      <div className="div-badge-container">
+      {/* <div className="div-badge-container">
         <div className="div-badge-content">
           {renderFiltroOpciones()}
           <Button onClick={() => setIsModalOpen(true)} className="btn-icon">
             <InfoIcon size={20} color="#555555" />
           </Button>
         </div>
-      </div>
+      </div> */}
 
       <AlertContainer />
 
@@ -583,7 +582,11 @@ const HomePage = () => {
                             cod={child.cod}
                             title={child.cod}
                             onClick={() =>
-                              handleRequestModalImplement("requested", child.id, 0)
+                              handleRequestModalImplement(
+                                "requested",
+                                child.id,
+                                0
+                              )
                             }
                             images={
                               child.imgs?.length
@@ -594,7 +597,9 @@ const HomePage = () => {
                                 : [NotFoundImage]
                             }
                             // onClick={}
-                          />
+                          >
+                            <Badge value={child.status} />
+                          </Card>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -616,79 +621,78 @@ const HomePage = () => {
         )}
       </HorizontalScroll>
 
-      <Head title="Implementos en uso" subTitle="Selecciona para devolver" />
+      <Head
+        title="Implemento en uso y estadísticas"
+        subTitle="Selecciona para devolver"
+      />
 
       <div className="div-home-implements-not-used">
-        {requestActive ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <Card
-              onClick={() => handleRequestModalImplement("finished", requestActive.implement.id, requestActive.id)}
-              type={requestActive.implement.status}
-              images={
-                requestActive.implement.imgs &&
-                requestActive.implement.imgs.length > 0
-                  ? requestActive.implement.imgs.map(
-                      (img) => `http://localhost:4000/${img.description}`
-                    )
-                  : [NotFoundImage]
-              }
-              title={requestActive.implement.groupImplement.name}
-              // description={formImplement.status}
-            />
+          {requestActive ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <Card
+                onClick={() =>
+                  handleRequestModalImplement(
+                    "finished",
+                    requestActive.implement.id,
+                    requestActive.id
+                  )
+                }
+                type={requestActive.implement.status}
+                images={
+                  requestActive.implement.imgs &&
+                  requestActive.implement.imgs.length > 0
+                    ? requestActive.implement.imgs.map(
+                        (img) => `http://localhost:4000/${img.description}`
+                      )
+                    : [NotFoundImage]
+                }
+                title={requestActive.implement.groupImplement.name}
+                // description={formImplement.status}
+              >
+                <Badge value={requestActive.implement.status} />
+              </Card>
 
-            <CountdownTimer
-              createdAt={requestActive.created_at}
-              limitedAt={requestActive.limited_at}
-              // Usamos la variable calculada aquí
-              thresholdHours={automaticThreshold} 
-            />
-          </div>
-        ) : (
-          <div>
-            {/* <h3>No hay implementos en uso</h3> */}
-            <Card
-              // type={}
-              // cod={child.cod}
-              title={"No seleccionado"}
-              images={[NotFoundImage]}
-            />
-          </div>
-        )}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            // height: "auto",
-            gap: "10px",
-          }}
-        >
-          <DashboardCard totalHoras={76} horasPorMes={horasPorMes} />
-        </div>
+              <CountdownTimer
+                createdAt={requestActive.created_at}
+                limitedAt={requestActive.limited_at}
+                // Usamos la variable calculada aquí
+                thresholdHours={automaticThreshold}
+              />
+            </div>
+          ) : (
+            <div>
+              {/* <h3>No hay implementos en uso</h3> */}
+              <Card
+                // type={}
+                // cod={child.cod}
+                title={"No seleccionado"}
+                images={[NotFoundImage]}
+              />
+            </div>
+          )}
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            // height: "30vh",
-            padding: "1px",
-            borderRadius: "10px",
-            boxSizing: "border-box",
-            overflowY: "auto",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          <RequestListByIdPersonContainer infoPersonId={infoPersonId} />
-        </div>
+          <div className="stats-hours">
+            <DashboardCard totalHoras={hours} horasPorMes={horasPorMes} />
+            <HoursByMonthChart requests={requestList} />
+          </div>
+
       </div>
+      <Head
+        title="Implementos usados"
+        subTitle="Contiene los implementos usados con sus horas y las fechas asignadas"
+      />
+      <RequestListByIdPersonContainer
+        requestList={requestList}
+        isLoading={loading}
+        error={error}
+      />
     </div>
   );
 };

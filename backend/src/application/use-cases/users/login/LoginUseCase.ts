@@ -41,7 +41,7 @@ export class LoginUseCase {
     return {
       user: {
         id: user.id!,
-        name: user.info_person?.name1 || '',
+        name: user.info_person?.getFullName() || '',
         email: user.email,
         info_person_id: user.info_person_id,
         rol: user.rol_id,

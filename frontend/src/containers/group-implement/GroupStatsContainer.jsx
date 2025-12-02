@@ -21,10 +21,10 @@ const GroupStatsContainer = ({ refresh: refreshFlag }) => {
 
   return (
     <Head>
-      <div
+      <div className="div-statistics"
         style={{
           display: "flex",
-          flexDirection: "column",
+          // flexDirection: "column",
           width: "100%",
           gap: "10px",
         }}

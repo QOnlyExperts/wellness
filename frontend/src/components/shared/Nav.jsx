@@ -127,7 +127,7 @@ const Nav = () => {
                 <div className="dropdown-content">
                   
                   {/* Item 1: Perfil */}
-                  <Link to="/profile/security" onClick={closeDropdown}>
+                  <Link to="/profile" onClick={closeDropdown}>
                     <ProfileIcon color='#000000' size={20} /> Perfil
                   </Link>
 

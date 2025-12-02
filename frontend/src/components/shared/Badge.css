@@ -20,14 +20,18 @@
 }
 
 .badge {
+  /* position: absolute; */
   display: inline-block;
   padding: 5px 10px;
   font-size: .7rem;
+  /* esquina-superior-izquierda | esquina-superior-derecha | esquina-inferior-derecha | esquina-inferior-izquierda */
+  /* border-radius: 0 12px 0 12px; */
   border-radius: 12px;
   font-weight: bold;
   color: #fff;
   text-align: center;
   left: 0;
+  /* margin: 0; */
 }
 
 /* Default color */

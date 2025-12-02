@@ -1,180 +1,88 @@
 import React, { useEffect, useState } from "react";
-// Importaciones simuladas/adaptadas del componente original
 import { useLoader } from "../../context/LoaderContext";
-import ReusableTable from "../../components/shared/ReusableTable";
-import AlertContainer from "../shared/AlertContainer";
-import Head from "../../components/shared/Head";
-import moment from "moment"; // Importar moment para formatear fechas
+import moment from "moment";
 import RequestService from "../../services/RequestService";
+import RequestIcon from "../../components/icons/Request";
 
-// --- Componente Principal Adaptado ---
-const RequestListByIdPersonContainer = ({
-  infoPersonId,
-  refresh: refreshFlag,
-}) => {
-  // Simulamos el uso de useLoader
-  const { showLoader, hideLoader } = useLoader();
-  const [requestList, setRequestList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+import './RequestListByIdPersonContainer.css'
 
-  // Función para cargar las solicitudes
-  const fetchRequests = async () => {
-    if (!infoPersonId || isNaN(Number(infoPersonId))) return;
+const apiUrl = import.meta.env.VITE_API_URL;
 
-    setIsLoading(true);
-    setError(null);
-    showLoader();
+const RequestListByIdPersonContainer = ({requestList, isLoading, error}) => {
 
-    try {
-      const response = await RequestService.getRequestsByIdPerson(infoPersonId);
-
-      if (!response.success) {
-        window.showAlert(
-          response?.error?.message || "Error al obtener las solicitudes",
-          "Error"
-        );
-        setError(
-          response?.error?.message || "Error al obtener las solicitudes"
-        );
-        setRequestList([]);
-        return;
-      }
-
-      // Corregido: Usar setRequestList y la propiedad 'data' del JSON
-      setRequestList(response.data);
-    } catch (err) {
-      setError(err.message || "Ocurrió un error inesperado.");
-      window.showAlert(err.message || "Error de red", "Error");
-    } finally {
-      setIsLoading(false);
-      hideLoader();
-    }
+  const getImgUrl = (request) => {
+    const imgPath = request?.implement?.imgs?.[0]?.description;
+    if (!imgPath) return null;
+    return `${apiUrl}:4000/${imgPath}`;
   };
 
-  useEffect(() => {
-    // Solo se llama a fetchRequests si el flag de refresco cambia o si el componente se monta por primera vez
-    fetchRequests();
-    // Si no incluyes fetchRequests, asegúrate de que esté envuelto en useCallback si lo usas en el futuro.
-  }, [refreshFlag, infoPersonId]);
+  const formatDate = (date) =>
+    date ? moment(date).format("DD/MM/YYYY hh:mm a") : "-";
 
-  // --- Definición de Columnas Solicitadas ---
-
-  const columnsHead = [
-    { header: "Imagen", accessor: "img" },
-    { header: "Cód.", accessor: "implement_cod" },
-    { header: "Implemento", accessor: "implement_name" },
-    { header: "Inicio", accessor: "created_at" },
-    { header: "Fin", accessor: "finished_at" },
-    { header: "Límite", accessor: "limited_at" },
-    { header: "Tiempo Asignado", accessor: "duration_hours" },
-  ];
-
-  // Usar los accessors para el mapeo interno de la tabla
-  const columns = columnsHead.map((col) => ({ accessor: col.accessor }));
-
-  const columnStyles = [
-    { width: "10%", overflow: "hidden" }, // Img
-    { width: "12%", overflow: "hidden" }, // Cód. Implemento
-    { width: "20%", overflow: "hidden" }, // Nombre Implemento
-    { width: "14%", overflow: "hidden" }, // Inicio
-    { width: "14%", overflow: "hidden" }, // Fin
-    { width: "14%", overflow: "hidden" }, // Límite
-    { width: "16%", overflow: "hidden" }, // Tiempo Asignado
-  ];
-
-  // --- Función para Renderizar Contenido de Celda (Adaptada) ---
-  const renderCellContent = (column, request) => {
-    const implement = request.implement || {};
-    const groupImplement = implement.groupImplement || {};
-
-    switch (column.accessor) {
-      case "img": {
-        const imgPath = implement.imgs?.[0]?.description;
-        if (imgPath) {
-          const imageUrl = `http://localhost:4000/${imgPath}`; // Reemplaza con tu URL base real
-          return (
-            <img
-              src={imageUrl}
-              alt="Implemento"
-              style={{
-                width: "40px",
-                height: "40px",
-                objectFit: "cover",
-                borderRadius: "4px",
-              }}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "placeholder-url-por-defecto";
-              }}
-            />
-          );
-        }
-        return <span title="Sin imagen">[MotImg]</span>;
-      }
-
-      case "implement_cod":
-        return implement.cod || "-";
-
-      case "implement_name":
-        return groupImplement.name || "-";
-
-      case "created_at":
-        return request.created_at
-          ? moment(request.created_at).format("DD/MM/YYYY hh:mm a")
-          : "-";
-
-      case "finished_at":
-        return request.finished_at
-          ? moment(request.finished_at).format("DD/MM/YYYY hh:mm a")
-          : "-";
-
-      case "limited_at":
-        return request.limited_at
-          ? moment(request.limited_at).format("DD/MM/YYYY hh:mm a")
-          : "-";
-
-      case "duration_hours":
-        // El valor viene como string "0.00", lo mostramos con la unidad
-        return request.duration_hours ? `${request.duration_hours} h` : "-";
-
-      default:
-        return request[column.accessor];
-    }
-  };
-
-  // Preparar los datos con las celdas renderizadas para la tabla
-  const dataWithRenderedCells = requestList.map((request) => {
-    const row = {};
-    columnsHead.forEach((col) => {
-      // Los datos a renderizar están en la propiedad con el mismo nombre que el accessor
-      row[col.accessor] = renderCellContent(col, request);
-    });
-    return { ...request, ...row };
-  });
-
-  // Renderizar un indicador de carga
   if (isLoading) {
-    return <div>Cargando solicitudes...</div>;
+    return (
+      <div className="empty-state">
+        Cargando implementos usados...
+        <RequestIcon color="#000000" />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error al cargar solicitudes: {error}</div>;
+    return <div className="empty-state">Error al cargar implementos usados: {error}</div>;
   }
 
   if (requestList.length === 0) {
-    return <div>No se encontraron solicitudes.</div>;
+    return (
+      <div className="empty-state">
+        No se encontraron implementos usados.
+        <RequestIcon color="#000000" />
+      </div>
+    );
   }
 
   return (
-    <>
-      <ReusableTable
-        columnsHead={columnsHead}
-        columns={columns}
-        data={dataWithRenderedCells}
-        columnStyles={columnStyles}
-      />
-    </>
+    <div className="request-list-pro">
+      {requestList.map((request, index) => {
+        const imgUrl = getImgUrl(request);
+
+        return (
+          <div key={index} className="request-card-pro">
+            <div className="card-pro-img">
+              {imgUrl ? (
+                <img
+                  src={imgUrl}
+                  alt="Implemento"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "placeholder-url-por-defecto";
+                  }}
+                />
+              ) : (
+                <div className="card-pro-img-fallback">Sin imagen</div>
+              )}
+            </div>
+
+            <div className="card-pro-body">
+              <div className="card-pro-title">
+                {request?.implement?.groupImplement?.name || "-"}
+              </div>
+
+              <div className="card-pro-grid">
+                <div><strong>Código:</strong> {request?.implement?.cod || "-"}</div>
+                <div>
+                  <strong>Tiempo:</strong>{" "}
+                  {request.duration_hours ? `${parseInt(request.duration_hours)} h` : "-"}
+                </div>
+                <div><strong>Inicio:</strong> {formatDate(request.created_at)}</div>
+                <div><strong>Fin:</strong> {formatDate(request.finished_at)}</div>
+                <div><strong>Límite:</strong> {formatDate(request.limited_at)}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

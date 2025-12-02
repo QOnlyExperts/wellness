@@ -55,6 +55,9 @@ export class SequelizeUserRepository implements IUserRepository {
         'info_person_id',
         'rol_id'
       ],
+      include: [{
+        model: InfoPersonModel
+      }]
     });
 
     if (!user) {

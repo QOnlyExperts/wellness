@@ -35,6 +35,27 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     imgs: []
   });
   
+    const [userId, setUserId] = useState(() => {
+      // 1. Obtener el ítem (puede ser null)
+      const dataJson = sessionStorage.getItem("data");
+  
+      // 2. Si no hay datos, retorna null o un valor por defecto (ej. 0 o -1)
+      if (!dataJson) {
+        return null;
+      }
+  
+      // 3. Parsear el JSON. Usamos try/catch si el JSON puede estar malformado.
+      try {
+        const data = JSON.parse(dataJson);
+        // 4. Devolver la propiedad, si existe
+        return data.user.id || null;
+      } catch (e) {
+        // En caso de que el JSON no sea válido
+        console.error("Error parsing data from session storage:", e);
+        return null;
+      }
+    });
+  
   const [images, setImages] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -174,7 +195,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     formData.append('condition', formImplement.condition);
     formData.append('group_implement_id', formImplement.group_implement_id);
     formData.append('categories_id', formImplement.categories_id);
-    formData.append('user_id', 1);
+    formData.append('user_id', userId);
     formData.append('amount', formImplement.amount);
 
     const file =formImplement.imgs

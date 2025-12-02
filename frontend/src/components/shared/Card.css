@@ -19,7 +19,7 @@
   transition: transform 0.15s;
   cursor: pointer;
   box-shadow: var(--box-shadow);
-  border-radius: 12px;
+  border-radius: 20px;
 }
 
 .card-face {
@@ -28,7 +28,7 @@
   height: 100%;
   backface-visibility: hidden;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -63,8 +63,6 @@
 .close-btn:hover {
   background: #f1f1f1;
 }
-
-
 
 
 .card:hover {
@@ -220,4 +218,11 @@
     color: #008c8c; /* Color de acento */
     margin: 5px 0; /* Espaciado extra */
     text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+  .card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }

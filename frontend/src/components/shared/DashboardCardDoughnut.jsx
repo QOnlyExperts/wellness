@@ -58,7 +58,7 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
       style={{
         // background: "linear-gradient(135deg, #E6FFFA, #B2F5EA)",
         background: "#ffffff",
-        borderRadius: "10px",
+        borderRadius: "20px",
         padding: "5px",
         width: "auto",
         height: "100%",
@@ -66,34 +66,36 @@ const DashboardCard = ({ totalHoras, horasPorMes }) => {
         boxShadow: "var(--box-shadow)",
       }}
     >
+      <h3 style={{ fontWeight: "bold", display: 'flex', justifyContent: 'center' }}>Horas acumuladas</h3>
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
+          // flexDirection: "column",
+          justifyContent: 'center',
+          alignItems: 'center',
           alignItems: "center",
-          height: "100%",
-          gap: "20px",
+          height: "80%",
+          // gap: "20px",
         }}
       >
-        <h3 style={{ fontWeight: "bold" }}>Horas acumuladas</h3>
         {/* <Doughnut data={donutData} options={donutOptions} /> */}
         <div
           style={{
+            // height: '100%',
             fontWeight: "bold",
-            fontSize: "4rem",
+            fontSize: "2rem",
             color: "#2D3748",
           }}
         >
-          {96}
+          {totalHoras}
         </div>
-
+{/* 
         <div>
           <p style={{ fontWeight: "600", fontSize: "14px" }}>Horas por mes</p>
           <div style={{ height: "60px", width: "100%" }}>
             <Bar data={barData} options={barOptions} />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

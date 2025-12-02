@@ -129,7 +129,7 @@ export class RequestEntity {
 
     // Fecha segura para MySQL
     const now = new Date();
-    this.finished_at = now.toISOString().slice(0, 19).replace('T', ' ');
+    this.finished_at = now.toISOString();
 
     this.status = RequestStatus.FINISHED;
 

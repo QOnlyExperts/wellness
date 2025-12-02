@@ -8,6 +8,7 @@ import HomePage from '../pages/HomePage';
 import GroupImplementPage from '../pages/group-implement/GroupImplementPage';
 import ImplementPage from '../pages/implements/ImplementPage';
 import UserPage from '../pages/user/UserPage';
+import ProfilePage from '../pages/user/ProfilePage';
 import RequestPage from '../pages/requests/RequestPage';
 
 // Rutas de Perfil (Ficticias)
@@ -74,17 +75,17 @@ export function UsersRoutes() {
   return (
     <div className='principal'>
       <Nav />
-      <div className="div-principal-profile-all">
-        <Sidebar />
+      {/* <div className="div-principal-profile"> */}
+        {/* <Sidebar /> */}
         {/* 💡 Las rutas de perfil se definen aquí */}
         <Routes>
           {/* Usamos path relativo (sin el /profile) */}
           <Route path="security" element={<div>Página de Seguridad</div>} />
           <Route path="addresses" element={<div>Página de Direcciones</div>} />
-          <Route index element={<div>Página Principal del Perfil</div>} />
+          <Route index element={<ProfilePage />} />
           <Route path="*" element={<h1>404 | Página de Perfil no encontrada</h1>} />
         </Routes>
-      </div>
+      {/* </div> */}
     </div>
   );
 }

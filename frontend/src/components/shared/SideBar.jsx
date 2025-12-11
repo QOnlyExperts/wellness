@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'; 
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-import './Sidebar.css'
+import './SideBar.css'
 import Arrow from '../../assets/arrow.svg';
 import Home from '../../assets/home.svg';
 import Dashboard from '../../assets/dashboard.svg';

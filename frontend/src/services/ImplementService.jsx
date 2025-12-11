@@ -11,7 +11,6 @@ const ImplementService = {
     return service('/implements', {
       method: 'POST',
       body: data,
-      headers: headers
     });
   },
   updateManyImplements: (data) => {

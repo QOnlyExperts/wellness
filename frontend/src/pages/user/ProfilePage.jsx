@@ -4,6 +4,7 @@ import './ProfilePage.css'
 import RequestListByIdPersonContainer from "../../containers/request/RequestListByIdPersonContainer";
 import Head from "../../components/shared/Head";
 import { useRequestByIdPerson } from "../../hooks/useRequestByIdPerson";
+import SidebarProfile from "../../components/shared/SidebarProfile";
 
 
 const ProfilePage = () => {
@@ -35,30 +36,36 @@ const ProfilePage = () => {
 
   return(
     <div className="div-principal-profile">
-      <div className="content-avatar">
-        <div className="avatar">
-          <h3>{user.name.charAt(0)}</h3>
-        </div>
+      <SidebarProfile />
 
-      </div>
-      <div className="fullname">
-        <h3>{user.name}</h3>
-      </div>
-      <div className="content-data">
-        <div>
-          <h3>Correo institucional</h3>
-          <span>{user.email}</span>
+      <div className="div-principal-profile-content">
+
+        <div className="content-avatar">
+          <div className="avatar">
+            <h3>{user.name.charAt(0)}</h3>
+          </div>
+
         </div>
-        <div>
-          <h3>N. Horas</h3>
-          <span>{hours}</span>
+        <div className="fullname">
+          <h3>{user.name}</h3>
         </div>
+        <div className="content-data">
+          <div>
+            <h3>Correo institucional</h3>
+            <span>{user.email}</span>
+          </div>
+          <div>
+            <h3>N. Horas</h3>
+            <span>{hours}</span>
+          </div>
+        </div>
+        <Head 
+          title="Implementos usados"
+          subTitle="Contiene los implementos usados con sus horas y las fechas asignadas"
+        />
+        <RequestListByIdPersonContainer requestList={requestList} isLoading={loading} error={error} />
       </div>
-      <Head 
-        title="Implementos usados"
-        subTitle="Contiene los implementos usados con sus horas y las fechas asignadas"
-      />
-      <RequestListByIdPersonContainer requestList={requestList} isLoading={loading} error={error} />
+
     </div>
   )
 }

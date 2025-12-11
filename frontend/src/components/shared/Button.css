@@ -9,7 +9,7 @@
   color: #fff;
   font-size: .8rem;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   border: none;
   text-align: center;
@@ -31,7 +31,7 @@
   color: #fff;
   font-size: 0.8rem;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   border: none;
   text-align: center;
@@ -48,7 +48,7 @@
   color: #fff;
   font-size: 0.8rem;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   border: none;
   text-align: center;
@@ -59,13 +59,13 @@
   display: flex;
   align-items: center;
   width: fit-content;
-  padding: 10px;
+  /* padding: 10px; */
   gap: 5px;
   /* background: #389FFF;
   color: #fff; */
   font-size: 0.8rem;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   border: none;
   text-align: center;

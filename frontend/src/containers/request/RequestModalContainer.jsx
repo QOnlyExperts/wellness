@@ -4,6 +4,7 @@ import Modal from "../../components/shared/Modal";
 import Loader from "../../components/shared/Loader";
 import ImplementService from "../../services/ImplementService";
 import Button from "../../components/shared/Button";
+import Badge from "../../components/shared/Badge";
 
 import NotFoundImage from "../../assets/img/NoImg.svg";
 import CancelIcon from "../../components/icons/CancelIcon";
@@ -76,15 +77,17 @@ const RequestModalContainer = ({
         {view === "first" && (
           // ... (Contenido de Card y Botones)
           <div key="first" className={`view slide-${direction}`}>
-            {
-              typeRequest === STATUS_FINISHED && 
-                <h5>Recuerda estar en el area de bienestar para que tu solicitud pueda ser aprobada</h5>
-            }
-            
+            {typeRequest === STATUS_FINISHED && (
+              <h5>
+                Recuerda estar en el area de bienestar para que tu solicitud
+                pueda ser aprobada
+              </h5>
+            )}
+
             <Card
               type={implement.status}
               cod={implement.cod}
-              title={implement.cod}
+              title={implement.name ? implement.name : "Sin nombre"}
               images={
                 implement.imgs?.length
                   ? implement.imgs.map(
@@ -92,7 +95,17 @@ const RequestModalContainer = ({
                     )
                   : [NotFoundImage]
               }
-            />
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Badge value={implement.status} />
+                <span>{implement.cod}</span>
+              </div>
+            </Card>
             <div
               style={{
                 display: "flex",
@@ -102,14 +115,18 @@ const RequestModalContainer = ({
               }}
             >
               <Button
-                className="btn-icon"
+                className="btn-secondary"
                 text="Cancelar"
                 onClick={(e) => {
                   e.preventDefault();
                   onClose();
                 }}
               />
-              <Button className="btn-icon" text="Aceptar" onClick={onClick} />
+              <Button
+                className="btn-primary"
+                text="Aceptar"
+                onClick={onClick}
+              />
             </div>
           </div>
         )}
@@ -128,20 +145,20 @@ const RequestModalContainer = ({
             }}
           >
             {/* Solo mostramos el loader y el mensaje de espera si isLoading es TRUE y NO se ha finalizado la solicitud (onRequest) */}
-            
-              <div>
-                <Loader />
-                <div style={{ marginTop: "150px" }}>
-                  {message ? (
-                    <p>{message}</p>
-                  ) : (
-                    <p>
-                      Por favor no cierre el navegador mientras el administrador
-                      procede
-                    </p>
-                  )}
-                </div>
+
+            <div>
+              <Loader />
+              <div style={{ marginTop: "150px" }}>
+                {message ? (
+                  <p>{message}</p>
+                ) : (
+                  <p>
+                    Por favor no cierre el navegador mientras el administrador
+                    procede
+                  </p>
+                )}
               </div>
+            </div>
           </div>
         )}
 
@@ -155,19 +172,15 @@ const RequestModalContainer = ({
               alignItems: "center",
               justifyContent: "center",
               gap: "20px",
-              height: "auto"
+              height: "auto",
             }}
           >
-            {
-              status === "refused" ?
-                <CancelIcon color="red" size={45}/> 
-              : status === "accepted" ?
-                <CheckIcon   color="green" size={45}/>
-              : null
-            }
-            <h3>{
-              message
-            }</h3>
+            {status === "refused" ? (
+              <CancelIcon color="red" size={45} />
+            ) : status === "accepted" ? (
+              <CheckIcon color="green" size={45} />
+            ) : null}
+            <h3>{message}</h3>
           </div>
         )}
       </div>

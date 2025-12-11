@@ -51,7 +51,7 @@ export class ImplementController {
   public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Extraemos los datos del cuerpo de la solicitud
-      const { prefix, status, condition, group_implement_id, categories_id, user_id, amount } = req.body;
+      const { prefix, name, status, condition, group_implement_id, categories_id, user_id, amount } = req.body;
       const folder = "uploads/implement";
       const files = req.files?.imgs as UploadedFile | UploadedFile[];
 
@@ -69,6 +69,7 @@ export class ImplementController {
       // Validar y traducir el cuerpo de la petición a un DTO de entrada
       const inputDto: ImplementInputDto = {
         prefix: prefix,
+        name: name,
         status: status,
         condition: condition,
         group_implement_id: group_implement_id,

@@ -63,6 +63,7 @@ export class CreateImplement {
       const newImplement = ImplementEntity.create({
         id: null, // ID es null porque aún no existe en BD
         cod: finalCod,
+        name: input.name,
         // Valores por defecto
         status: input.status || ImplementStatus.AVAILABLE,
         condition: input.condition || ImplementCondition.NEW,

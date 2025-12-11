@@ -410,9 +410,9 @@ const LoginContainer = ({ onRegister }) => {
 
           { view === 'first' && (
             <div key="first" className={`login-form-login slide-${direction}`}>
-              <Link to='/' className="div-img">
+              <div className="div-img">
                 <img src={Logo}/>
-              </Link>
+              </div>
               <h2>Inicio de sesión</h2>
               <InputField
                 id="email"

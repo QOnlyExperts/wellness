@@ -94,7 +94,7 @@ const HoursByMonthChart = ({ requests }) => {
         maxWidth: "900px",
         borderRadius: "20px",
         backgroundColor: "#ffffffff",
-        padding: "25px",
+        padding: "10px 0px 0px 10px",
         boxShadow: "var(--box-shadow)",
         margin: "0 auto",
       }}

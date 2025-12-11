@@ -12,15 +12,15 @@ import Head from "../../components/shared/Head";
 // import RequestTotalIcon from "../../components/icons/RequestTotalIcon";
 
 import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
+import RequestIcon from "../../components/icons/Request";
+import CancelIcon from "../../components/icons/CancelIcon";
 
 const RequestStatsContainer = ({ stats, loading, error }) => {
-
   if (loading) return <p>Cargando estadísticas de solicitudes...</p>;
   if (error) return <p>Error al cargar estadísticas de solicitudes</p>;
 
   return (
     <Head>
-        
       <div
         style={{
           display: "flex",
@@ -29,52 +29,52 @@ const RequestStatsContainer = ({ stats, loading, error }) => {
           gap: "10px",
         }}
       >
-        <div className="content-statistics">  
+        <div className="content-statistics">
+          {/* 4. Solicitudes Totales (totalRequests) */}
           <div className="statistics">
             <span style={{ fontSize: "35px", color: "#000000ff" }}>
-                    
               <div className="statistics-icon">
-                        <PlusCircleIcon color="#FFC107" size={35} />
-                        {stats.pendingRequests}      {" "}
+                <RequestIcon color="var(--sidebar)" size={35} />
+                {stats.totalRequests}
               </div>
             </span>
             <span style={{ fontWeight: "bold", color: "#111827" }}>
-              Solicitudes Pendientes
+              Total de Solicitudes
             </span>
           </div>
 
           <div className="statistics">
             <span style={{ fontSize: "35px", color: "#000000ff" }}>
               <div className="statistics-icon">
-                <PlusCircleIcon color="#007BFF" size={35} />      
+                <PlusCircleIcon color="var(--color-available)" size={35} />
+                {stats.pendingRequests}{" "}
+              </div>
+            </span>
+            <span style={{ fontWeight: "bold", color: "#111827" }}>
+              Pendientes
+            </span>
+          </div>
+
+          <div className="statistics">
+            <span style={{ fontSize: "35px", color: "#000000ff" }}>
+              <div className="statistics-icon">
+                <CancelIcon color="#DC3545" size={35} />
                 {stats.inProgressRequests}
               </div>
             </span>
             <span style={{ fontWeight: "bold", color: "#111827" }}>
-              Solicitudes En Préstamo
+              Rechazadas
             </span>
           </div>
           <div className="statistics">
             <span style={{ fontSize: "35px", color: "#000000ff" }}>
               <div className="statistics-icon">
-                <PlusCircleIcon color="#DC3545" size={35} /> 
+                <PlusCircleIcon color="#DC3545" size={35} />
                 {stats.lateRequests}
               </div>
             </span>
             <span style={{ fontWeight: "bold", color: "#111827" }}>
-              Préstamos Vencidos      
-            </span>
-          </div>
-                    {/* 4. Solicitudes Totales (totalRequests) */} 
-          <div className="statistics">
-            <span style={{ fontSize: "35px", color: "#000000ff" }}>
-              <div className="statistics-icon">
-                <PlusCircleIcon color="var(--sidebar)" size={35} />     
-                  {stats.totalRequests}
-              </div>
-            </span>
-            <span style={{ fontWeight: "bold", color: "#111827" }}>
-              Total de Solicitudes
+              Limite excedido
             </span>
           </div>
         </div>

@@ -3,6 +3,8 @@
 /* La solución más sencilla, utilizando sólo CSS y no JS, sería recurrir a la propiedad position: sticky;. La parte mala es que hay algunas limitaciones de uso en ciertos navegadores, aunque en la gran mayoría de los modernos debería funcionar. */
 
 .table-wrapper {
+  display: flex;
+  align-items: start;
   width: 100%;
   height: 100%;
   /* Altura de ejemplo */

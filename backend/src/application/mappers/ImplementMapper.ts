@@ -10,6 +10,7 @@ export class ImplementMapper {
     return {
       id: implement.id,
       cod: implement.cod, // Mantener el nombre si es necesario o cambiarlo
+      name: implement.name,
       status: implement.status,
       condition: implement.condition,
       imgs: implement.imgs?.map(img => ({
@@ -45,6 +46,7 @@ export class ImplementMapper {
         id: data.GroupImplement.id ?? null,
         prefix: data.GroupImplement.prefix ?? "",
         name: data.GroupImplement.name ?? "",
+        amount: data.GroupImplement.amount ?? 0,
         max_hours: data.GroupImplement.max_hours ?? 0,
         time_limit: data.GroupImplement.time_limit ?? 0
       })
@@ -53,6 +55,7 @@ export class ImplementMapper {
     return ImplementEntity.create({
       id: data.id,
       cod: data.cod,
+      name: data.name,
       status: data.status,
       condition: data.condition,
       group_implement_id: data.group_implement_id,
@@ -69,6 +72,7 @@ export class ImplementMapper {
     
     if (entity.id !== undefined) data.id = entity.id;
     if (entity.cod !== undefined) data.cod = entity.cod;
+    if (entity.name !== undefined) data.name = entity.name;
     if (entity.status !== undefined) data.status = entity.status;
     if (entity.condition !== undefined) data.condition = entity.condition;
     if (entity.group_implement_id !== undefined) data.group_implement_id = entity.group_implement_id;

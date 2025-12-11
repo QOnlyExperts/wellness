@@ -580,7 +580,6 @@ const HomePage = () => {
                             className="card-overlay-style"
                             type={child.status}
                             cod={child.cod}
-                            title={child.cod}
                             onClick={() =>
                               handleRequestModalImplement(
                                 "requested",
@@ -597,8 +596,16 @@ const HomePage = () => {
                                 : [NotFoundImage]
                             }
                             // onClick={}
+                            
+                            title={child.name ? child.name : "Sin nombre"}
                           >
-                            <Badge value={child.status} />
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}>
+                              <Badge value={child.status} />
+                              <span>{child.cod}</span>
+                            </div>
                           </Card>
                         </motion.div>
                       ))}
@@ -653,7 +660,7 @@ const HomePage = () => {
                       )
                     : [NotFoundImage]
                 }
-                title={requestActive.implement.groupImplement.name}
+                title={requestActive.implement.name ? requestActive.implement.name : "Sin nombre"}
                 // description={formImplement.status}
               >
                 <Badge value={requestActive.implement.status} />

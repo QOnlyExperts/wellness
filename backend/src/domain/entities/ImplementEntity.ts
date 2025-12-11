@@ -8,6 +8,7 @@ import { ValidationError } from "../../shared/errors/DomainErrors";
 export class ImplementEntity {
   public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
   public cod: string;
+  public name: string;
   public status: ImplementStatus;
   public condition: ImplementCondition;
   public group_implement_id: number;
@@ -18,6 +19,7 @@ export class ImplementEntity {
   constructor(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
     cod: string;
+    name: string;
     status: ImplementStatus;
     condition: ImplementCondition;
     group_implement_id: number;
@@ -27,6 +29,7 @@ export class ImplementEntity {
   }) {
     this.id = props.id;
     this.cod = props.cod;
+    this.name = props.name;
     this.status = props.status;
     this.condition = props.condition;
     this.group_implement_id = props.group_implement_id;
@@ -38,6 +41,7 @@ export class ImplementEntity {
   static create(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
     cod: string,
+    name: string,
     status: ImplementStatus,
     condition: ImplementCondition,
     group_implement_id: number,
@@ -51,6 +55,7 @@ export class ImplementEntity {
     return new ImplementEntity({
       id: props.id,
       cod: props.cod,
+      name: props.name,
       status: props.status,
       condition: props.condition,
       group_implement_id: props.group_implement_id,

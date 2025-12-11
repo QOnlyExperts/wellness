@@ -14,7 +14,12 @@ export const CreateImplementInputDtoSchema = z.object({
   .refine((val) => !hasNoXSSAndInjectionSql(val) && !/\d/.test(val), {
     message: "El prefijo no debe contener números ni caracteres especiales",
   }),
-
+  
+  name: z.string()
+  .min(1, "El nombre no puede estar vacío")
+  .refine((val) => !hasNoXSSAndInjectionSql(val) && !/\d/.test(val), {
+    message: "El nombre no debe contener números ni caracteres especiales",
+  }),
   // 'status' usa el enum de Zod
   status: ImplementStatusSchema,
   // 'condition' usa el enum de Zod

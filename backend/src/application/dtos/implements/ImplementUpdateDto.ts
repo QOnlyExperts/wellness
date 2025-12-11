@@ -4,6 +4,7 @@ import { ImgInputDto } from "../img-file/ImgInputDto";
 
 export interface ImplementUpdateDto {
   id?: number;
+  name?: string;
   status?: ImplementStatus;
   condition?: ImplementCondition;
   imgs?: ImgInputDto[];

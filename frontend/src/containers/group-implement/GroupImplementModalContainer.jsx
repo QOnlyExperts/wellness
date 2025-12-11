@@ -22,7 +22,7 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
   const [form, setForm] = useState({
     name: "",
     max_hours: "",
-    time_limit: "",
+    time_limit: "0",
   });
 
   useEffect(() => {
@@ -66,9 +66,6 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
       otherErrors.push({ path: 'max_hours', message: 'Las horas máximas deben ser un número y no deben estar vacías. max 3 horas' });
     }
 
-    if (!form.time_limit || form.time_limit.trim() === "" || !/^\d+$/.test(form.time_limit) || form.time_limit.length > 12) {
-      otherErrors.push({ path: 'time_limit', message: 'El límite de tiempo debe ser un número y no debe estar vacío. max 12 horas' });
-    }
 
     // Validaciones adicionales según sea necesario
     if (otherErrors.length > 0) {
@@ -121,20 +118,25 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
         onChange={handleChange}
         errors={errors}
       />
-      <InputField
+      {/* <InputField
         type="text"
         label="Límite de Tiempo"
         name="time_limit"
         value={form.time_limit}
         onChange={handleChange}
         errors={errors}
-      />
+      /> */}
       <div className="modal-actions">
-        <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
-          {isLoading ? <LoaderIcon /> : <SaveIcon />}
+        <Button
+          disabled={isLoading}
+          text="Cancelar" className="btn-secondary" onClick={onClose}>
+          <CancelIcon />
         </Button>
-        <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
-          <CancelIcon/>
+        <Button 
+          isLoading={isLoading}
+          disabled={isLoading}
+          text="Guardar" className="btn-primary" onClick={handleSubmit}>
+          <SaveIcon />
         </Button>
       </div>
     </Modal>

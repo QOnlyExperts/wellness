@@ -6,6 +6,7 @@ export interface GroupImplementAttributes {
   id: number;
   prefix: string;
   name: string;
+  amount: number;
   max_hours: number;
   time_limit: number;
 }
@@ -22,6 +23,7 @@ export class GroupImplementModel extends Model<
   public id!: number;
   public prefix!: string;
   public name!: string;
+  public amount!: number;
   public max_hours!: number;
   public time_limit!: number;
 }
@@ -42,13 +44,18 @@ GroupImplementModel.init(
       type: DataTypes.STRING, 
       allowNull: false 
     },
+    amount: { 
+      type: DataTypes.INTEGER, 
+      allowNull: false 
+    },
     max_hours: { 
       type: DataTypes.INTEGER, 
       allowNull: false 
     },
     time_limit: { 
       type: DataTypes.INTEGER, 
-      allowNull: false 
+      allowNull: false,
+      defaultValue: 0,
     },
   },{
     sequelize,

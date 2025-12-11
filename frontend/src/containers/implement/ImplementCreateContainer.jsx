@@ -22,6 +22,8 @@ import Badge from "../../components/shared/Badge";
 
 const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSaved }) => {
   const { showLoader, hideLoader } = useLoader();
+
+  const [isLoading, setIsLoading] = useState(false);
   // const [messageError, setMessageError] = useState("");
   const [errors, setErrors] = useState([]);
   const [formImplement, setFormImplement] = useState({
@@ -141,6 +143,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   const clearInputs = () => {
     setFormImplement({
       prefix: null,
+      name: null,
       status: "Seleccionar...",
       condition: "new",
       group_implement_id: null,
@@ -157,9 +160,9 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   const handleSubmit = async () => {
     const otherErrors = [];
 
-    // if (!form.cod || form.cod.trim() === '' || hasNoXSSAndInjectionSql(form.cod)) {
-    //   otherErrors.push({ path: 'cod', message: 'El código no debe estar vacío' });
-    // }
+    if (!formImplement.name || formImplement.name.trim() === '' || hasNoXSSAndInjectionSql(formImplement.name)) {
+      otherErrors.push({ path: 'name', message: 'El nombre no debe estar vacío' });
+    }
 
     if (!formImplement.status || formImplement.status.trim() === '' || hasNoXSSAndInjectionSql(formImplement.status) || formImplement.status === 'Seleccionar...') {
       otherErrors.push({ path: 'status', message: 'Debe seleccionar un estado valido' });
@@ -188,9 +191,12 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
       return;
     }
     
+    setIsLoading(true);
+
     const formData = new FormData();
 
     formData.append('prefix', formImplement.prefix);
+    formData.append('name', formImplement.name);
     formData.append('status', formImplement.status);
     formData.append('condition', formImplement.condition);
     formData.append('group_implement_id', formImplement.group_implement_id);
@@ -198,7 +204,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     formData.append('user_id', userId);
     formData.append('amount', formImplement.amount);
 
-    const file =formImplement.imgs
+    const file = formImplement.imgs
     if(file.length > 0){
       for (let i = 0; i < file.length; i++) {
         formData.append('imgs', file[i]);
@@ -229,6 +235,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
     clearInputs()
     
     window.showAlert(response?.message || "Implemento creado exitosamente", "success");
+    setIsLoading(false);
     // if(onSaved) onSaved(); // notifica al padre que se guardó
     // onClose(); // cerrar modal después de crear
   };
@@ -240,6 +247,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
         style={{
           display: "flex",
           flexDirection: "row",
+          overflowY: 'auto',
           gap: "10px",
         }}
       >
@@ -254,7 +262,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
           {/* <h4>Presentación</h4> */}
           <Card
             images={images && images.length > 0 ? [images[0].src] : [NotFoundImage]}
-            title={formGroupImplement.name}
+            title={formImplement.name}
             // description={formImplement.status}
           >
             <Badge
@@ -288,7 +296,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
             <button
               style={{
                 position: "absolute",
-                marginTop: "-250px",
+                marginTop: "-215px",
                 // marginTop: "10px",
               }}
               className="btn-tertiary"
@@ -317,8 +325,8 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
           >
             <InputField
               type="text"
-              label="Nombre"
-              name="name"
+              label="Grupo"
+              name=""
               disabled={true}
               value={formGroupImplement.name}
               onChange={handleChange}
@@ -361,11 +369,16 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
         </div>
       </div>
       <div className="modal-actions">
-        <Button text="Guardar" className="btn-primary" onClick={handleSubmit}>
-          <SaveIcon />
-        </Button>
-        <Button text="Cancelar" className="btn-secondary" onClick={onClose}>
+        <Button
+          disabled={isLoading}
+          text="Cancelar" className="btn-secondary" onClick={onClose}>
           <CancelIcon />
+        </Button>
+        <Button 
+          isLoading={isLoading}
+          disabled={isLoading}
+          text="Guardar" className="btn-primary" onClick={handleSubmit}>
+          <SaveIcon />
         </Button>
       </div>
     </>

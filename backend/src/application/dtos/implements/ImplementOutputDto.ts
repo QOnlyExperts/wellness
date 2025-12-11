@@ -7,6 +7,7 @@ import { ImgInputDto } from "../img-file/ImgInputDto";
 export interface ImplementOutputDto {
   id: number;
   cod: string;
+  name: string;
   status: ImplementStatus;
   condition: ImplementCondition;
   imgs?: {

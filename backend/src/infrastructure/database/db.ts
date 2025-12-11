@@ -33,3 +33,32 @@ const sequelize = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
 })();
 
 export default sequelize;
+
+
+// import dotenv from 'dotenv';
+// import { Sequelize } from 'sequelize';
+
+// dotenv.config();
+
+// const { DATABASE_URL } = process.env;
+
+// if (!DATABASE_URL) {
+//   throw new Error('❌ Falta la variable DATABASE_URL en el archivo .env');
+// }
+
+// const sequelize = new Sequelize(DATABASE_URL, {
+//   dialect: 'postgres',
+//   logging: false,
+// });
+
+// // Verificación opcional
+// (async () => {
+//   try {
+//     await sequelize.authenticate();
+//     console.log('✅ Conexión a PostgreSQL exitosa.');
+//   } catch (error: any) {
+//     console.error('❌ Error al conectar:', error.message);
+//   }
+// })();
+
+// export default sequelize;

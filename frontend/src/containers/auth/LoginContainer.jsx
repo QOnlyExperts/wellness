@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { hasNoXSSAndInjectionSql, onlyLettersRegex } from '../../utils/validations';
 
 
-import InputField from '../../components/shared/InputField';
+import InputField from '../../components/shared/Inputfield';
 // import Logo from '../../assets/img/logo-sfn.png'
 import Logo from '../../assets/img/wellness-logo.png'
 import Slogan from '../../components/shared/SLogan';

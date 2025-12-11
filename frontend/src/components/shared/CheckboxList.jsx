@@ -1,7 +1,7 @@
 import React from "react";
 import "./CheckboxList.css";
 import CheckedIcon from "../icons/CheckedIcon";
-import UncheckedIcon from "../icons/UnCheckedIcon";
+import UncheckedIcon from "../icons/UncheckedIcon";
 
 const CheckboxList = ({ title, checked, onChange, disabled }) => {
   return (

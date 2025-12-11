@@ -148,7 +148,6 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
       condition: "new",
       group_implement_id: null,
       categories_id: null,
-      name: null,
       amount: 0,
       imgs: []
     });

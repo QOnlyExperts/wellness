@@ -25,13 +25,16 @@ import path from 'path';
 // Crear la aplicación Express
 const app: Application = express();
 
+// Configuración de CORS
+app.use(cors({
+  origin: ["https://wellness-sn8h.vercel.app/"],
+  credentials: true
+}) as any);
+
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(fileUpload());
-
-// Configuración de CORS
-app.use(cors(config.application.cors));
 
 // Directorio public nombrado como resources
 

@@ -12,7 +12,7 @@ interface Config {
 const config: Config = {
   application: {
     cors: {
-      origin: '*',
+      origin: 'https://wellness-sn8h.vercel.app/',
       credentials: true,
     },
   },

@@ -1,0 +1,108 @@
+.datetime-selector-container {
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  font-family: "Inter", sans-serif;
+  /* max-width: 400px; */
+}
+
+.datetime-label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  font-size: .9em;
+}
+
+.input-container-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.custom-dropdown-wrapper {
+  position: relative;
+  flex-grow: 1;
+}
+
+.time-input-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  font-size: .9rem;
+  color: #444;
+  background-color: #f7f7f7;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.time-input-display:hover {
+  border-color: var(--color-primary);
+}
+
+.time-input-display.open {
+  border-color: var(--color-primary);
+  /* box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); */
+}
+
+.time-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 110px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  margin: 4px 0 0 0;
+  list-style: none;
+}
+
+.time-slot-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: center;
+  transition: background-color 0.15s;
+}
+
+.time-slot-item:hover {
+  background-color: #eefaff;
+}
+
+.time-slot-item.selected {
+  background-color: #c7f6fe;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.time-slot-item.current-hour {
+  font-weight: bold;
+  color: #059669;
+}
+
+.selected-time-display {
+  margin-top: 20px;
+  font-size: 1em;
+  color: #6b7280;
+  text-align: center;
+  padding-top: 15px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.selected-time-display strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}

@@ -1,58 +1,62 @@
 
 import React from "react";
 import "./Badge.css"; // Asegúrate de agregar este archivo CSS
+import { translateStatus } from "../../utils/formatStatus";
 
 const Badge = ({ style, label, value}) => {
   
-  const getTypeFromValue = (value) => {
+  const spanish = translateStatus(value);
+
+  const color = (value) => {
     switch (value) {
+      case "all":
+        return "Todos";
       // Estados de implementos
       case "available":
-        return "success";
+        return "available";
       case "maintenance":
-        return "warning";
+        return "maintenance";
       case "retired":
-        return "default";
+        return "retired";
       case "borrowed":
-        return "error";
+        return "borrowed";
+      case "is_verified":
+        return "available";
+      case "no_verified":
+        return "borrowed";
+        
+      case "inactive":
+        return "inactive";
+      case "active":
+        return "active";
+        
+      case "requested":
+        return "all";
+      case "accepted":
+        return "available";
+      case "refused":
+        return "borrowed"
+      case "finished":
+        return "retired";
+
 
       // Condiciones de implementos
       case "new":
-        return "info";
+        return "all";
 
       default:
         return "default";
     }
-  };
-
-  const translateSpanish = (value) => {
-    switch (value) {
-      // Estados de implementos
-      case "available":
-        return "Disponible";
-      case "maintenance":
-        return "Mantenimiento";
-      case "retired":
-        return "Retirado";
-      case "borrowed":
-        return "Prestado";
-
-      // Condiciones de implementos
-      case "new":
-        return "Nuevo";
-
-      default:
-        return "default";
-    }
-  };
-
-  const type = getTypeFromValue(value);
-  const spanish = translateSpanish(value);
+  }
 
   return (
-    <span 
-      style={style}
-      className={`badge badge-${type}`}>
+    <span
+      style={{
+        ...style,
+        backgroundColor: `var(--color-${color(value)})`,
+      }}
+      className="badge"
+    >
       {spanish}
     </span>
   );

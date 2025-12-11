@@ -9,7 +9,6 @@ import { ImplementInputDto } from "../../dtos/implements/ImplementInputDto";
 import { ImplementOutputDto } from "../../dtos/implements/ImplementOutputDto";
 import { ImplementMapper } from "../../mappers/ImplementMapper";
 
-
 import { IImgRepository } from "../../../domain/interfaces/IImgRepository";
 import { ImgService } from "../../services/ImgService";
 import { ImgEntity } from "../../../domain/entities/ImgEntity";
@@ -64,6 +63,7 @@ export class CreateImplement {
       const newImplement = ImplementEntity.create({
         id: null, // ID es null porque aún no existe en BD
         cod: finalCod,
+        name: input.name,
         // Valores por defecto
         status: input.status || ImplementStatus.AVAILABLE,
         condition: input.condition || ImplementCondition.NEW,

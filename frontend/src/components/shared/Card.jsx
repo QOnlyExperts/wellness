@@ -1,19 +1,29 @@
+
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
+import Badge from "./Badge";
+
 import "./Card.css";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Card = React.memo(
   ({
     type,
-    images = [], // ← ahora acepta varias imágenes
+    cod,
+    images = [],
     title,
     description,
     footer,
     onClick,
+    onClose,
+    expanded = false,
     children,
+    className = ""
   }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // 🌀 Si hay más de una imagen, rota automáticamente cada 3 segundos
     useEffect(() => {
       if (images.length > 1) {
         const interval = setInterval(() => {
@@ -27,11 +37,23 @@ const Card = React.memo(
       images.length > 0 ? images[currentIndex] : "/default-image.jpg";
 
     return (
-      <div className={`card card-${type || "default"}`} onClick={onClick}>
-        {/* Imagen o carrusel */}
-        {images.length > 0 && (
+      // Aquí el motion.div rota cuando expanded es true
+      <motion.div
+        className={`card ${className} card-${type || "default"}`}
+        onClick={!expanded ? onClick : undefined}
+        initial={{ rotateY: 0 }}
+        animate={{ rotateY: expanded ? 180 : 0 }}
+        transition={{ duration: 0.15 }}
+        style={{
+          transformStyle: "preserve-3d",
+          perspective: 1000,
+          position: "relative",
+        }}
+      >
+        {/* --- Cara frontal --- */}
+        <div className="card-face card-front">
           <div className="div-img">
-            <img src={currentImage} alt={title || "Imagen"} />
+            <img src={currentImage.replace("http://localhost:4000", `${apiUrl}:4000`)} alt={title || "Imagen"} />
             {images.length > 1 && (
               <div className="carousel-dots">
                 {images.map((_, idx) => (
@@ -43,23 +65,41 @@ const Card = React.memo(
               </div>
             )}
           </div>
-        )}
 
-        {/* Título */}
-        {title && <h5 className="description">{title}</h5>}
+          <h5 className="description">{title}</h5>
+          {description && <p className="text">{description}</p>}
+          {footer && <div className="footer">{footer}</div>}
 
-        {/* Descripción opcional */}
-        {description && <p className="text">{description}</p>}
+          {children && <div className="children">{children}</div>}
+          
+          {
+            // type && 
+            //   <div
+            //     style={{
+            //       display: "flex",
+            //       justifyContent: "space-between",
+            //       alignItems: "center",
+            //       gap: "10px",
+            //     }}
+            //   >
+            //     <Badge value={type || "available"} label={type || "available"} />
+            //     <span>{cod}</span>
+            //   </div>
+          }
+        </div>
 
-        {/* Footer */}
-        {footer && <div className="footer">{footer}</div>}
-
-        {/* Children (badges, etiquetas, etc.) */}
-        {
-          children &&
-            <div className="children">{children}</div>
-        }
-      </div>
+        {/* --- Cara trasera --- */}
+        <div
+          className="card-face card-back"
+          onClick={(e) => {
+            e.stopPropagation(); // evita que se dispare el click principal
+            onClose();
+          }}
+        >
+          <h5>{title}</h5>
+          {/* <button className="close-btn">Cerrar</button> */}
+        </div>
+      </motion.div>
     );
   }
 );

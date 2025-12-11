@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createServer, Server as HttpServer } from 'http';
-import { configSocket } from './application/services/socketService';
+import { SocketAdapter } from './infrastructure/adapters/SocketAdapter';
 import config from './config';
 
 
@@ -13,6 +13,14 @@ import { errorHandler } from './presentation/middleware/errorHandler';
 import { groupImplementRouter } from './presentation/routers/GroupImplementRoutes';
 import { implementRouter } from './presentation/routers/implementRoutes';
 import { categoryRouter } from "./presentation/routers/CategoryRoutes";
+
+import { roleRouter } from './presentation/routers/RoleRoutes';
+import { loginRouter } from './presentation/routers/LoginRoutes';
+import { userRouter } from './presentation/routers/UserRouter';
+import { requestRouter } from './presentation/routers/RequestRouter';
+import { programRouter } from './presentation/routers/ProgramRoutes';
+
+
 import path from 'path';
 // Crear la aplicación Express
 const app: Application = express();
@@ -38,9 +46,14 @@ app.use('/static', (req, res) => {
 // Rutas
 
 // Si luego habilitas tus rutas:
+app.use('/api/v1', loginRouter);
+app.use('/api/v1', requestRouter);
+app.use('/api/v1', userRouter);
 app.use('/api/v1', groupImplementRouter);
 app.use('/api/v1', implementRouter);
 app.use('/api/v1', categoryRouter);
+app.use('/api/v1', roleRouter);
+app.use('/api/v1', programRouter);
 app.use(errorHandler);
 
 app.use('/', (req: Request, res: Response) => {
@@ -50,6 +63,7 @@ app.use('/', (req: Request, res: Response) => {
 const httpServer: HttpServer = createServer(app);
 
 // Configurar socket
-configSocket(httpServer);
+const socket = new SocketAdapter();
+socket.config(httpServer);
 
 export default httpServer;

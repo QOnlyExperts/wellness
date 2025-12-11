@@ -1,17 +1,19 @@
 import { Op } from "sequelize";
 
-import { ImplementModel } from "../models/indexModel";
+import { ImplementModel } from "../models/IndexModel";
 import { IImplementCounterPort } from "../../application/ports/IImplementCounterPort";
 // Importa tu ImplementModel y sequelize
 
 export class SequelizeImplementCounterAdapter implements IImplementCounterPort {
   public async getNextNumber(prefix: string): Promise<number> {
     // Lógica para encontrar el número más alto
-
+    console.log(prefix)
     // Buscar el último implemento que coincide con el prefijo
     const lastImplement = await ImplementModel.findOne({
       where: {
-        cod: { [Op.startsWith]: prefix }, // Sequelize buscará códigos que empiezan con el prefijo
+        cod: {
+          [Op.regexp]: `^${prefix}[0-9]+$`
+        }, // Sequelize buscará códigos que empiezan con el prefijo
       },
       order: [["cod", "DESC"]], // Ordenamos para obtener el más alto
       attributes: ["cod"],

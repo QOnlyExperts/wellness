@@ -1,0 +1,85 @@
+/* Contenedor general */
+.request-list-pro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: .5rem;
+  overflow-y: auto;
+}
+
+/* Card */
+.request-card-pro {
+  display: flex;
+  gap: 16px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 20px;
+  /* border: 1px solid #e6e6e6; */
+  box-shadow: var(--box-shadow);
+  transition: all 0.25s ease;
+  align-items: flex-start;
+}
+
+/* .request-card-pro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+} */
+
+/* Imagen */
+.card-pro-img img {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.card-pro-img-fallback {
+  width: 70px;
+  height: 70px;
+  background: #f2f2f2;
+  border-radius: 12px;
+  color: #777;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Texto */
+.card-pro-body {
+  flex: 1;
+}
+
+.card-pro-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+/* Grid interno de datos */
+.card-pro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.card-pro-grid strong {
+  font-weight: 600;
+  color: #111;
+}
+
+/* Estado vacío */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 0;
+  gap: 10px;
+  color: #333;
+  font-size: 16px;
+}

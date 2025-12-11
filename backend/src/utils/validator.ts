@@ -25,10 +25,29 @@ export const isValidPhone = (phone: string): boolean => {
  */
 export const hasNoXSSAndInjectionSql = (input: string): boolean => {
   // Expresión regex para caracteres peligrosos y palabras clave SQL/XSS
-  const dangerousRegex = /[<>"'&;(){}\[\]\\]|(--|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|SCRIPT|ALERT)\b)/gi;
-  return dangerousRegex.test(input);
+  const dangerousRegex = /[<>"'`=;(){}\[\]\\]|(--|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|SCRIPT|ALERT|EXEC)\b)/gi;
+  return dangerousRegex.test(input.trim());
 };
 
+/**
+ * Verifica si la contraseña cumple con los requisitos de complejidad:
+ * - Longitud entre 8 y 16.
+ * - Al menos una mayúscula, un número y una letra.
+ * - Sin espacios en blanco.
+ */
+export function isPasswordComplex(password: string): boolean {
+  // Regex de complejidad:
+  // ^: inicio
+  // (?=.*[A-Z]): lookahead para al menos una mayúscula
+  // (?=.*\d): lookahead para al menos un dígito
+  // (?=.*[a-zA-Z]): lookahead para al menos una letra (cubierto por A-Z y a-z)
+  // [^\s]{8,16}: 8 a 16 caracteres, sin espacios
+  // $: fin
+  const complexityRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[a-zA-Z])[^\s]{8,16}$/;
+  
+  // Devuelve true si la contraseña pasa la regex
+  return complexityRegex.test(password);
+}
 /**
  * Verifica si una cadena contiene solo letras y espacios (incluyendo acentos y 'ñ').
  * @param input La cadena a validar.

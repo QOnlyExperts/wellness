@@ -1,8 +1,9 @@
 import { IImplementRepository } from "../../domain/interfaces/IImplementRepository";
 import { ImplementEntity } from "../../domain/entities/ImplementEntity";
-import { GroupImplementModel, ImgModel, ImplementModel } from "../models/indexModel";
+import { GroupImplementModel, ImgModel, ImplementModel } from "../models/IndexModel";
 import e from "express";
 import { ImplementMapper } from "../../application/mappers/ImplementMapper";
+import { Transaction } from "sequelize";
 
 export class SequelizeImplementRepository implements IImplementRepository {
 
@@ -32,7 +33,21 @@ export class SequelizeImplementRepository implements IImplementRepository {
   }
 
   async findById(id: number): Promise<ImplementEntity | null> {
-    const implement = await ImplementModel.findByPk(id);
+    const implement = await ImplementModel.findByPk(id, {
+      include: [
+        {
+          model: ImgModel
+        },{
+          model: GroupImplementModel,
+          attributes: [
+            'id',
+            'name',
+            'max_hours',
+            'time_limit'
+          ]
+        }
+      ]
+    });
     if (!implement) {
       return null;
     }
@@ -44,6 +59,25 @@ export class SequelizeImplementRepository implements IImplementRepository {
     const implementList = await ImplementModel.findAll({
       where: { 
         group_implement_id: idGroup 
+      },
+      include: [{
+        model: ImgModel,
+        attributes: [
+          'id',
+          'file_name',
+          'file_path',
+          'mime_type',
+          'description'
+        ]
+      }]
+    });
+    return implementList.map(imp => ImplementMapper.toDomain(imp.toJSON()));
+  }
+
+  async findByStatus(status: string): Promise<ImplementEntity[]> {
+    const implementList = await ImplementModel.findAll({
+      where: { 
+        status: status 
       },
       include: [{
         model: ImgModel,
@@ -81,4 +115,81 @@ export class SequelizeImplementRepository implements IImplementRepository {
     // Mapear el Modelo de Sequelize guardado (que tiene el ID) de vuelta a la Entidad de Dominio.
     return ImplementMapper.toDomain(saveModel.toJSON());
   }
+
+  // Actualizaciones parciales, que no tengan todos los parámetros
+  async updatePartial(id: number, data: Partial<ImplementEntity>): Promise<ImplementEntity> {
+    const persistenceData = ImplementMapper.toPersistence(data);
+    await ImplementModel.update(persistenceData, { where: { id } });
+    
+    const updated = await ImplementModel.findByPk(id, {
+      include: [{
+          model: ImgModel,
+          attributes: [
+            'id',
+            'file_name',
+            'file_path',
+            'mime_type',
+            'description'
+          ]
+        },{
+          model: GroupImplementModel,
+          attributes: [
+            'id',
+            'name',
+            'max_hours',
+            'time_limit'
+          ]
+      }]
+    });
+
+    return ImplementMapper.toDomain(updated!.toJSON());
+  }
+
+  async updatePartialData(id: number, data: Partial<ImplementEntity>, t: Transaction): Promise<ImplementEntity> {
+    const persistenceData = ImplementMapper.toPersistence(data);
+    await ImplementModel.update(persistenceData, { where: { id }, transaction: t });
+    
+    const updated = await ImplementModel.findByPk(id, {});
+
+    return ImplementMapper.toDomain(updated!.toJSON());
+  }
+
+  async updateMany(data: Partial<ImplementEntity>[]): Promise<void> {
+    // Sacamos solo los datos que tengan un id valido
+    const validData = data.filter(d => d.id != null);
+
+    if (validData.length === 0) {
+      throw new Error("No hay implementos válidos para actualizar");
+    }
+
+    await Promise.all(validData.map(async (d) => {
+      const persistenceData = ImplementMapper.toPersistence(d);
+      await ImplementModel.update(persistenceData, {
+        where: { id: d.id! }, // el ! es seguro tras el filtro
+      });
+    }));
+  }
+
+  // Por si mas adelante quiero devolver los implementos actualizados en la funcion
+  // async updateMany(data: Partial<ImplementEntity>[]): Promise<ImplementEntity[]> {
+  //   const updatedEntities: ImplementEntity[] = [];
+
+  //   for (const d of data) {
+  //     if (!d.id) continue;
+  //     const persistenceData = ImplementMapper.toPersistence(d);
+
+  //     await ImplementModel.update(persistenceData, { where: { id: d.id } });
+
+  //     const updated = await ImplementModel.findByPk(d.id, {
+  //       include: [ImgModel, GroupImplementModel],
+  //     });
+
+  //     if (updated) {
+  //       updatedEntities.push(ImplementMapper.toDomain(updated.toJSON()));
+  //     }
+  //   }
+
+  //   return updatedEntities;
+  // }
+
 }

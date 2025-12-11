@@ -1,38 +1,50 @@
+/* ReusableTable.css */
+
 /* La solución más sencilla, utilizando sólo CSS y no JS, sería recurrir a la propiedad position: sticky;. La parte mala es que hay algunas limitaciones de uso en ciertos navegadores, aunque en la gran mayoría de los modernos debería funcionar. */
 
 .table-wrapper {
+  display: flex;
+  align-items: start;
   width: 100%;
-  height: fit-content; /* Altura de ejemplo */
-  border-radius: 10px;
+  height: 100%;
+  /* Altura de ejemplo */
+  min-height: 200px;
+  border-radius: 20px;
   font-size: .9rem;
   /* arriba | derecha | abajo | izquierda */
-  padding: 0px 10px 10px 0px;
-  overflow: auto;
-  overflow-x: auto;
+  /* overflow: auto; */
+  overflow-y: auto;
+  /* padding: 10px 10px 10px 10px; */
+  background-color: #ffffff;
   /* box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */
   /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
+  box-shadow: var(--box-shadow);
 }
+
 
 .table-wrapper table {
   width: 100%;
+  /* padding: 10px 10px 10px 10px; */
   border-collapse: separate;
   border-spacing: 0 10px;
-  /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
+  border-radius: 10px;
+  background-color: #FFF;
 }
 
 .table-wrapper table thead {
-  position: -webkit-sticky; /* Safari... */
+  position: -webkit-sticky;
+  /* Safari... */
   position: sticky;
   top: 0;
   /* left: 0; */
   z-index: 2;
 }
 
-.table-wrapper table thead th{
+.table-wrapper table thead th {
   text-align: start;
   /* border: 1px solid #000; */
   background-color: #FFF;
-  padding: 5px;
+  padding: 10px 10px 10px 10px;
   white-space: nowrap;
 }
 
@@ -41,22 +53,34 @@
   text-align: start;
   /* border: 1px solid #000; */
   background-color: #f1f1f1;
-  padding: 5px;
+  padding: 10px;
   white-space: nowrap;
   font-weight: 500;
 }
 
-.table-wrapper table tbody   tr td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-  }
+.table-wrapper table tbody tr td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
 
-.table-wrapper table tbody   tr td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
+.table-wrapper table tbody tr td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 💡 CORRECCIÓN PARA DROPDOWNS: CELDA DE ACCIONES */
+.table-wrapper table tbody td.td-actions {
+  /* ¡ESTO ES LO CRÍTICO! Permite que el elemento con position: absolute (el dropdown) 
+       se desborde de la celda. */
+  overflow: visible !important;
+  z-index: 1;
+  /* Asegura un contexto de apilamiento */
+}
 
 @media (max-width: 768px) {
+  .table-wrapper{
+    padding: 10px 10px 10px 0px;
+  }
 
   .table-wrapper table thead th:nth-child(1),
   .table-wrapper table tbody td:nth-child(1) {

@@ -54,7 +54,7 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
     {header: 'Prefijo', accessor: 'prefix'},
     {header: 'Nombre', accessor: 'name'},
     {header: 'Hora maxima', accessor: 'max_hours'},
-    {header: 'Tiempo limite', accessor: 'time_limit'},
+    {header: 'Cantidad de implementos', accessor: 'amount'},
     {header: 'Acciones', accessor: 'actions'}
   ];
 
@@ -62,7 +62,7 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
     {accessor: 'prefix'},
     {accessor: 'name'},
     {accessor: 'max_hours'},
-    {accessor: 'time_limit'},
+    {accessor: 'amount'},
     {accessor: 'actions'}
   ]
   
@@ -75,23 +75,16 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
   ];
 
     const renderCellContent = (column, groupImplement) => {
-    // if (column.accessor === 'isActive') {
-    //   return groupImplement.isActive === 1 ? 'Activo' : 'Inactivo';
-    // }
-
-    // if(column.accessor === 'SalePrice'){
-    //   return formatCOP(groupImplement.SalePrice);
-    // }
 
     if (column.accessor === 'actions') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', width: '100%', textAlign: 'center', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', width: '100%', height: '20px', textAlign: 'center', overflow: 'hidden', gap: '10px' }}>
           <button className="btn-icon" onClick={() => handleAddImplementClick(groupImplement.id)}>
             <PlusCircleIcon size={24} color="var(--color-tertiary)" className="hover:opacity-80" />
           </button>
-          <button className="btn-icon">
+          {/* <button className="btn-icon">
             <MenuListIcon size={24} color="var(--color-primary)" className="hover:opacity-80" />
-          </button>
+          </button> */}
           <button className="btn-icon" onClick={() => handleEditClick(groupImplement.id)}>
             <EditSquareIcon size={24} color="var(--color-secondary)" className="hover:opacity-80" />
           </button>

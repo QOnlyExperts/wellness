@@ -1,13 +1,69 @@
-.card {
-  min-width: 180px;
-  height: fit-content;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: var(--box-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+.implements-list {
+  display: flex;
+  flex-wrap: nowrap;
+  /* padding: 10px; */
+  /* overflow-x: auto; */
+  scrollbar-width: none;
 }
+
+.implements-list::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  width: fit-content;
+  min-width: 200px;
+  min-height: 260px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.15s;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  border-radius: 20px;
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.card-front {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #00b8b8, #008c8c);
+  color: #fff;
+  z-index: 1;
+}
+
+.close-btn {
+  background: #fff;
+  color: #00b8b8;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+}
+
+.close-btn:hover {
+  background: #f1f1f1;
+}
+
 
 .card:hover {
   transform: translateY(-1px);
@@ -15,20 +71,34 @@
 }
 
 /* Colores opcionales por tipo */
+.card-no-border {
+  /* --box-shadow: #ffffff 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px; */
+}
+
 .card-retired {
   --box-shadow: #9e9e9e 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
 }
 
 .card-available {
-  /* --box-shadow: #4caf50 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px; */
-  box-shadow: var(--box-shadow);
+  --box-shadow: #4caf50 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
+  /* box-shadow: var(--box-shadow); */
+}
+
+.card-borrowed {
+  --box-shadow: #FF6F61 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
+  /* box-shadow: var(--box-shadow); */
 }
 
 .card-maintenance {
   --box-shadow: #ffc107 0px 1px 2px 2px, rgba(0, 0, 0, 0.23) 2px 1px 2px 2px;
 }
+
 .div-img {
   position: relative;
+  width: 100%;
+  height: 100%;
+  /* top: 0; */
+  /* margin-top: -15px; */
 }
 
 .div-img img {
@@ -67,13 +137,14 @@
 
 /* Texto y contenido */
 .description {
-  margin: 10px;
+  text-align: center;
+  text-transform: uppercase;
   border-radius: 5px;
   padding: 10px;
   font-size: 0.9rem;
   font-weight: bold;
   color: #333;
-  background-color: #f3f4f6;
+  /* background-color: #f3f4f6; */
 }
 
 .text {
@@ -85,6 +156,7 @@
 .children {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 10px;
   padding: 10px 10px 10px;
 }
@@ -94,4 +166,66 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+}
+
+/* ================================================= */
+/* === ESTILOS AÑADIDOS PARA EL HOVER Y EL NOMBRE === */
+/* ================================================= */
+
+/* 1. Estilo para el Overlay de Solicitud */
+.card-overlay-style {
+    /* Define un contexto de posición para el pseudo-elemento */
+    position: relative;
+}
+
+/* Estilo del overlay (inicialmente oculto) */
+.card-overlay-style .card-front::after {
+    content: "SOLICITAR";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Define el gradient y la opacidad inicial */
+    background: linear-gradient(
+        45deg, 
+        rgba(0, 184, 184, 0.9), /* Color de tu sidebar */
+        rgba(0, 140, 140, 0.8)
+    );
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Opacidad 0 por defecto */
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10; /* Asegura que esté por encima de la imagen y contenido */
+    border-radius: 12px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Mostrar el overlay al hacer hover en la card */
+.card-overlay-style:hover .card-front::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 2. Estilo específico para el Nombre */
+.card-name {
+    /* Ejemplo de estilo para diferenciar el nombre */
+    font-size: 1.1rem; 
+    font-weight: 800; /* Extra bold */
+    color: #008c8c; /* Color de acento */
+    margin: 5px 0; /* Espaciado extra */
+    text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+  .card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }

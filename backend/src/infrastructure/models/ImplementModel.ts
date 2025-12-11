@@ -8,6 +8,7 @@ import { ImplementCondition } from "../../domain/enums/ImplementCondition";
 export interface ImplementAttributes {
   id: number;
   cod: string;
+  name: string;
   status: ImplementStatus;
   condition: ImplementCondition;
   group_implement_id: number;
@@ -26,6 +27,7 @@ export class ImplementModel extends Model<
 > implements ImplementAttributes {
   public id!: number;
   public cod!: string;
+  public name!: string;
   public status!: ImplementStatus;
   public condition!: ImplementCondition;
   public group_implement_id!: number;
@@ -37,6 +39,7 @@ ImplementModel.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     cod: { type: DataTypes.STRING, allowNull: false },
+    name: { type: DataTypes.STRING, allowNull: false },
     status: {
       type: DataTypes.ENUM(...Object.values(ImplementStatus)),
       allowNull: false,

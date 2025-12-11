@@ -3,10 +3,12 @@ import { ImplementStatus } from "../enums/ImplementStatus";
 import { ImplementCondition } from "../enums/ImplementCondition";
 import { ImgEntity } from "./ImgEntity";
 import { GroupImplementEntity } from "./GroupImplementEntity";
+import { ValidationError } from "../../shared/errors/DomainErrors";
 
 export class ImplementEntity {
   public readonly id: number | null; // Usamos null para diferenciar si ya existe en BD
   public cod: string;
+  public name: string;
   public status: ImplementStatus;
   public condition: ImplementCondition;
   public group_implement_id: number;
@@ -17,6 +19,7 @@ export class ImplementEntity {
   constructor(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
     cod: string;
+    name: string;
     status: ImplementStatus;
     condition: ImplementCondition;
     group_implement_id: number;
@@ -26,6 +29,7 @@ export class ImplementEntity {
   }) {
     this.id = props.id;
     this.cod = props.cod;
+    this.name = props.name;
     this.status = props.status;
     this.condition = props.condition;
     this.group_implement_id = props.group_implement_id;
@@ -37,6 +41,7 @@ export class ImplementEntity {
   static create(props: {
     id: number | null; // Usamos null para diferenciar si ya existe en BD
     cod: string,
+    name: string,
     status: ImplementStatus,
     condition: ImplementCondition,
     group_implement_id: number,
@@ -50,6 +55,7 @@ export class ImplementEntity {
     return new ImplementEntity({
       id: props.id,
       cod: props.cod,
+      name: props.name,
       status: props.status,
       condition: props.condition,
       group_implement_id: props.group_implement_id,
@@ -59,6 +65,11 @@ export class ImplementEntity {
     });
   }
 
+  public getStatus(): ImplementStatus {
+    return this.status;
+  }
+
+
   // Lógica de Dominio: (Métodos que aplican reglas)
   public canBeDeactivated(): boolean {
     // Ejemplo de lógica de negocio en la entidad
@@ -66,17 +77,20 @@ export class ImplementEntity {
   }
 
   changeStatus(newStatus: ImplementStatus) {
-    // Reglas de negocio: por ejemplo, no se puede "prestar" un instrumento retirado
-    if (this.status === ImplementStatus.RETIRED && newStatus === ImplementStatus.BORROWED) {
-      throw new Error("No se puede prestar un instrumento retirado");
+    const validTransitions: Record<ImplementStatus, ImplementStatus[]> = {
+      [ImplementStatus.AVAILABLE]: [ImplementStatus.AVAILABLE, ImplementStatus.BORROWED, ImplementStatus.RETIRED, ImplementStatus.MAINTENANCE],
+      [ImplementStatus.BORROWED]: [ImplementStatus.AVAILABLE],
+      [ImplementStatus.RETIRED]: [],
+      [ImplementStatus.MAINTENANCE]: [ImplementStatus.AVAILABLE, ImplementStatus.RETIRED, ImplementStatus.MAINTENANCE],
+    };
+
+    const allowed = validTransitions[this.status] || [];
+
+    if (!allowed.includes(newStatus)) {
+      throw new ValidationError(`No se puede cambiar el estado del implemento ${this.cod} de ${this.status} a ${newStatus}`);
     }
 
     this.status = newStatus;
   }
-
-  isAvailable(): boolean {
-    return this.status === ImplementStatus.AVAILABLE;
-  }
-
 
 }

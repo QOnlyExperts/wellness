@@ -3,33 +3,55 @@
 import { NextFunction, Request, Response } from "express"; // O el framework que uses
 import { CreateImplement } from "../../application/use-cases/implements/CreateImplement";
 // Importa la función que resuelve el caso de uso desde el Composition Root
-import { resolveCreateImplementUseCase, resolveGetImplementsUseCase, resolveGetImplementByIdGroup } from "../../composition/compositionRoot";
+import {
+  resolveCreateImplementUseCase,
+  resolveGetImplementsUseCase,
+  resolveGetImplementByIdGroup,
+  resolveGetImplementByStatus,
+  resolveUpdateImplement,
+  resolveUpdateManyImplement,
+  resolveGetImplementById
+} from "../../composition/compositionRoot";
 import { ImplementInputDto } from "../../application/dtos/implements/ImplementInputDto";
 import { GetImplements } from "../../application/use-cases/implements/GetImplements";
 import { idSchema } from "../../application/schemas/IdSchema";
 import z, { success } from "zod";
 import { GetImplementByIdGroup } from "../../application/use-cases/implements/GetImplementByIdGroup";
+import { GetImplementByStatus } from "../../application/use-cases/implements/GetImplementByStatus";
 import { UploadedFile } from "express-fileupload";
 import { ImgInputDto } from "../../application/dtos/img-file/ImgInputDto";
+import { UpdateImplement } from "../../application/use-cases/implements/UpdateImplement";
+import { UpdateMultipleImplements } from "../../application/use-cases/implements/UpdateMultipleImplements";
+import { ImplementUpdateDto } from "../../application/dtos/implements/ImplementUpdateDto";
+import { statusSchema } from "../../application/schemas/statusSchema";
+import { GetImplementById } from "../../application/use-cases/implements/GetImplementById";
 
 export class ImplementController {
   // Declara una propiedad para el caso de uso
   private createImplementUseCase: CreateImplement;
   private getImplementsUseCase: GetImplements;
+  private getImplementByIdUseCase: GetImplementById;
   private getImplementByIdGroup: GetImplementByIdGroup;
+  private getImplementByStatus: GetImplementByStatus;
+  private updateImplement: UpdateImplement;
+  private updateManyImplements: UpdateMultipleImplements;
 
   constructor() {
     // En el constructor, obtienes la instancia ya configurada
     // Aquí ocurre la "inyección" real, pero la lógica de creación está centralizada
     this.createImplementUseCase = resolveCreateImplementUseCase();
     this.getImplementsUseCase = resolveGetImplementsUseCase();
+    this.getImplementByIdUseCase = resolveGetImplementById();
     this.getImplementByIdGroup = resolveGetImplementByIdGroup();
+    this.getImplementByStatus = resolveGetImplementByStatus();
+    this.updateImplement = resolveUpdateImplement();
+    this.updateManyImplements = resolveUpdateManyImplement();
   }
 
   public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Extraemos los datos del cuerpo de la solicitud
-      const { prefix, status, condition, group_implement_id, categories_id, user_id, amount } = req.body;
+      const { prefix, name, status, condition, group_implement_id, categories_id, user_id, amount } = req.body;
       const folder = "uploads/implement";
       const files = req.files?.imgs as UploadedFile | UploadedFile[];
 
@@ -47,6 +69,7 @@ export class ImplementController {
       // Validar y traducir el cuerpo de la petición a un DTO de entrada
       const inputDto: ImplementInputDto = {
         prefix: prefix,
+        name: name,
         status: status,
         condition: condition,
         group_implement_id: group_implement_id,
@@ -69,6 +92,64 @@ export class ImplementController {
     }
   }
 
+  public async updateOnly(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+
+      
+      const { status, imgs } = req.body;
+      const result = idSchema.safeParse({id: req.params.id});
+      
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.id?.errors.map(e => ({
+            path: "id",
+            message: e
+          })),
+        });
+      }
+      
+      const id = result.data.id; // número seguro
+
+      const updateDto: ImplementUpdateDto = {
+        status,
+        imgs
+      }
+
+      // Ejecutar el caso de uso sin necesidad de DTO de entrada
+      const implementsList = await this.updateImplement.execute(id, updateDto);
+      // Devuelve la respuesta al cliente
+      return res.status(200).json({
+        success: true,
+        message: "Implemento actualizado correctamente",
+        data: implementsList
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async updateMany(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      
+      const { updates } = req.body;
+
+      // Ejecutar el caso de uso sin necesidad de DTO de entrada
+      const implementsList = await this.updateManyImplements.execute(updates);
+      // Devuelve la respuesta al cliente
+      return res.status(200).json({
+        success: true,
+        message: "Implemento actualizado correctamente",
+        data: implementsList
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public async getAll(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Ejecutar el caso de uso sin necesidad de DTO de entrada
@@ -80,6 +161,38 @@ export class ImplementController {
         data: implementsList
       });
     } catch (error) {
+      next(error);
+    }
+  }
+
+    public async getImplementById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try{
+      const result = idSchema.safeParse({id: req.params.id});
+      
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.id?.errors.map(e => ({
+            path: "id",
+            message: e
+          })),
+        });
+      }
+
+      // Ahora TypeScript sabe que result.success === true
+      const id = result.data.id; // número seguro
+      const implement = await this.getImplementByIdUseCase.execute(id);
+      
+      return res.status(200).json({
+        success: true,
+        message: "Implementos obtenido exitosamente",
+        data: implement
+      });
+
+    }catch (error){
       next(error);
     }
   }
@@ -116,4 +229,38 @@ export class ImplementController {
     }
   }
   
+  
+  public async getByStatus(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try{
+      
+      const result = statusSchema.safeParse({status: req.params.status});
+      
+      if (!result.success) {
+        const formattedError = z.treeifyError(result.error);
+        // Error de validación
+        return res.status(400).json({
+          success: false,
+          message: "Parámetro inválido",
+          errors: formattedError.properties?.status?.errors.map(e => ({
+            path: "status",
+            message: e
+          })),
+        });
+      }
+
+      // Ahora TypeScript sabe que result.success === true
+      const status = result.data.status; // número seguro
+
+      const implement = await this.getImplementByStatus.execute(status);
+      
+      return res.status(200).json({
+        success: true,
+        message: "Implementos obtenido exitosamente",
+        data: implement
+      });
+
+    }catch (error){
+      next(error);
+    }
+  }
 }

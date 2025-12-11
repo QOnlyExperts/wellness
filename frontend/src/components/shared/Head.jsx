@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import "./Head.css";
 
-const Head = ({ title, className = "", children }) => {
+const Head = ({ title, subTitle, className = "", children }) => {
   return (
     <header className={`head-container ${className}`}>
-
-      <h2 className="head-title">{title}</h2>
+      <div>
+        <h2 className="head-title">{title}</h2>
+        <h2 className="head-sub-title">{subTitle}</h2>
+      </div>
 
       {
         children && 

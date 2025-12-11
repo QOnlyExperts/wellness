@@ -1,7 +1,7 @@
 import service from './indexService.jsx';
 
 const headers = {
-  // "Content-Type": "multipart/form-data",
+  // "Content-Type": "application/json",
   Accept: "application/json",
   // "Authorization":`Bearer ${localStorage.getItem('token')}`
 };
@@ -11,14 +11,29 @@ const ImplementService = {
     return service('/implements', {
       method: 'POST',
       body: data,
-      headers: headers
+    });
+  },
+  updateManyImplements: (data) => {
+    return service('/implements/batch', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers: {
+        ...headers, // <-- 1. Copia todos los headers base
+        "Content-Type": "application/json" // <-- 2. Añade o sobrescribe el Content-Type
+      }
     });
   },
   getImplements: () => {
     return service('/implements');
   },
+  getImplementById: (id) => {
+    return service(`/implement/${id}`);
+  },
   getImplementsByIdGroup: (id) => {
     return service(`/implements/group-implement/${id}`);
+  },
+  getImplementsByStatus: (status) => {
+    return service(`/implements/status/${status}`);
   },
 }
 

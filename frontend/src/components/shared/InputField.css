@@ -10,7 +10,7 @@ input[type="number"] {
   width: 100%;
   border: none;
   background-color: #f5f5f5; /* más suave que #D9D9D9 */
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 500; /* texto como "Guitarra" más marcado */
   padding: 25px 10px 6px 10px; /* deja espacio arriba para el label */

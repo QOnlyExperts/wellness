@@ -22,9 +22,10 @@
   border-bottom: 1px solid #ddd;
 }
 
-.modal {
+.modal-content {
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: auto;
   max-height: 600px;
   max-width: 600px;
@@ -36,7 +37,7 @@
   /* border-radius: .75rem; */
   position: relative;
   overflow-y: auto;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
@@ -55,6 +56,7 @@
 .modal-actions {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   gap: 10px;
   margin-top: 10px;
 }
@@ -63,16 +65,37 @@
 .view-wrapper {
   position: relative;
   width: 520px;
-  height: 420px;
+  height: 370px;
   overflow: hidden;
   box-sizing: border-box;
 }
 
+.view-wrapper-auto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  /* ❌ ELIMINAR O COMENTAR: height: 420px; */
+  /* ✅ ELIMINAR: overflow: hidden; (o mantenerlo si es solo para transición) */
+  /* padding: 10px; */
+  box-sizing: border-box;
+  /* Deberías también quitar el `justify-content` y `align-items` si quieres 
+     que crezca con el contenido y no centrarlo verticalmente. */
+}
+/* Sobreescribe los estilos de .view solo cuando es hijo de .view-wrapper-auto */
+.view-wrapper-auto .view {
+  position: relative; /* Cambia a relative para que no ignore el flujo */
+  inset: unset;     /* Desactiva la expansión forzada */
+  height: auto;     /* Asegura que no tenga altura fija */
+}
 /* Cada vista ocupa el 100% del modal */
 .view {
   position: absolute;
   display: flex;
   flex-direction: column;
+  align-items: center;
   inset: 0;
   background: #fff;
   padding: 5px;
@@ -112,4 +135,29 @@
 
 .slide-to-right {
   animation-name: slide-in-right;
+}
+
+
+@media (max-width: 768px) {
+
+  /* Contenedor principal del modal */
+  .modal-content {
+    width: 90%;
+    text-align: center;
+    max-width: 90%;
+    max-height: 80vh;
+    padding: 15px;
+  }
+
+  /* Wrapper de vistas */
+  /* .view-wrapper {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+  } */
+
+  /* Vistas internas */
+  .view {
+    padding: 10px;
+  }
 }

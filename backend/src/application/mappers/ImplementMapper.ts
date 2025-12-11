@@ -2,13 +2,15 @@ import { GroupImplementEntity } from '../../domain/entities/GroupImplementEntity
 import { ImgEntity } from '../../domain/entities/ImgEntity';
 import { ImplementEntity } from '../../domain/entities/ImplementEntity';
 import { ImplementOutputDto } from '../dtos/implements/ImplementOutputDto';
+import { GroupImplementMapper } from './GroupImplementMapper';
 
 export class ImplementMapper {
   // Mapea la Entidad (objeto rico en lógica) a un DTO (objeto plano para transporte)
-  public static toOutputDto(implement: ImplementEntity): ImplementOutputDto {
+  public static toOutputDto(implement: ImplementEntity): any {
     return {
       id: implement.id,
       cod: implement.cod, // Mantener el nombre si es necesario o cambiarlo
+      name: implement.name,
       status: implement.status,
       condition: implement.condition,
       imgs: implement.imgs?.map(img => ({
@@ -18,13 +20,9 @@ export class ImplementMapper {
         mime_type: img.mime_type,
         description: img.description
       })),
-      groupImplement: {
-        id: implement.groupImplement?.id ?? null,
-        prefix: implement.groupImplement?.prefix ?? "",
-        name: implement.groupImplement?.name ?? "",
-        max_hours: implement.groupImplement?.max_hours ?? 0,
-        time_limit: implement.groupImplement?.time_limit ?? 0
-      }
+      groupImplement: implement.groupImplement
+        ? GroupImplementMapper.toOutputDto(implement.groupImplement)
+        : null,
     };
   }
 
@@ -48,6 +46,7 @@ export class ImplementMapper {
         id: data.GroupImplement.id ?? null,
         prefix: data.GroupImplement.prefix ?? "",
         name: data.GroupImplement.name ?? "",
+        amount: data.GroupImplement.amount ?? 0,
         max_hours: data.GroupImplement.max_hours ?? 0,
         time_limit: data.GroupImplement.time_limit ?? 0
       })
@@ -56,6 +55,7 @@ export class ImplementMapper {
     return ImplementEntity.create({
       id: data.id,
       cod: data.cod,
+      name: data.name,
       status: data.status,
       condition: data.condition,
       group_implement_id: data.group_implement_id,
@@ -65,14 +65,19 @@ export class ImplementMapper {
     });
   }
 
+  // Extra — soporte para actualizaciones parciales
   // Entidad → objeto para la base de datos (repositorio)
-  public static toPersistence(entity: ImplementEntity): any {
-    return {
-      id: entity.id,
-      cod: entity.cod,
-      status: entity.status,
-      group_implement_id: entity.group_implement_id,
-      categories_id: entity.categories_id
-    };
+  public static toPersistence(entity: Partial<ImplementEntity>): any {
+    const data: any = {};
+    
+    if (entity.id !== undefined) data.id = entity.id;
+    if (entity.cod !== undefined) data.cod = entity.cod;
+    if (entity.name !== undefined) data.name = entity.name;
+    if (entity.status !== undefined) data.status = entity.status;
+    if (entity.condition !== undefined) data.condition = entity.condition;
+    if (entity.group_implement_id !== undefined) data.group_implement_id = entity.group_implement_id;
+    if (entity.categories_id !== undefined) data.categories_id = entity.categories_id;
+
+    return data;
   }
 }

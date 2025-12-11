@@ -5,6 +5,7 @@ import SearchInputContainer from "../shared/SearchInputContainer";
 
 import AddIcon from "../../components/icons/AddIcon";
 import Button from "../../components/shared/Button";
+import DeleteIcon from "../../components/icons/DeleteIcon";
 
 const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
   const [selected, setSelected] = useState("");
@@ -12,15 +13,29 @@ const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
   const handleSelect = (type) => {
     const newSelected = selected === type ? "" : type;
     setSelected(newSelected);
-    onRefresh?.(newSelected); // refresca al cambiar de tipo
+    if(newSelected === ""){
+      onRefresh?.(newSelected); // refresca al cambiar de tipo
+    }
   };
 
-  return (
-    <Head title="Grupos de Implementos">
+  const clearFilters = () => {
+    const newSelected = "";
+    setSelected(newSelected);
+    onRefresh?.(newSelected);
+  }
 
-      <div style={{ display: "flex", gap: "1rem" }}>
+  return (
+    <Head 
+      title="Grupos de Implementos"
+      subTitle="Gestión y control de implementos registrados"
+    >
+
+      <div className="head-filters">
         {/* Input de búsqueda reutilizable */}
-        <SearchInputContainer onSearch={onSearch} selected={selected} />
+        {
+          selected !== "" &&
+            <SearchInputContainer onSearch={onSearch} selected={selected} />
+        }
         {/* Checkboxes controlados */}
         <CheckboxList
           title="Prefijo"
@@ -35,6 +50,12 @@ const GroupImplementHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
           checked={selected === "name"}
           onChange={() => handleSelect("name")}
         />
+        {
+          selected !== "" &&
+            <Button text="Limpiar" className="btn-icon" onClick={clearFilters}>
+              <DeleteIcon />
+            </Button>
+        }
       </div>
 
       <Button text="Añadir grupo" className="btn-primary" onClick={onAdd}>

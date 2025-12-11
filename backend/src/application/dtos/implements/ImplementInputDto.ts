@@ -5,6 +5,7 @@ import { ImgInputDto } from "../img-file/ImgInputDto";
 export interface ImplementInputDto {
 
   prefix: string;
+  name: string;
   status: ImplementStatus;
   condition: ImplementCondition;
   group_implement_id: number;

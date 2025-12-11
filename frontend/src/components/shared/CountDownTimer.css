@@ -1,0 +1,63 @@
+/* --- Estilos Generales del Contador (Sin cambios) --- */
+.countdown-container {
+    /* display: flex; */
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: var(--box-shadow);
+}
+
+.countdown-header {
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.countdown-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+}
+
+.countdown-limit {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* --- Estados del Contador (Paleta de colores distintiva) --- */
+
+/* 1. Estado Normal (Verde Oliva Suave) */
+.timer-normal {
+    background-color: #f7fff5; 
+    border: 1px solid #c8e6a5; 
+    color: #558b2f; 
+}
+
+/* 2. Estado Crítico (Malva / Púrpura Suave) */
+.timer-critical {
+    background-color: #fffdf9; 
+    border: 1px solid #fedeb5; 
+    color: #b7683a; 
+    animation: blink-shadow 6s infinite alternate; 
+}
+
+/* 3. Estado Expirado (Terracota / Rojo Tierra) */
+.timer-expired {
+    background-color: #fff7f5; 
+    border: 1px solid #ffb3b0; 
+    color: #b74f4c; 
+    font-weight: bold;
+}
+
+/* Animación sutil de sombra para el estado crítico (usando el color malva) */
+@keyframes blink-shadow {
+    /* Usamos el color del texto crítico (púrpura) para la sombra sutil */
+    from { box-shadow: 0 0 4px rgba(183, 114, 58, 0.3); } 
+    to { box-shadow: 0 0 8px rgba(183, 118, 58, 0.6); }
+}

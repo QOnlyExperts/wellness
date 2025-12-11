@@ -16,7 +16,24 @@ router.post('/implements', [
   validator.validateSchema(CreateImplementInputDtoSchema)
 ], implementController.create.bind(implementController));
 
-router.get('/implements', implementController.getAll.bind(implementController));
+router.get('/implements',[
+  
+], implementController.getAll.bind(implementController));
+
+router.get('/implement/:id', implementController.getImplementById.bind(implementController));
+
+router.patch("/implements/batch",[
+
+], implementController.updateMany.bind(implementController));
+
+router.patch('/implements/:id', [
+
+], implementController.updateOnly.bind(implementController));
+
+router.get('/implements/status/:status',[
+
+], implementController.getByStatus.bind(implementController));
+
 
 router.get('/implements/group-implement/:id', implementController.getImplementsByIdGroup.bind(implementController));
 

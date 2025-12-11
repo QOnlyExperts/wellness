@@ -8,7 +8,7 @@ describe("CreateGroupImplement Use Case", () => {
   let createGroupImplement: CreateGroupImplement;
 
   beforeEach(() => {
-    // 🔹 Creamos un mock del repositorio con los métodos usados por el caso de uso
+    // Creamos un mock del repositorio con los métodos usados por el caso de uso
     mockRepository = {
       findByName: jest.fn(),
       save: jest.fn(),

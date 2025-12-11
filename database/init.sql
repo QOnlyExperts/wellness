@@ -125,8 +125,10 @@ CREATE TABLE imgs (
 CREATE TABLE requests (
   id SERIAL PRIMARY KEY,
   status request_status_enum NOT NULL,
-  created_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
   finished_at TIMESTAMP,
+  limited_at TIMESTAMP NOT NULL,
+  duration_hours DECIMAL(10, 2) DEFAULT 0,
   info_person_id INT NOT NULL REFERENCES info_persons(id),
   implement_id INT NOT NULL REFERENCES implements(id)
 );

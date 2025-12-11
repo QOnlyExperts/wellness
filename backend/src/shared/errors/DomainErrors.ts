@@ -17,3 +17,15 @@ export class ValidationError extends AppError {
     super(message, 400, "ValidationError");
   }
 }
+
+export class DomainError extends AppError {
+  constructor(message: string) {
+    super(message, 500, "DomainError");
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message: string) {
+    super(message, 500, "ConflictError");
+  }
+}

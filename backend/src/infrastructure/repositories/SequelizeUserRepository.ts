@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import { UserEntity } from "../../domain/entities/UserEntity";
 import { IUserRepository } from "../../domain/interfaces/IUserRepository";
-import { LoginModel, InfoPersonModel, ProgramModel } from "../models/indexModel";
+import { LoginModel, InfoPersonModel, ProgramModel } from "../models/IndexModel";
 import { RoleModel } from "../models/RoleModel";
 import { UserMapper } from "../../application/mappers/UserMapper";
 

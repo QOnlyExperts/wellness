@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import { InfoPersonEntity } from "../../domain/entities/InfoPersonEntity";
 import { IInfoPersonRepository } from "../../domain/interfaces/IInfoPersonRepository";
-import { InfoPersonModel, LoginModel } from "../models/indexModel";
+import { InfoPersonModel, LoginModel } from "../models/IndexModel";
 import { InfoPersonMapper } from "../../application/mappers/InfoPersonMapper";
 
 export class SequelizeInfoPersonRepository implements IInfoPersonRepository {

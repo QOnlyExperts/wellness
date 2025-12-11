@@ -1,6 +1,6 @@
 import { IImgRepository } from "../../domain/interfaces/IImgRepository";
 import { ImgEntity } from "../../domain/entities/ImgEntity";
-import { ImgModel } from "../models/indexModel";
+import { ImgModel } from "../models/IndexModel";
 import { ImgMapper } from "../../application/mappers/ImgMapper";
 
 export class SequelizeImgRepository implements IImgRepository {

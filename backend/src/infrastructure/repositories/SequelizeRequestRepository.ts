@@ -1,7 +1,7 @@
 
 import { RequestEntity } from "../../domain/entities/RequestEntity";
 import { IRequestRepository } from "../../domain/interfaces/IRequestRepository";
-import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/indexModel";
+import { GroupImplementModel, ImgModel, ImplementModel, InfoPersonModel, LoginModel, RequestModel } from "../models/IndexModel";
 import { RequestMapper } from "../../application/mappers/RequestMapper";
 import { literal, Op, Transaction } from "sequelize";
 

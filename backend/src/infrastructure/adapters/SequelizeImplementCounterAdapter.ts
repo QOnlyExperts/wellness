@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 
-import { ImplementModel } from "../models/indexModel";
+import { ImplementModel } from "../models/IndexModel";
 import { IImplementCounterPort } from "../../application/ports/IImplementCounterPort";
 // Importa tu ImplementModel y sequelize
 

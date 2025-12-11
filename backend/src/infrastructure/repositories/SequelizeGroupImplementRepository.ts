@@ -1,6 +1,6 @@
 import { IGroupImplementRepository } from "../../domain/interfaces/IGroupImplementRepository";
 import { GroupImplementEntity } from "../../domain/entities/GroupImplementEntity";
-import { GroupImplementModel } from "../models/indexModel";
+import { GroupImplementModel } from "../models/IndexModel";
 import { GroupImplementMapper } from "../../application/mappers/GroupImplementMapper";
 
 export class SequelizeGroupImplementRepository implements IGroupImplementRepository {

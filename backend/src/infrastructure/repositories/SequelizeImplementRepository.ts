@@ -1,6 +1,6 @@
 import { IImplementRepository } from "../../domain/interfaces/IImplementRepository";
 import { ImplementEntity } from "../../domain/entities/ImplementEntity";
-import { GroupImplementModel, ImgModel, ImplementModel } from "../models/indexModel";
+import { GroupImplementModel, ImgModel, ImplementModel } from "../models/IndexModel";
 import e from "express";
 import { ImplementMapper } from "../../application/mappers/ImplementMapper";
 import { Transaction } from "sequelize";

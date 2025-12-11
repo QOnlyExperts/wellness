@@ -62,7 +62,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
   const fileInputRef = useRef(null);
 
   const [formGroupImplement, setFormGroupImplement] = useState({
-    name: "",
+    nameGroup: "",
     prefix: "",
   });
 
@@ -81,7 +81,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
         if(groupImplementId && !isNaN(Number(groupImplementId))){
 
           setFormGroupImplement({
-            name: String(groupResponse.data.name),
+            nameGroup: String(groupResponse.data.name),
             prefix: String(groupResponse.data.prefix),
           });
   
@@ -328,7 +328,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
               label="Grupo"
               name=""
               disabled={true}
-              value={formGroupImplement.name}
+              value={formGroupImplement.nameGroup}
               onChange={handleChange}
               errors={errors}
             />

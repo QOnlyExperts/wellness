@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import "moment-duration-format";
 
-import "./CountdownTimer.css";
+import "./CountDownTimer.css";
 
 /**
  * Muestra un contador regresivo de la fecha límite (limitedAt).

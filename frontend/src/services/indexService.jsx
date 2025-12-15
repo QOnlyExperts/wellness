@@ -12,7 +12,7 @@ const service = async (url, options = {}) => {
   try {
 
     console.log(options)
-    const response = await fetch(`${apiUrl}:4000/api/v1${url}`, options);
+    const response = await fetch(`${apiUrl}/api/v1${url}`, options);
     const res = await response.json();
     // if (!res.ok && (res.status === 401 || res?.error?.name === 'TokenExpiredError')) {
     //   // if () {

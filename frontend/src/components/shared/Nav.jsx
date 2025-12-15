@@ -40,7 +40,7 @@ const Nav = () => {
       if (userJson) {
         const user = JSON.parse(userJson);
         // Ajusta esta lógica si el rol se maneja de forma diferente
-        setIsAdmin(Number(user.role) === 1);
+        setIsAdmin(Number(user.rol) === 1);
       }
     } else {
       setLogged(false);

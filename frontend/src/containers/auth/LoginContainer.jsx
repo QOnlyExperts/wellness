@@ -419,6 +419,7 @@ const LoginContainer = ({ onRegister }) => {
                 name="email"
                 label="Correo"
                 type="email"
+                placeholder="example@campusucc.edu.co"
                 value={form.email}
                 onChange={handleInputChange}
                 errors={errors}
@@ -428,6 +429,7 @@ const LoginContainer = ({ onRegister }) => {
                 name="password"
                 label="Contraseña"
                 type="password"
+                placeholder="Contraseña"
                 value={form.password}
                 onChange={handleInputChange}
                 errors={errors}

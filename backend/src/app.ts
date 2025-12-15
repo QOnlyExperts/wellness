@@ -28,7 +28,7 @@ const app: Application = express();
 // Configuración de CORS
 app.use(cors({
   origin: ["https://wellness-sn8h.vercel.app/"],
-  credentials: true
+  credentials: false
 }) as any);
 
 // Middlewares

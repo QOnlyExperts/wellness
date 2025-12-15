@@ -3,40 +3,29 @@
   width: 100%;
 }
 
+/* Inputs */
 input[type="email"],
 input[type="password"],
 input[type="text"],
 input[type="number"] {
   width: 100%;
   border: none;
-  background-color: #f5f5f5; /* más suave que #D9D9D9 */
+  background-color: #f5f5f5;
   border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 500; /* texto como "Guitarra" más marcado */
-  padding: 25px 10px 6px 10px; /* deja espacio arriba para el label */
+  font-weight: 500;
+  padding: 25px 10px 6px 10px;
   outline: none;
   color: #000;
   transition: all 0.3s ease;
 }
 
-
-/* input[type="search"]{
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  font-weight: 500; 
-  padding: 10px 6px 10px; 
-  outline: none;
-  color: #000;
-  transition: all 0.3s ease;
-} */
-
+/* Focus */
 input:focus {
-  /* background-color: #fff; */
   border: 1.5px solid var(--border2);
 }
 
+/* Label base */
 .label {
   position: absolute;
   top: 6px;
@@ -46,21 +35,12 @@ input:focus {
   font-weight: 500;
   pointer-events: none;
   transition: 0.2s ease all;
-  background-color: transparent;
 }
 
-/* Cuando el input tiene texto o foco */
-input:focus + .label,
-input:not(:placeholder-shown) + .label,
-input[value]:not([value=""]) + .label {
+/* Activo cuando hay valor o foco */
+.label.active {
   top: 3px;
   left: 10px;
   font-size: 0.75rem;
-  font-weight: 500;
   color: #888;
-}
-
-/* Placeholder estilo suave */
-input::placeholder {
-  color: transparent; /* ocultamos placeholder real */
 }

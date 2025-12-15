@@ -20,7 +20,7 @@ const GroupStatsContainer = ({ refresh: refreshFlag }) => {
   if (error) return <p>Error al cargar estadísticas</p>;
 
   return (
-    <Head>
+    <Head title="Estadísticas">
       <div className="div-statistics"
         style={{
           display: "flex",

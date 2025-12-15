@@ -46,7 +46,8 @@ GroupImplementModel.init(
     },
     amount: { 
       type: DataTypes.INTEGER, 
-      allowNull: false 
+      allowNull: false, 
+      defaultValue: 0
     },
     max_hours: { 
       type: DataTypes.INTEGER, 

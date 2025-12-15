@@ -20,7 +20,9 @@ const RequestStatsContainer = ({ stats, loading, error }) => {
   if (error) return <p>Error al cargar estadísticas de solicitudes</p>;
 
   return (
-    <Head>
+    <Head
+      title="Estadísticas"
+    >
       <div
         style={{
           display: "flex",

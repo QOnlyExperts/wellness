@@ -22,16 +22,16 @@ export const CreateGroupImplementInputDtoSchema = z.object({
       message: "El numero de horas máximas no debe ser mayor a 3 horas",
     }),
   // 'time_limit' es un número entero positivo
-  time_limit: z
-    .string()
-    .regex(/^\d+$/, "El tiempo límite debe ser numérico")
-    .transform(Number)
-    .refine((val) => val > 0, {
-      message: "El tiempo límite debe ser un número positivo mayor que 0",
-    })
-    .refine((val) => val <= 12, {
-      message: "El tiempo límite no debe ser mayor a 12 horas",
-    }),
+  // time_limit: z
+  //   .string()
+  //   .regex(/^\d+$/, "El tiempo límite debe ser numérico")
+  //   .transform(Number)
+  //   .refine((val) => val > 0, {
+  //     message: "El tiempo límite debe ser un número positivo mayor que 0",
+  //   })
+  //   .refine((val) => val <= 12, {
+  //     message: "El tiempo límite no debe ser mayor a 12 horas",
+  //   }),
 });
 
 // 3. (Opcional pero recomendado) Infiere el tipo de TypeScript a partir del Schema.

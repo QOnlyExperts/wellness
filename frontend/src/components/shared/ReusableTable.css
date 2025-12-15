@@ -25,6 +25,7 @@
 .table-wrapper table {
   width: 100%;
   /* padding: 10px 10px 10px 10px; */
+  height: fit-content;
   border-collapse: separate;
   border-spacing: 0 10px;
   border-radius: 10px;

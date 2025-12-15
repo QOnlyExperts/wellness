@@ -16,6 +16,7 @@
 }
 
 .head-sub-title {
+  color: #a9a9a9;
   font-size: .9rem;
   font-weight: 400;
   margin: 0;
@@ -48,9 +49,9 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
-  padding: 10px;
+  /* padding: 10px; */
   gap: 10px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .content-statistics .statistics {

@@ -2,6 +2,7 @@ import { IGroupImplementRepository } from "../../domain/interfaces/IGroupImpleme
 import { GroupImplementEntity } from "../../domain/entities/GroupImplementEntity";
 import { GroupImplementModel } from "../models/IndexModel";
 import { GroupImplementMapper } from "../../application/mappers/GroupImplementMapper";
+import { Op } from "sequelize";
 
 export class SequelizeGroupImplementRepository implements IGroupImplementRepository {
   
@@ -17,12 +18,22 @@ export class SequelizeGroupImplementRepository implements IGroupImplementReposit
   }
 
   async findByName(name: string): Promise<GroupImplementEntity | null> {
-    const record = await GroupImplementModel.findOne({ where: { name } });
+    const record = await GroupImplementModel.findOne({ where: { 
+      name: {
+        [Op.iLike]:name
+        }
+      } 
+    });
     return record ? GroupImplementMapper.toDomain(record.toJSON()) : null;
   }
 
   async findByPrefix(prefix: string): Promise<GroupImplementEntity | null> {
-    const record = await GroupImplementModel.findOne({ where: { prefix } });
+    const record = await GroupImplementModel.findOne({ where: {
+      prefix: {
+        [Op.iLike]:prefix
+        }
+      } 
+    });
     return record ? GroupImplementMapper.toDomain(record.toJSON()) : null;
   }
 

@@ -86,7 +86,8 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
 
     if(!response.success){
       window.showAlert(response.message ? response.message : response?.error.message, "error")
-      setErrors(response.errors || []);
+      setIsLoading(false);
+      setErrors(response.errors);
       return;
     }
 
@@ -106,6 +107,7 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
         type="text"
         label="Nombre"
         name="name"
+        placeholder="Nombre del grupo"
         value={form.name}
         onChange={handleChange}
         errors={errors}
@@ -114,6 +116,7 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
         type="text"
         label="Horas Máximas"
         name="max_hours"
+        placeholder="Máximo de horas por implementos"
         value={form.max_hours}
         onChange={handleChange}
         errors={errors}
@@ -135,7 +138,8 @@ const GroupImplementModalContainer = ({ groupImplementId, onClose, onSaved }) =>
         <Button 
           isLoading={isLoading}
           disabled={isLoading}
-          text="Guardar" className="btn-primary" onClick={handleSubmit}>
+          colorIcon="#000000"
+          text="Guardar" className={isLoading ? "btn-icon" : "btn-primary"} onClick={handleSubmit}>
           <SaveIcon />
         </Button>
       </div>

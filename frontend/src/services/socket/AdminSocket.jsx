@@ -6,7 +6,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Iniciar el socket
 
 export const initialSocket = (userId) => {     
-  socket = io(`${apiUrl}:4000`, {  
+  socket = io(`${apiUrl}`, {  
     auth: {
       userId: userId
     },

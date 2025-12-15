@@ -53,7 +53,7 @@ const Card = React.memo(
         {/* --- Cara frontal --- */}
         <div className="card-face card-front">
           <div className="div-img">
-            <img src={currentImage.replace("http://localhost:4000", `${apiUrl}:4000`)} alt={title || "Imagen"} />
+            <img src={currentImage.replace("http://localhost:4000", `${apiUrl}`)} alt={title || "Imagen"} />
             {images.length > 1 && (
               <div className="carousel-dots">
                 {images.map((_, idx) => (

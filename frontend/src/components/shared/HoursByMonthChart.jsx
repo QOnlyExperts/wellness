@@ -99,7 +99,14 @@ const HoursByMonthChart = ({ requests }) => {
         margin: "0 auto",
       }}
     >
-      <canvas ref={chartRef} height="100"></canvas>
+      <canvas 
+        ref={chartRef}
+        height={100}
+        style={{
+          // width: '100%',
+          // height: 'auto'
+        }}
+      ></canvas>
     </div>
   );
 };

@@ -246,7 +246,6 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
         style={{
           display: "flex",
           flexDirection: "row",
-          overflowY: 'auto',
           gap: "10px",
         }}
       >
@@ -313,6 +312,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
           style={{
             display: "flex",
             flexDirection: "column",
+            overflowY: 'scroll',
             gap: "10px",
           }}
         >
@@ -352,6 +352,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
             type="text"
             label="Nombre"
             name="name"
+            placeholder="Nombre del implemento"
             value={formImplement.name}
             onChange={handleChange}
             errors={errors}
@@ -361,6 +362,7 @@ const ImplementCreateContainer = ({ groupImplementId, implementId, onClose, onSa
             type="text"
             label="Cantidad"
             name="amount"
+            placeholder="Cantidad de implementos"
             value={formImplement.amount}
             onChange={handleChange}
             errors={errors}

@@ -33,12 +33,11 @@ export class GroupImplementController {
   public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       // Extraemos los datos del cuerpo de la solicitud
-      const { name, max_hours, time_limit } = req.body as GroupImplementInputDto;
+      const { name, max_hours} = req.body as GroupImplementInputDto;
       // Validar y traducir el cuerpo de la petición a un DTO de entrada
       const inputDto: GroupImplementInputDto = {
         name: name,
-        max_hours: max_hours,
-        time_limit: time_limit
+        max_hours: max_hours
       };
       // Ejecutar el caso de uso con el DTO actualizado
       const newGroupImplement = await this.createGroupImplementUseCase.execute(inputDto);
@@ -139,12 +138,11 @@ export class GroupImplementController {
 
       // Ahora TypeScript sabe que result.success === true
       const id = result.data.id; // número seguro
-      const { name, max_hours, time_limit } = req.body as GroupImplementInputDto;
+      const { name, max_hours } = req.body as GroupImplementInputDto;
 
       const updatedGroupImplement = await this.updateGroupImplementUseCase.execute(id, {
         name,
-        max_hours,
-        time_limit
+        max_hours
       });
 
       return res.status(200).json({

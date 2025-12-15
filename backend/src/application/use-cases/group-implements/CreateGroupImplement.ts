@@ -28,7 +28,7 @@ export class CreateGroupImplement {
       prefix: prefix,
       name: input.name,
       max_hours: input.max_hours,
-      time_limit: input.time_limit
+      time_limit: 0
     });
 
     const createdGroupImplement = await this.groupImplementRepository.save(newGroupImplement);

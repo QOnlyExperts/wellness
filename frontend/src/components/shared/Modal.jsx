@@ -54,7 +54,9 @@ const Modal = ({ title, onClose, children }) => {
             onClick={(e) => e.stopPropagation()} // evita cerrar al hacer click dentro
           >
             
-            <h3>{title}</h3>
+            <motion.div className="modal-header">
+              <h3>{title}</h3>
+            </motion.div>
             {children}
           </motion.div>
         </motion.div>

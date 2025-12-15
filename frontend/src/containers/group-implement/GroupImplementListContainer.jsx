@@ -5,9 +5,11 @@ import { useLoader } from "../../context/LoaderContext";
 import PlusCircleIcon from "../../components/icons/PlusCircleIcon";
 import MenuListIcon from "../../components/icons/MenuListIcon";
 import EditSquareIcon from "../../components/icons/EditSquareIcon";
+import GroupImplementIcon from "../../components/icons/GroupImplementIcon";
 
 import ReusableTable from "../../components/shared/ReusableTable";
 import GroupImplementService from "../../services/GroupImplementService";
+import Head from "../../components/shared/Head";
 
 const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch }) => {
   const { showLoader, hideLoader } = useLoader();
@@ -100,8 +102,23 @@ const GroupImplementListContainer = ({ refresh, onAddImplement, onEdit, onSearch
     actions: renderCellContent({ accessor: 'actions' }, groupImplement),
   }));
 
+  if (groupImplements.length === 0) {
+    return (
+      <div className="empty-state">
+        No se encontraron grupos de implementos.
+        <GroupImplementIcon color="#000000" />
+      </div>
+    );
+  }
+
   return (
-    <ReusableTable columnsHead={columnsHead} columns={columns} data={dataWithActions} columnStyles={columnStyles} />
+    <>
+      <Head 
+        title="Lista de grupos de implementos"
+        subTitle="Información relevante cada grupo de implementos registrados"
+      />
+      <ReusableTable columnsHead={columnsHead} columns={columns} data={dataWithActions} columnStyles={columnStyles} />
+    </>
   );
 }
 

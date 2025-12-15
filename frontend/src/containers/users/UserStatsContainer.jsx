@@ -22,7 +22,9 @@ const UserStatsContainer = ({ refresh: refreshFlag }) => {
   if (error) return <p>Error al cargar estadísticas</p>;
 
   return (
-    <Head>
+    <Head
+      title="Estadísticas"
+    >
       <div
         style={{
           display: "flex",

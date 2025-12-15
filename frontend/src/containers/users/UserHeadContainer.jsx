@@ -13,9 +13,9 @@ const UserHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
   const handleSelect = (type) => {
     const newSelected = selected === type ? "" : type;
     setSelected(newSelected);
-    if(newSelected === ""){
-      onRefresh?.(newSelected); // refresca al cambiar de tipo
-    }
+    // if(newSelected === ""){
+    //   onRefresh?.(newSelected); // refresca al cambiar de tipo
+    // }
   };
 
   const clearFilters = () => {
@@ -32,10 +32,7 @@ const UserHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
 
       <div className="head-filters">
         {/* Input de búsqueda reutilizable */}
-        {
-          selected !== "" &&
-            <SearchInputContainer onSearch={onSearch} selected={selected} />
-        }
+        <SearchInputContainer onSearch={onSearch} selected={selected} />
         {/* Checkboxes controlados */}
         <CheckboxList
           title="Identificación"

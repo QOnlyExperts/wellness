@@ -24,6 +24,7 @@ const SearchInputContainer = ({ onSearch, selected }) => {
       value={value}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
+      disabled={selected ? false : true}
     />
   );
 };

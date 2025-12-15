@@ -28,13 +28,13 @@ const RequestListContainer = ({ requestList, loading, error }) => {
     { header: "Identificación", accessor: "identification" },
     { header: "Nombre", accessor: "fullName" },
     { header: "Correo Inst.", accessor: "email" },
-    { header: "Cód. Implemento", accessor: "implement_cod" },
-    { header: "Nombre Implemento", accessor: "implement_name" },
+    { header: "Cód. Imp.", accessor: "implement_cod" },
+    { header: "Implemento", accessor: "implement_name" },
     { header: "Inicio", accessor: "created_at" },
     { header: "Fin", accessor: "finished_at" },
     { header: "Límite", accessor: "limited_at" },
     { header: "Hora", accessor: "duration_hours" },
-    { header: "Estado Solicitud", accessor: "status" },
+    { header: "Solicitud", accessor: "status" },
   ];
 
   const columns = columnsHead.map((col) => ({ accessor: col.accessor }));
@@ -65,7 +65,7 @@ const RequestListContainer = ({ requestList, loading, error }) => {
       if (imgPath) {
         // El path en el JSON es "static/...", asumo que necesita una URL base
         // Por ejemplo, "http://tu-servidor.com/static/..."
-        const imageUrl = `http://localhost:4000/${imgPath}`.replace("http://localhost:4000", `${apiUrl}:4000`)
+        const imageUrl = `http://localhost:4000/${imgPath}`.replace("http://localhost:4000", `${apiUrl}`)
         return (
           <img
             src={imageUrl}
@@ -208,9 +208,22 @@ const RequestListContainer = ({ requestList, loading, error }) => {
     return <div>Error al cargar solicitudes: {error}</div>;
   }
 
+  if (requestList.length === 0) {
+    return (
+      <div className="empty-state">
+        No se encontraron solicitudes.
+        <RequestIcon color="#000000" />
+      </div>
+    );
+  }
+
   return (
     <>
       <AlertContainer />
+      <Head 
+        title="Lista de solicitudes"
+        subTitle="Información relevante de cada solicitud registrada"
+      />
       <ReusableTable
         columnsHead={columnsHead}
         columns={columns}

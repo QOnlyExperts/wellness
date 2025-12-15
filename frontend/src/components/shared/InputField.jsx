@@ -35,7 +35,11 @@ const InputField = ({
 
       {
         type === 'password' &&
-        <Button 
+        <Button
+          style={{
+            color: '#ffffff',
+            marginTop: '5px'
+          }}
           text='Mostrar contraseña' 
           className='btn-icon' 
 

@@ -160,37 +160,26 @@ const LoginContainer = ({ onRegister }) => {
   const handleFinish = (e) => {
     e.preventDefault();
     
-    const otherErrors = [];
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const allowedDomain = "@campusucc.edu.co";
+    let otherErrors = [];
 
-    if (!form.email || form.email === '' || typeof form.email !== 'string' || !emailRegex.test(form.email) || !form.email.endsWith(allowedDomain)) {
-      otherErrors.push({ path: 'email', message: 'El email tiene que ser valido. ejemplo@campusucc.edu.co' });
+    if (!form.name1 || form.name1.trim() === '' || hasNoXSSAndInjectionSql(form.name1) || !onlyLettersRegex(form.name1)) {
+      otherErrors.push({ path: 'name1', message: 'El primer nombre debe contener solo letras y no debe estar vacío' });
     }
-    
-    if (!form.password || form.password.trim() === "" || hasNoXSSAndInjectionSql(form.password) || form.password.length < 8 || form.password.length > 16) {
-      otherErrors.push({ path: 'password', message: 'La contraseña debe tener entre 8 y 16 caracteres validos' });
+  
+    if (form.name2 || hasNoXSSAndInjectionSql(form.name2)) {
+      otherErrors.push({ path: 'name2', message: 'El segundo nombre debe contener solo letras' });
     }
-    
-    if (!form.confirmPassword || form.confirmPassword.trim() === "" || hasNoXSSAndInjectionSql(form.confirmPassword) || form.confirmPassword.length < 8 || form.confirmPassword.length > 16) {
-      otherErrors.push({ path: 'confirmPassword', message: 'Debe coincidir con la contraseña' });
+  
+    if (!form.last_name1 || form.last_name1.trim() === '' || hasNoXSSAndInjectionSql(form.last_name1) || !onlyLettersRegex(form.last_name1)) {
+      otherErrors.push({ path: 'last_name1', message: 'El primer apellido debe contener solo letras y no debe estar vacío' });
     }
-
-    if(selects.idProgram === 0){
-      otherErrors.push({ path: 'idProgram', message: 'Debe seleccionar un programa' });
+  
+    if (!form.last_name2 || form.last_name2.trim() === '' || hasNoXSSAndInjectionSql(form.last_name2) || !onlyLettersRegex(form.last_name2)) {
+      otherErrors.push({ path: 'last_name2', message: 'El segundo apellido debe contener solo letras y no deber estar vacío' });
     }
-      
-    const phoneRegex = /^3\d{9}$/; // Valido solo números de celular colombianos
-
-    if (
-      !form.number_phone ||
-      typeof form.number_phone !== 'string' ||
-      !phoneRegex.test(form.number_phone)
-    ) {
-      otherErrors.push({
-        path: 'number_phone',
-        message: 'Debe ingresar un número de celular colombiano válido (10 dígitos y empieza en 3).'
-      });
+  
+    if (!form.identification || form.identification.trim() === "" || !/^\d+$/.test(form.identification) || form.identification.length !== 10) {
+      otherErrors.push({ path: 'identification', message: 'El número de teléfono debe contener exactamente 10 dígitos y solo números' });
     }
 
     if(otherErrors.length){
@@ -198,6 +187,8 @@ const LoginContainer = ({ onRegister }) => {
       return;
     }
     
+    otherErrors = [];
+    setErrors([]);
     setDirection("to-left");
     setView("third");
   }
@@ -279,6 +270,9 @@ const LoginContainer = ({ onRegister }) => {
     window.showAlert(response.message, "success");
     setIsLoading(false);
 
+    otherErrors = [];
+    setErrors([]);
+    
     // console.log(response.res)
     sessionStorage.setItem("data", JSON.stringify(response.data));
     sessionStorage.setItem("token", response.data.token);
@@ -291,25 +285,36 @@ const LoginContainer = ({ onRegister }) => {
     e.preventDefault();
     
     const otherErrors = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const allowedDomain = "@campusucc.edu.co";
 
-    if (!form.name1 || form.name1.trim() === '' || hasNoXSSAndInjectionSql(form.name1) || !onlyLettersRegex(form.name1)) {
-      otherErrors.push({ path: 'name1', message: 'El primer nombre debe contener solo letras y no debe estar vacío' });
+    if (!form.email || form.email === '' || typeof form.email !== 'string' || !emailRegex.test(form.email) || !form.email.endsWith(allowedDomain)) {
+      otherErrors.push({ path: 'email', message: 'El email tiene que ser valido. ejemplo@campusucc.edu.co' });
     }
-  
-    if (!form.name2 || hasNoXSSAndInjectionSql(form.name2) || !onlyLettersRegex(form.name2)) {
-      otherErrors.push({ path: 'name2', message: 'El segundo nombre debe contener solo letras' });
+    
+    if (!form.password || form.password.trim() === "" || hasNoXSSAndInjectionSql(form.password) || form.password.length < 8 || form.password.length > 16) {
+      otherErrors.push({ path: 'password', message: 'La contraseña debe tener entre 8 y 16 caracteres validos' });
     }
-  
-    if (!form.last_name1 || form.last_name1.trim() === '' || hasNoXSSAndInjectionSql(form.last_name1) || !onlyLettersRegex(form.last_name1)) {
-      otherErrors.push({ path: 'last_name1', message: 'El primer apellido debe contener solo letras y no debe estar vacío' });
+    
+    if (!form.confirmPassword || form.confirmPassword.trim() === "" || hasNoXSSAndInjectionSql(form.confirmPassword) || form.confirmPassword.length < 8 || form.confirmPassword.length > 16) {
+      otherErrors.push({ path: 'confirmPassword', message: 'Debe coincidir con la contraseña' });
     }
-  
-    if (!form.last_name2 || form.last_name2.trim() === '' || hasNoXSSAndInjectionSql(form.last_name2) || !onlyLettersRegex(form.last_name2)) {
-      otherErrors.push({ path: 'last_name2', message: 'El segundo apellido debe contener solo letras y no deber estar vacío' });
+
+    if(selects.idProgram === 0){
+      otherErrors.push({ path: 'idProgram', message: 'Debe seleccionar un programa' });
     }
-  
-    if (!form.number_phone || form.number_phone.trim() === "" || !/^\d+$/.test(form.number_phone) || form.number_phone.length !== 10) {
-      otherErrors.push({ path: 'number_phone', message: 'El número de teléfono debe contener exactamente 10 dígitos y solo números' });
+      
+    const phoneRegex = /^3\d{9}$/; // Valido solo números de celular colombianos
+
+    if (
+      !form.number_phone ||
+      typeof form.number_phone !== 'string' ||
+      !phoneRegex.test(form.number_phone)
+    ) {
+      otherErrors.push({
+        path: 'number_phone',
+        message: 'Debe ingresar un número de celular colombiano válido (10 dígitos y empieza en 3).'
+      });
     }
 
     if(otherErrors.length){
@@ -331,6 +336,8 @@ const LoginContainer = ({ onRegister }) => {
     }
     
     window.showAlert(response.message, "success")
+    otherErrors = [];
+    setErrors([]);
 
     setTimeout(() => {
       if(response.success){
@@ -338,8 +345,6 @@ const LoginContainer = ({ onRegister }) => {
         handleBack();
       }
     }, 2000);
-    // Aquí va la lógica para registrar al usuario
-    setErrors([]);
 
   }
 
@@ -465,8 +470,8 @@ const LoginContainer = ({ onRegister }) => {
             </div>
           )}
 
-          { view === 'second' && (
-            <div key="second" className={`login-form-login slide-${direction}`}>
+          { view === 'third' && (
+            <div key="third" className={`login-form-login slide-${direction}`}>
               <Head title="Registro de usuario" subTitle="Completa los siguientes campos para crear tu cuenta"/>
               {/* <RegisterContainer onLogin={() => setView('login')}/> */}
               <InputField
@@ -474,6 +479,7 @@ const LoginContainer = ({ onRegister }) => {
                 name="email"
                 label="Correo"
                 type="text"
+                placeholder="example@campusucc.edu.co"
                 value={form.email}
                 onChange={handleInputChange}
                 errors={errors}
@@ -484,6 +490,7 @@ const LoginContainer = ({ onRegister }) => {
                 name="password"
                 label="Contraseña"
                 type="password"
+                placeholder="Contraseña"
                 value={form.password}
                 onChange={handleInputChange}
                 onFocus={() => pswdInfoRef.current.style.display = 'block'}
@@ -516,6 +523,7 @@ const LoginContainer = ({ onRegister }) => {
                 name="confirmPassword"
                 label="Confirmar contraseña"
                 type="password"
+                placeholder="Confirmar contraseña"
                 value={form.confirmPassword}
                 onChange={handleInputChange}
                 onFocus={() => pswdConfInfoRef.current.style.display = 'block'}
@@ -533,7 +541,7 @@ const LoginContainer = ({ onRegister }) => {
 
               <div className="select-box" id="select-box-program">
                 <div className="select-option" id="select-option-program" onClick={() => handleSelectOptionClick('select-box-program')}>
-                  <InputField id={'idProgram'} name={'idProgram'} label={'Programas'} type={'text'} value={selects.program} errors={errors} />
+                  <InputField id={'idProgram'} name={'idProgram'} label={'Programas'} type={'text'} placeholder="Selecciona tu programa" value={selects.program} errors={errors} />
                   
                 </div>
 
@@ -553,9 +561,84 @@ const LoginContainer = ({ onRegister }) => {
               <InputField
                 id="number_phone"
                 name="number_phone"
-                label="Número"
+                label="Número de celular"
                 type="text"
+                placeholder="Numero de celular"
                 value={form.number_phone}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginTop:'20px'
+              }}>
+                <Button className="btn-icon" text="Atrás" onClick={(e) => handleNext(e, "to-right")} />
+                <Button className="btn-icon" text="Registrarme" onClick={handleRegister} />
+              </div>
+
+            </div>
+          )}
+
+          { view === 'second' && (
+            <div key="second" className={`login-form-login slide-${direction}`}>
+              <AlertContainer />
+              <Head title="Registro de usuario" subTitle="Completa los siguientes campos para crear tu cuenta"/>
+
+              <InputField
+                id="name1"
+                name="name1"
+                label="Primer nombre"
+                type="text"
+                placeholder="Primer nombre"
+                value={form.name1}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+
+              <InputField
+                id="name2"
+                name="name2"
+                label="Segundo nombre"
+                type="text"
+                placeholder="Segundo nombre"
+                value={form.name2}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+
+              <InputField
+                id="last_name1"
+                name="last_name1"
+                label="Primer apellido"
+                type="text"
+                placeholder="Primer apellido"
+                value={form.lastName1}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+
+              <InputField
+                id="last_name2"
+                name="last_name2"
+                label="Segundo apellido"
+                type="text"
+                placeholder="Segundo apellido"
+                value={form.lastName2}
+                onChange={handleInputChange}
+                errors={errors}
+              />
+              
+
+              <InputField
+                id="identification"
+                name="identification"
+                label="Identificación"
+                type="text"
+                placeholder="Identificación"
+                value={form.identification}
                 onChange={handleInputChange}
                 errors={errors}
               />
@@ -578,74 +661,6 @@ const LoginContainer = ({ onRegister }) => {
                   }} 
                 />
                 <Button className="btn-icon" text="Siguiente" onClick={handleFinish} />
-              </div>
-            </div>
-          )}
-
-          { view === 'third' && (
-            <div key="third" className={`login-form-login slide-${direction}`}>
-              <AlertContainer />
-              <Head title="Registro de usuario" subTitle="Completa los siguientes campos para crear tu cuenta"/>
-
-              <InputField
-                id="name1"
-                name="name1"
-                label="Primer nombre"
-                type="text"
-                value={form.name1}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-
-              <InputField
-                id="name2"
-                name="name2"
-                label="Segundo nombre"
-                type="text"
-                value={form.name2}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-
-              <InputField
-                id="last_name1"
-                name="last_name1"
-                label="Primer apellido"
-                type="text"
-                value={form.lastName1}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-
-              <InputField
-                id="last_name2"
-                name="last_name2"
-                label="Segundo apellido"
-                type="text"
-                value={form.lastName2}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-              
-
-              <InputField
-                id="identification"
-                name="identification"
-                label="Identificación"
-                type="text"
-                value={form.identification}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                marginTop:'20px'
-              }}>
-                <Button className="btn-icon" text="Atrás" onClick={(e) => handleNext(e, "to-right")} />
-                <Button className="btn-icon" text="Registrarme" onClick={handleRegister} />
               </div>
             </div>
           )}

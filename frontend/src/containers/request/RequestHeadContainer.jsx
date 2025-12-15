@@ -32,10 +32,7 @@ const RequestHeadContainer = ({ onAdd, onSearch, onRefresh }) => {
 
       <div className="head-filters">
         {/* Input de búsqueda reutilizable */}
-        {
-          selected !== "" &&
-            <SearchInputContainer onSearch={onSearch} selected={selected} />
-        }
+        <SearchInputContainer onSearch={onSearch} selected={selected} />
         {/* Checkboxes controlados */}
         <CheckboxList
           title="Identificación"

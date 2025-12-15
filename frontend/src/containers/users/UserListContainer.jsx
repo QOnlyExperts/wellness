@@ -247,7 +247,10 @@ const UserListContainer = ({ onEdit, refresh: refreshFlag }) => {
   return (
     <>
       <AlertContainer />
-
+      <Head 
+        title="Lista de usuarios"
+        subTitle="Información relevante de cada usuario registrado"
+      />
       <ReusableTable
         columnsHead={columnsHead}
         columns={columns}

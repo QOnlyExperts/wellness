@@ -21,21 +21,24 @@ import { requestRouter } from './presentation/routers/RequestRouter';
 import { programRouter } from './presentation/routers/ProgramRoutes';
 
 import dotenv from 'dotenv';
-
-dotenv.config();
-
-const { API_CORS } = process.env;
+const API_CORS = process.env.API_CORS;
 
 import path from 'path';
 // Crear la aplicación Express
 const app: Application = express();
 
-// Configuración de CORS
+
+if (!API_CORS) {
+  throw new Error("API_CORS no definida");
+}
+
 app.use(cors({
-  origin: [API_CORS],
-  credentials: true
+  origin: API_CORS,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }) as any);
 
+app.options("*", cors() as any);
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

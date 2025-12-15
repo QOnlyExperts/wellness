@@ -30,7 +30,7 @@ input:focus {
   position: absolute;
   top: 6px;
   left: 10px;
-  color: #999;
+  color: #000000;
   font-size: 0.9rem;
   font-weight: 500;
   pointer-events: none;
@@ -43,4 +43,8 @@ input:focus {
   left: 10px;
   font-size: 0.75rem;
   color: #888;
+}
+
+input::placeholder{
+  color: #a9a9a9;
 }

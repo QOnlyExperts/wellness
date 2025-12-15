@@ -3,6 +3,7 @@ backend/node_modules
 backend/public/config
 backend/public/scripts
 backend/public/uploads/implement/
+backend/src/infrastructure/database
 # Frontend
 frontend/node_modules
 

@@ -9,7 +9,6 @@ export const isValidPhone = (phone) => {
 export const hasNoXSSAndInjectionSql = (input) => {
   const dangerousRegex = /[<>\/"'&;(){}\[\]\\]|(--|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|SCRIPT|ALERT)\b)/gi;
   return dangerousRegex.test(input);
-  
 };
 
 export const onlyLettersRegex = (input) => {

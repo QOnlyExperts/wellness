@@ -20,6 +20,11 @@ import { userRouter } from './presentation/routers/UserRouter';
 import { requestRouter } from './presentation/routers/RequestRouter';
 import { programRouter } from './presentation/routers/ProgramRoutes';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const { API_CORS } = process.env;
 
 import path from 'path';
 // Crear la aplicación Express
@@ -27,7 +32,7 @@ const app: Application = express();
 
 // Configuración de CORS
 app.use(cors({
-  origin: ["https://wellness-sn8h.vercel.app/"],
+  origin: [API_CORS],
   credentials: true
 }) as any);
 

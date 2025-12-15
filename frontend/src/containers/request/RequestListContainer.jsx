@@ -68,7 +68,7 @@ const RequestListContainer = ({ requestList, loading, error }) => {
       if (imgPath) {
         // El path en el JSON es "static/...", asumo que necesita una URL base
         // Por ejemplo, "http://tu-servidor.com/static/..."
-        const imageUrl = `http://localhost:4000/${imgPath}`.replace("http://localhost:4000", `${apiUrl}`)
+        const imageUrl = `${apiUrl}/${imgPath}`.replace("http://localhost:4000", `${apiUrl}`)
         return (
           <img
             src={imageUrl}

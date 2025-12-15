@@ -19,8 +19,8 @@ import LoginIcon from '../icons/AddIcon'; // Componente ficticio
 
 const Nav = () => {
   // Estados de autenticación (los dejé en 'true' para probar el menú)
-  const [logged, setLogged] = useState(true); 
-  const [isAdmin, setIsAdmin] = useState(true); 
+  const [logged, setLogged] = useState(false); 
+  const [isAdmin, setIsAdmin] = useState(false); 
 
   // Estado para controlar la visibilidad del dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -40,7 +40,7 @@ const Nav = () => {
       if (userJson) {
         const user = JSON.parse(userJson);
         // Ajusta esta lógica si el rol se maneja de forma diferente
-        setIsAdmin(user.role === '1' || user.role === 1); 
+        setIsAdmin(Number(user.role) === 1);
       }
     } else {
       setLogged(false);

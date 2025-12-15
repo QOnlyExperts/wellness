@@ -222,7 +222,7 @@ const LoginContainer = ({ onRegister }) => {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-    const otherErrors = [];
+    let otherErrors = [];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const allowedDomain = "@campusucc.edu.co";
 
@@ -284,7 +284,7 @@ const LoginContainer = ({ onRegister }) => {
   const handleRegister = async(e) => {
     e.preventDefault();
     
-    const otherErrors = [];
+    let otherErrors = [];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const allowedDomain = "@campusucc.edu.co";
 

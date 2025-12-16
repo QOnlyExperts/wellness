@@ -6,14 +6,18 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 // Iniciar el socket
 export const initialSocket = (userId) => {
+  const token = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("token="))
+    ?.split("=")[1];
+
   socket = io(`${apiUrl}`, {  
+    withCredentials: true,
     auth: {
-      userId: userId
-    },
-    query: { 
-      token: sessionStorage.getItem('token')
+      userId: userId,
+      token: token
     }
-  });
+  })
 
   if(socket && userId) 
     socket.emit('joinAsClient', {id: userId})

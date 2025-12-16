@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { LoginController } from '../controllers/LoginController';
 import { LoginInputDtoSchema } from '../../application/schemas/LoginSchema';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 
 // 1. Instanciamos el controlador
 // Aquí se inicia la inyección de dependencias (se llama a resolveCreateImplementUseCase)

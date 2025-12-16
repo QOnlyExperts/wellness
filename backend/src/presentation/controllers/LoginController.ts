@@ -20,10 +20,20 @@ export class LoginController {
 
       const loginResult = await this.loginUseCase.execute(inputDto);
 
+      res.cookie('access_token', loginResult.token, {
+        httpOnly: true,
+        secure: false, // true si es https
+        sameSite: 'lax',
+      });
+
+      // Eliminamos el token
+      const { token, ...rest } = loginResult;
+      const newObj = rest;
+
       return res.status(200).json({
         success: true,
         message: "Login exitoso",
-        data: loginResult
+        data: newObj
       })
 
     }catch(error){

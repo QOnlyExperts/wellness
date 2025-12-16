@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ImplementController } from '../controllers/ImplementController';
 import { CreateImplementInputDtoSchema } from '../../application/schemas/ImplementSchema';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 
 // 1. Instanciamos el controlador
 // Aquí se inicia la inyección de dependencias (se llama a resolveCreateImplementUseCase)

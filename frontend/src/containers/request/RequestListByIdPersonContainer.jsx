@@ -13,7 +13,7 @@ const RequestListByIdPersonContainer = ({requestList, isLoading, error}) => {
   const getImgUrl = (request) => {
     const imgPath = request?.implement?.imgs?.[0]?.description;
     if (!imgPath) return null;
-    return `${apiUrl}:4000/${imgPath}`;
+    return `${apiUrl}/${imgPath}`;
   };
 
   const formatDate = (date) =>
@@ -44,6 +44,7 @@ const RequestListByIdPersonContainer = ({requestList, isLoading, error}) => {
   return (
     <div className="request-list-pro">
       {requestList.map((request, index) => {
+        
         const imgUrl = getImgUrl(request);
 
         return (

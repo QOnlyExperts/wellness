@@ -1,6 +1,8 @@
 // src/infrastructure/adapters/SocketAdapter.ts
 
 import { Server, Socket } from "socket.io";
+import cookie from "cookie";
+
 
 import {
   resolveJwtTokenService,
@@ -9,7 +11,7 @@ import {
   resolveUpdateRequestUseCase
 } from "../../composition/compositionRoot";
 
-import { JwtService } from "../../application/services/JwtService";
+import { JwtService } from "../services/JwtService";
 import { GetUserByIdUseCase } from "../../application/use-cases/users/GetUserByIdUseCase";
 import { RegisterRequestUseCase } from "../../application/use-cases/request/register/RegisterRequestUseCase";
 
@@ -17,6 +19,10 @@ import { ConflictError, NotFoundError, ValidationError } from "../../shared/erro
 import { UpdateRequestUseCase } from "../../application/use-cases/request/register/UpdateRequestUseCase";
 import { RequestStatus } from "../../domain/enums/RequestStatus";
 import { ImplementStatus } from "../../domain/enums/ImplementStatus";
+
+
+import dotenv from 'dotenv';
+const API_CORS = process.env.API_CORS;
 
 interface ClientData {
   implement_id: number;
@@ -72,7 +78,11 @@ export class SocketAdapter {
 
   public config(server: any): Server {
     SocketAdapter.io = new Server(server, {
-      cors: { origin: "*", methods: ["GET", "POST"] },
+      cors: { 
+        origin: API_CORS, 
+        methods: ["GET", "POST"],
+        credentials: true
+      },
     });
 
     this.applyMiddleware(SocketAdapter.io);
@@ -85,13 +95,22 @@ export class SocketAdapter {
   }
 
   private applyMiddleware(ioInstance: Server): void {
-    ioInstance.use(async (socket, next) => {
+    ioInstance.use(async(socket, next) => {
+      // const rawCookies = socket.handshake.headers.cookie;
+      // if (!rawCookies) return next(new Error('No autenticado'));
+
+      // const cookies = cookie.parse(rawCookies);
+      // const token = cookies.access_token;
+      const token = socket.handshake.auth.token;
+
+      if (!token) return next(new Error('Token no encontrado'));
+
       try {
-        const token = socket.handshake.query.token as string;
-        await this.jwtService.verify(token);
+        const payload = await this.jwtService.verify(token);
+        socket.data.user = payload;
         next();
       } catch {
-        next(new Error("Authentication error"));
+        next(new Error('Token inválido'));
       }
     });
   }

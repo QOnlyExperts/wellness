@@ -10,7 +10,7 @@ import { ImplementOutputDto } from "../../dtos/implements/ImplementOutputDto";
 import { ImplementMapper } from "../../mappers/ImplementMapper";
 
 import { IImgRepository } from "../../../domain/interfaces/IImgRepository";
-import { ImgService } from "../../services/ImgService";
+import { ImgService } from "../../../infrastructure/services/ImgService";
 import { ImgEntity } from "../../../domain/entities/ImgEntity";
 import { UploadedFile } from "express-fileupload";
 

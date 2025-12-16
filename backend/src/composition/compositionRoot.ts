@@ -73,7 +73,7 @@ import { CreateCategory } from '../application/use-cases/category/CreateCategory
 import { GetCategories } from '../application/use-cases/category/GetCategories';
 import { UpdateCategory } from '../application/use-cases/category/UpdateCategory';
 import { GetCategoryById } from '../application/use-cases/category/GetCategoryById';
-import { ImgService } from '../application/services/ImgService';
+import { ImgService } from '../infrastructure/services/ImgService';
 
 // Importaciones de Casos de Uso (Role)
 import { CreateRole } from "../application/use-cases/roles/CreateRole";
@@ -88,11 +88,11 @@ import { CreateUserUseCase } from '../application/use-cases/users/CreateUserUseC
 import { GetUserByIdUseCase } from '../application/use-cases/users/GetUserByIdUseCase';
 import { GetUsersUseCase } from '../application/use-cases/users/GetUsersUSeCase';
 import { CreateInfoPersonUseCase } from '../application/use-cases/info-person/CreateInfoPersonUseCase';
-import { HashService } from '../application/services/HashService';
-import { EmailService } from '../application/services/EmailService';
+import { HashService } from '../infrastructure/services/HashService';
+import { EmailService } from '../infrastructure/services/EmailService';
 import { IUserCreator } from '../domain/interfaces/IUserCreator';
 import { IInfoPersonCreator } from '../domain/interfaces/IInfoPersonCreator';
-import { JwtService } from '../application/services/JwtService';
+import { JwtService } from '../infrastructure/services/JwtService';
 // import {  }
 // Importaciones de Casos de Uso (Program)
 import { CreateProgram } from "../application/use-cases/programs/CreateProgram";

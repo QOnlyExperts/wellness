@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { GroupImplementController } from '../controllers/GroupImplementController';
 import { CreateGroupImplementInputDtoSchema } from '../../application/schemas/GroupImplementSchema';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 import { idSchema } from '../../application/schemas/IdSchema';
 
 // 1. Instanciamos el controlador

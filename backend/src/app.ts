@@ -2,12 +2,15 @@ import express, { Application, Request, Response } from 'express';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from "cookie-parser";
 import { createServer, Server as HttpServer } from 'http';
 import { SocketAdapter } from './infrastructure/adapters/SocketAdapter';
 import config from './config';
 
 
-import { errorHandler } from './presentation/middleware/errorHandler';
+
+import { authMiddleware } from "./presentation/http/middleware/authMiddleware";
+import { errorHandler } from './presentation/http/middleware/errorHandler';
 
 // Routers
 import { groupImplementRouter } from './presentation/routers/GroupImplementRoutes';
@@ -16,6 +19,7 @@ import { categoryRouter } from "./presentation/routers/CategoryRoutes";
 
 import { roleRouter } from './presentation/routers/RoleRoutes';
 import { loginRouter } from './presentation/routers/LoginRoutes';
+import { registerRouter } from './presentation/routers/RegisterRoutes';
 import { userRouter } from './presentation/routers/UserRouter';
 import { requestRouter } from './presentation/routers/RequestRouter';
 import { programRouter } from './presentation/routers/ProgramRoutes';
@@ -24,6 +28,7 @@ import dotenv from 'dotenv';
 const API_CORS = process.env.API_CORS;
 
 import path from 'path';
+import { programRouterPublic } from './presentation/routers/ProgramRouterPublic';
 // Crear la aplicación Express
 const app: Application = express();
 
@@ -35,7 +40,8 @@ if (!API_CORS) {
 app.use(cors({
   origin: API_CORS,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  // allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }) as any);
 
 app.options("*", cors() as any);
@@ -43,6 +49,9 @@ app.options("*", cors() as any);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(fileUpload());
+
+// Usar cookie-parser antes de tus rutas
+app.use(cookieParser());
 
 // Directorio public nombrado como resources
 
@@ -54,10 +63,15 @@ app.use('/static', (req, res) => {
   res.status(404).json({ message: 'Imagen no encontrada o extensión incorrecta' });
 });
 
-// Rutas
-
-// Si luego habilitas tus rutas:
+// Rutas publicas
 app.use('/api/v1', loginRouter);
+app.use('/api/v1', registerRouter);
+app.use('/api/v1', programRouterPublic);
+
+// Para protección de autenticación en rutas
+app.use(authMiddleware());
+
+// Rutas privadas
 app.use('/api/v1', requestRouter);
 app.use('/api/v1', userRouter);
 app.use('/api/v1', groupImplementRouter);

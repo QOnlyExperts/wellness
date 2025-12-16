@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ProgramController } from '../controllers/ProgramController';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 import { CreateProgramInputDtoSchema } from '../../application/schemas/ProgramSchema'; // Tu schema principal
 
 // Instanciamos el controlador y el validador

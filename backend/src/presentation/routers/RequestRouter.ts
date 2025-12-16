@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RequestController } from '../controllers/RequestController';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 
 // 1. Instanciamos el controlador
 // Aquí se inicia la inyección de dependencias (se llama a resolveCreateImplementUseCase)

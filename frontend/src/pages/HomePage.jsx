@@ -49,6 +49,9 @@ import {
 import { useRequestByIdPerson } from "../hooks/useRequestByIdPerson";
 import HoursByMonthChart from "../components/shared/HoursByMonthChart";
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 // Función auxiliar para calcular el umbral automáticamente
 const calculateThresholdHours = (createdAt, limitedAt) => {
   if (!createdAt || !limitedAt) {
@@ -541,7 +544,7 @@ const HomePage = () => {
                   images={
                     imp.images_preview?.length
                       ? imp.images_preview.map(
-                          (img) => `http://localhost:4000/${img}`
+                          (img) => `${apiUrl}/${img}`
                         )
                       : [NotFoundImage]
                   }
@@ -591,7 +594,7 @@ const HomePage = () => {
                               child.imgs?.length
                                 ? child.imgs.map(
                                     (img) =>
-                                      `http://localhost:4000/${img.description}`
+                                      `${apiUrl}/${img.description}`
                                   )
                                 : [NotFoundImage]
                             }
@@ -656,7 +659,7 @@ const HomePage = () => {
                   requestActive.implement.imgs &&
                   requestActive.implement.imgs.length > 0
                     ? requestActive.implement.imgs.map(
-                        (img) => `http://localhost:4000/${img.description}`
+                        (img) => `${apiUrl}/${img.description}`
                       )
                     : [NotFoundImage]
                 }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RoleController } from '../controllers/RoleController';
-import { Validator } from '../middleware/ValidatorMiddle';
+import { Validator } from '../http/middleware/ValidatorMiddle';
 import { RoleSchema } from '../../application/schemas/RoleSchema';
 
 const roleController = new RoleController();

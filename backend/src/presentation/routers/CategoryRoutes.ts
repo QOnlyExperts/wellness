@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/CategoryController';
-import { Validator } from '../middleware/ValidatorMiddle'; // Importamos el validador
+import { Validator } from '../http/middleware/ValidatorMiddle'; // Importamos el validador
 import { CategorySchema } from '../../application/schemas/CategorySchema';
 
 // Instanciamos el controlador y el validador

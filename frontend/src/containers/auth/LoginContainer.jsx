@@ -275,7 +275,6 @@ const LoginContainer = ({ onRegister }) => {
     
     // console.log(response.res)
     sessionStorage.setItem("data", JSON.stringify(response.data));
-    sessionStorage.setItem("token", response.data.token);
     setTimeout(() => {
       navigate("/");
     }, 2500);

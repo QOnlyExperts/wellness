@@ -32,20 +32,30 @@ const Nav = () => {
   // Lógica de Autenticación (Mantener tu lógica original)
   // -----------------------------------------------------------------
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    const userJson = sessionStorage.getItem('user');
-    
-    if (token) {
-      setLogged(true);
-      if (userJson) {
-        const user = JSON.parse(userJson);
-        // Ajusta esta lógica si el rol se maneja de forma diferente
-        setIsAdmin(Number(user.rol) === 1);
+    const syncAuth = () => {
+      const raw = sessionStorage.getItem('data');
+
+      if (!raw) {
+        setLogged(false);
+        setIsAdmin(false);
+        return;
       }
-    } else {
-      setLogged(false);
-      setIsAdmin(false);
-    }
+
+      const dataJson = JSON.parse(raw);
+
+      if (dataJson.user) {
+        setLogged(true);
+        setIsAdmin(Number(dataJson.user.rol) === 1);
+      } else {
+        setLogged(false);
+        setIsAdmin(false);
+      }
+    };
+
+    syncAuth();
+    window.addEventListener('storage', syncAuth);
+
+    return () => window.removeEventListener('storage', syncAuth);
   }, []);
 
   // -----------------------------------------------------------------

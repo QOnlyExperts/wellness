@@ -6,24 +6,24 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Iniciar el socket
 
 export const initialSocket = (userId) => {   
-  // Obtenemos el token de la cookie o localStorage
-  const token = document.cookie
-    .split("; ")
-    .find(row => row.startsWith("token="))
-    ?.split("=")[1];
+  socket = io(apiUrl, {  
+    auth: { userId },
+    transports: ["websocket", "polling"],
+    withCredentials: true, // para que envie cookies si es necesario
+  });
 
-  socket = io(`${apiUrl}`, {  
-    withCredentials: true,
-    auth: {
-      userId: userId,
-      token: token
+  socket.on("connect", () => {
+    if (userId) {
+      socket.emit("joinAsAdmin", { id: userId });
     }
-  })
-  if(socket && userId) 
-    socket.emit('joinAsAdmin', {id: userId})
-    return socket;
+  });
 
-}
+  socket.on("connect_error", (err) => {
+    console.error("Error al conectar socket:", err.message);
+  });
+
+  return socket;
+};
 
 // Desconectar socket
 export const disconnectSocket = () => {
@@ -44,7 +44,7 @@ export const sendResponseToClient = (response) => {
 export const listenToAdminRequest = (cb) => {
   if(!socket) return true
   socket.on('adminRequestFromClient', (request) => {
-    return cb(null, request)
+    return cb(request, null)
   })
 }
 
@@ -53,7 +53,7 @@ export const refreshAdminRoom = (cb) => {
   if (!socket) return true;
   // Escuchar el evento solo una vez
   socket.on('refreshAdminRoom', (data) => {
-    cb(null, data);
+    cb(data, null);
   });
 }
 
@@ -62,6 +62,6 @@ export const requestFailed = (cb) => {
   if (!socket) return true;
   // Escuchar el evento solo una vez
   socket.on('requestFailed', (data) => {
-    cb(null, data);
+    cb(data, null);
   });
 }

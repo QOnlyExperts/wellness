@@ -222,94 +222,45 @@ const HomePage = () => {
     }, 60000); // 1 minuto
   }, [setIsLoadingModal, setMessage, setOnRequest]); // Dependencias del callback
 
-  // Inicia el socket y escucha el canal
-  useEffect(() => {
-    const user = userId;
-    if (!user) {
-      return;
-    }
-    // Iniciamos el socket
-    initialSocket(user);
-    // setUser(user)
-    // setSocketIo(socket)
+ useEffect(() => {
+  if (!userId) return;
 
-    // Escucha las respuestas del administrador
-    // Recibe:
-    // {
-    // 	 implement_id: number;
-    // 	 user_id: number;
-    // 	 request_id: number;
-    // 	 status: string;
-    // 	 clientId: string;
-    // }
-    // --- Lógica de Respuesta del Administrador ---
-    listenToAdminResponse((err, data) => {
-      if (err) {
-        clearTimeoutIfRunning();
-        return;
-      }
+  const sock = initialSocket(userId);
 
-      if (data.message) {
-        setMessage(data.message);
-      }
-
-      if (data.status) {
-        // Si llega la respuesta final, CANCELAMOS el timer de expiración
-        clearTimeoutIfRunning();
-
-        setIsLoadingModal(false);
-        setOnRequest(true);
-        setStatus(data.status); // Guardamos el estado de la solicitud
-        setMessage(`Solicitud ${translateStatus(data.status)}`);
-
-        // Timer para limpiar el mensaje después de 5 segundos
-        setTimeout(() => {
-          setMessage(null);
-          setOnRequest(false);
-        }, 5000);
-      }
-    });
-
-    // Para refrescar el estado de los instrumentos en caso de que alguno pase su estado a uso
-    refreshClientRoom((err, data) => {
-      if (err) {
-        return;
-      }
-      // Se realiza correctamente si success es true
-      if (data.success) {
-        // Refrescamos la vista
-        fetch();
-      }
-    });
-
-    requestFailed((err, data) => {
-      if (err) {
-        return;
-      }
-      // Se realiza correctamente si success es true
-      if (!data.success) {
-        // Refrescamos la vista
-
-        setIsLoadingModal(false);
-        setOnRequest(true);
-        setMessage(data.message);
-
-        // Timer para limpiar el mensaje después de 5 segundos
-        setTimeout(() => {
-          setMessage(null);
-          setOnRequest(false);
-        }, 5000);
-      }
-    });
-
-    fetch();
-
-    return () => {
-      // Limpieza: Cierra el socket y cualquier temporizador pendiente
+  // Listeners
+  listenToAdminResponse((err, data) => {
+    if (err) { clearTimeoutIfRunning(); return; }
+    if (data.message) setMessage(data.message);
+    if (data.status) {
       clearTimeoutIfRunning();
-      disconnectSocket();
-    };
-  }, [userId, startTimeoutLogic]); // Dependencias: incluye startTimeoutLogic
+      setIsLoadingModal(false);
+      setOnRequest(true);
+      setStatus(data.status);
+      setMessage(`Solicitud ${translateStatus(data.status)}`);
+      setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
+    }
+  });
+
+  refreshClientRoom((err, data) => {
+    if (!err && data.success) fetch();
+  });
+
+  requestFailed((err, data) => {
+    if (!err && !data.success) {
+      setIsLoadingModal(false);
+      setOnRequest(true);
+      setMessage(data.message);
+      setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
+    }
+  });
+
+  fetch();
+
+  return () => {
+    clearTimeoutIfRunning();
+    // Si quieres mantener el socket abierto no lo desconectes
+  };
+}, [userId, startTimeoutLogic]);
 
   const clearFormRequest = () => {
     setFormRequest({

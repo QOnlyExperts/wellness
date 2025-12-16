@@ -22,7 +22,7 @@ export class LoginController {
 
       res.cookie('access_token', loginResult.token, {
         httpOnly: true,
-        secure: true, // true si es https
+        secure: false, // true si es https
         sameSite: 'lax',
       });
 

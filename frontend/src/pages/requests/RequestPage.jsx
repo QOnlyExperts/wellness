@@ -11,6 +11,7 @@ import {
   sendResponseToClient,
   refreshAdminRoom,
   disconnectSocket,
+  requestFailed
 } from "../../services/socket/AdminSocket";
 
 
@@ -115,57 +116,60 @@ const RequestPage = () => {
 
   }, [requestList, requestFinished, loading]);
 
-  // --- 2. Lógica del Socket y Escucha (Autocarga en Tiempo Real) ---
-  useEffect(() => {
-    const user = userId;
-    if (!user) {
-      return;
+useEffect(() => {
+  if (!userId) return;
+
+  const sock = initialSocket(userId);
+
+  const handleAdminRequest = (data) => {
+    console.log(data);
+    const { implement_id, user_id, request_id, status } = data;
+
+    if (status === STATUS_FINISHED) {
+      setRequestFinished({ implement_id, user_id, request_id, status });
+    } else {
+      setRequestPending((prev) => [
+        ...prev,
+        { implement_id, user_id, request_id },
+      ]);
     }
+    setIsOpenModal(true);
+  };
 
-    initialSocket(user);
+  const handleRefreshRoom = (data) => {
+    if (data.success) {
+      refresh(); // refresca la UI
+      console.log("Refrescado");
+    }
+  };
 
-    listenToAdminRequest(async (err, data) => {
-      if (err) {
-        return;
-      }
+  const handleRequestFailed = (data) => {
+    if (!data.success) {
+      setIsLoadingModal(false);
+      setOnRequest(true);
+      setMessage(data.message);
 
-      const { implement_id, user_id, request_id, status} = data;
+      setTimeout(() => {
+        setMessage(null);
+        setOnRequest(false);
+      }, 5000);
+    }
+  };
 
-      // Si tiene estatus es finished
-      if(status === STATUS_FINISHED){
-        console.log(data)
-        setRequestFinished({
-          implement_id,
-          user_id,
-          request_id,
-          status
-        })
-        
-      }else{
-        // Añadir el nuevo objeto AL ARRAY DE PENDIENTES
-        setRequestPending((prevRequests) => [
-          ...prevRequests,
-          { implement_id, user_id, request_id },
-        ]);
-      }
+  // Registrar listeners
+  listenToAdminRequest(handleAdminRequest);
+  refreshAdminRoom(handleRefreshRoom);
+  requestFailed(handleRequestFailed);
 
-      setIsOpenModal(true); // Abrir el modal si no lo estaba
-    });
+  // Cleanup: eliminar listeners al desmontar
+  return () => {
+    sock.off("adminRequestFromClient", handleAdminRequest);
+    sock.off("refreshAdminRoom", handleRefreshRoom);
+    sock.off("requestFailed", handleRequestFailed);
+    // No desconectamos socket si quieres mantener la sesión activa
+  };
+}, [userId]);
 
-    refreshAdminRoom((err, data) => {
-      if (err) {
-        return;
-      }
-      if (data.success) {
-        refresh();
-        console.log("Refrescado");
-      }
-    });
-
-    return () => {
-      disconnectSocket();
-    };
-  }, [userId]); 
 
   /**
    * Procesa la solicitud pendiente actual (el primer elemento de la cola).

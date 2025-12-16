@@ -1,82 +1,64 @@
 import io from 'socket.io-client'
-let socket 
-
+let socket;
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-// Iniciar el socket
 export const initialSocket = (userId) => {
-  const token = document.cookie
-    .split("; ")
-    .find(row => row.startsWith("token="))
-    ?.split("=")[1];
+  if (!socket) {
+    socket = io(apiUrl, {
+      auth: { userId },
+      transports: ["websocket", "polling"],
+      withCredentials: true, // permite enviar cookies
+    });
 
-  socket = io(`${apiUrl}`, {  
-    withCredentials: true,
-    auth: {
-      userId: userId,
-      token: token
-    }
-  })
+    socket.on("connect", () => {
+      if (userId) {
+        socket.emit("joinAsAdmin", { id: userId });
+      }
+    });
 
-  if(socket && userId) 
-    socket.emit('joinAsClient', {id: userId})
-    return socket;
-  // if(socket && user) socket.emit('roomRequest', user)
-}
-// Desconectar socket
+    socket.on("connect_error", (err) => {
+      console.error("Error al conectar socket:", err.message);
+    });
+  }
+
+  return socket;
+};
+
 export const disconnectSocket = () => {
   if (socket) {
     socket.disconnect();
-    socket = null;  // Reseteamos el socket para evitar reusos erróneos
+    socket = null;
   }
 }
 
-// Envío de respuestas
 export const sendRequestInstrumentToAdmin = (data) => {
-  if (socket) {
-    console.log(data)
-    socket.emit('requestInstrumentToAdmin', data);
-  }
+  if (socket) socket.emit('requestInstrumentToAdmin', data);
 }
 
 export const sendFinishRequestInstrumentToAdmin = (data) => {
-  if (socket) {
-    console.log(data)
-    socket.emit('finishRequestInstrumentToAdmin', data);
-  }
+  if (socket) socket.emit('finishRequestInstrumentToAdmin', data);
 }
 
-// Envío de respuestas
 export const deleteInstrumentInUse = (data) => {
-  if (socket) {
-    socket.emit('deleteInstrumentInUse', data);
-  }
+  if (socket) socket.emit('deleteInstrumentInUse', data);
 }
 
-// Respuesta del administrador
+// Listeners
 export const listenToAdminResponse = (cb) => {
-  if (!socket) return true;
-  // Nos aseguramos de que solo escuchemos el evento una vez
-  socket.on('adminResponseToClient', (data) => {
-    cb(null, data);
-  });
+  if (!socket) return;
+  socket.off('adminResponseToClient'); // eliminamos listener previo
+  socket.on('adminResponseToClient', cb);
 }
 
-// Refrescar la sala del cliente
 export const refreshClientRoom = (cb) => {
-  if (!socket) return true;
-  // Escuchar el evento solo una vez
-  socket.on('refreshClientRoom', (data) => {
-    cb(null, data);
-  });
+  if (!socket) return;
+  socket.off('refreshClientRoom');
+  socket.on('refreshClientRoom', cb);
 }
 
-// Refrescar la sala del cliente
 export const requestFailed = (cb) => {
-  if (!socket) return true;
-  // Escuchar el evento solo una vez
-  socket.on('requestFailed', (data) => {
-    cb(null, data);
-  });
+  if (!socket) return;
+  socket.off('requestFailed');
+  socket.on('requestFailed', cb);
 }

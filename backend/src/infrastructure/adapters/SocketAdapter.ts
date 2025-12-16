@@ -96,21 +96,21 @@ export class SocketAdapter {
 
   private applyMiddleware(ioInstance: Server): void {
     ioInstance.use(async(socket, next) => {
-      // const rawCookies = socket.handshake.headers.cookie;
-      // if (!rawCookies) return next(new Error('No autenticado'));
-
-      // const cookies = cookie.parse(rawCookies);
-      // const token = cookies.access_token;
-      const token = socket.handshake.auth.token;
-
-      if (!token) return next(new Error('Token no encontrado'));
-
       try {
-        const payload = await this.jwtService.verify(token);
-        socket.data.user = payload;
+        const cookies = socket.handshake.headers.cookie;
+        if (!cookies) return next(new Error("No cookie"));
+
+        // Extraemos token de cookies
+        const match = cookies.match(/access_token=([^;]+)/);
+        if (!match) return next(new Error("Token no encontrado"));
+
+        const token = match[1];
+        const jwtService = resolveJwtTokenService();
+        const payload = jwtService.verify(token);
+        (socket as any).user = payload;
         next();
-      } catch {
-        next(new Error('Token inválido'));
+      } catch (err) {
+        next(new Error("Token inválido o expirado"));
       }
     });
   }

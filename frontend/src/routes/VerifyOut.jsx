@@ -1,12 +1,30 @@
-import {Navigate, Outlet} from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useLoader } from "../context/LoaderContext";
 
-export default function OutLogin(){
+const apiUrl = import.meta.env.VITE_API_URL;
 
-  const token = sessionStorage.getItem('token');
+export default function OutLogin() {
+  const [authenticated, setAuthenticated] = useState(null);
 
-  return(
-    token
-    ? <Outlet/>
-    : <Navigate to='/login'/>
-  );
+  const { showLoader, hideLoader } = useLoader();
+
+  useEffect(() => {
+    // showLoader();
+
+    fetch(`${apiUrl}/api/v1/auth/validate-token`, {
+      method: "GET",
+      credentials: "include", // envía cookies
+    })
+      .then(res => res.json())
+      .then(data => {
+        setAuthenticated(data.success); // true si token válido
+      })
+      .catch(() => setAuthenticated(false))
+      // .finally(() => hideLoader());
+  }, []);
+
+  if (authenticated === null) return <div>Cargando...</div>;
+
+  return authenticated ? <Outlet /> : <Navigate to="/login" />;
 }

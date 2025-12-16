@@ -29,6 +29,7 @@ const API_CORS = process.env.API_CORS;
 
 import path from 'path';
 import { programRouterPublic } from './presentation/routers/ProgramRouterPublic';
+import { authRoutes } from './presentation/routers/AuthRoutes';
 // Crear la aplicación Express
 const app: Application = express();
 
@@ -44,7 +45,7 @@ app.use(cors({
   credentials: true
 }) as any);
 
-app.options("*", cors() as any);
+// app.options("*", cors() as any);
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -64,6 +65,7 @@ app.use('/static', (req, res) => {
 });
 
 // Rutas publicas
+app.use('/api/v1', authRoutes)
 app.use('/api/v1', loginRouter);
 app.use('/api/v1', registerRouter);
 app.use('/api/v1', programRouterPublic);

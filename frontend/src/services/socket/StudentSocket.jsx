@@ -13,7 +13,7 @@ export const initialSocket = (userId) => {
 
     socket.on("connect", () => {
       if (userId) {
-        socket.emit("joinAsAdmin", { id: userId });
+        socket.emit("joinAsClient", { id: userId });
       }
     });
 
@@ -47,18 +47,15 @@ export const deleteInstrumentInUse = (data) => {
 // Listeners
 export const listenToAdminResponse = (cb) => {
   if (!socket) return;
-  socket.off('adminResponseToClient'); // eliminamos listener previo
   socket.on('adminResponseToClient', cb);
 }
 
 export const refreshClientRoom = (cb) => {
   if (!socket) return;
-  socket.off('refreshClientRoom');
   socket.on('refreshClientRoom', cb);
 }
 
 export const requestFailed = (cb) => {
   if (!socket) return;
-  socket.off('requestFailed');
   socket.on('requestFailed', cb);
 }

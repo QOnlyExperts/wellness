@@ -237,7 +237,7 @@ export class SocketAdapter {
     const socketId = this.userSockets.get(data.user_id);
 
 
-    console.log(`Datos backend ${data}`);
+    console.log('Datos backend:', JSON.stringify(data, null, 2));
 
     try {
 
@@ -256,16 +256,19 @@ export class SocketAdapter {
 
       // console.log(request.request_id)
       if (request) {
+        // Refrescamos la sala de administradores para actualizar la lista de solicitudes
         if (data.status === "refused") {
           ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
         }
 
+        // Refrescamos sala de clientes y administradores para actualizar las listas de solicitudes
         if (["accepted", "finished"].includes(data.status)) {
           ioInstance.to("clientRoom").emit("refreshClientRoom", { success: true });
           ioInstance.to("adminRoom").emit("refreshAdminRoom", { success: true });
         }
       }
 
+      console.log("socketId: ", socketId)
       if (socketId) {
         ioInstance.to(socketId).emit("adminResponseToClient", {
           status: data.status

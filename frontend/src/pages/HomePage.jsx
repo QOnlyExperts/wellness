@@ -222,45 +222,56 @@ const HomePage = () => {
     }, 60000); // 1 minuto
   }, [setIsLoadingModal, setMessage, setOnRequest]); // Dependencias del callback
 
- useEffect(() => {
-  if (!userId) return;
+  useEffect(() => {
+    if (!userId) return;
 
-  const sock = initialSocket(userId);
+    const sock = initialSocket(userId);
 
-  // Listeners
-  listenToAdminResponse((err, data) => {
-    if (err) { clearTimeoutIfRunning(); return; }
-    if (data.message) setMessage(data.message);
-    if (data.status) {
+
+    // Listeners
+    const handleAdminResponse = (data, err) => {
+      console.log(data);
+      if (err) { clearTimeoutIfRunning(); return; }
+      if (data.message) setMessage(data.message);
+      if (data.status) {
+        clearTimeoutIfRunning();
+        setIsLoadingModal(false);
+        setOnRequest(true);
+        setStatus(data.status);
+        setMessage(`Solicitud ${translateStatus(data.status)}`);
+        setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
+      }
+    };
+
+    const handleRefreshRoom = (data, err) => {
+      if (!err && data.success) fetch();
+    };
+
+    const handleRequestFailed = (data, err) => {
+      if (!err && !data.success) {
+        setIsLoadingModal(false);
+        setOnRequest(true);
+        setMessage(data.message);
+        setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
+      }
+    };
+
+
+    listenToAdminResponse(handleAdminResponse);
+    refreshClientRoom(handleRefreshRoom);
+    requestFailed(handleRequestFailed);
+    
+    fetch();
+
+    return () => {
       clearTimeoutIfRunning();
-      setIsLoadingModal(false);
-      setOnRequest(true);
-      setStatus(data.status);
-      setMessage(`Solicitud ${translateStatus(data.status)}`);
-      setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
-    }
-  });
-
-  refreshClientRoom((err, data) => {
-    if (!err && data.success) fetch();
-  });
-
-  requestFailed((err, data) => {
-    if (!err && !data.success) {
-      setIsLoadingModal(false);
-      setOnRequest(true);
-      setMessage(data.message);
-      setTimeout(() => { setMessage(null); setOnRequest(false); }, 5000);
-    }
-  });
-
-  fetch();
-
-  return () => {
-    clearTimeoutIfRunning();
-    // Si quieres mantener el socket abierto no lo desconectes
-  };
-}, [userId, startTimeoutLogic]);
+      
+      sock.off('adminResponseToClient'); // eliminamos listener previo
+      sock.off('refreshClientRoom');
+      sock.off('requestFailed');
+      // Si quieres mantener el socket abierto no lo desconectes
+    };
+  }, [userId, startTimeoutLogic]);
 
   const clearFormRequest = () => {
     setFormRequest({

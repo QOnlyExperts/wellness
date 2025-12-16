@@ -122,7 +122,6 @@ useEffect(() => {
   const sock = initialSocket(userId);
 
   const handleAdminRequest = (data) => {
-    console.log(data);
     const { implement_id, user_id, request_id, status } = data;
 
     if (status === STATUS_FINISHED) {
@@ -224,6 +223,8 @@ useEffect(() => {
         implement_id: implement_id,
         user_id: user_id,
       };
+
+      console.log(user_id)
 
       // Si el estado requiere límite, lo agregamos
       if (status === STATUS_ACCEPTED && limitedAt) {

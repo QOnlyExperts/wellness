@@ -65,8 +65,8 @@ app.use('/static', (req, res) => {
 });
 
 // Rutas publicas
-app.use('/api/v1', authRoutes)
 app.use('/api/v1', loginRouter);
+app.use('/api/v1', authRoutes)
 app.use('/api/v1', registerRouter);
 app.use('/api/v1', programRouterPublic);
 
